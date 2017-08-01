@@ -1,6 +1,7 @@
 body { font-family: sans-serif; font-size: 12px; border:solid #d9d8d1; border-width:1px; margin:10px; background: white; color: black; }
 a { color:#0000cc; }
 a:hover, a:visited, a:active { color:#880000; }
+/*
 div.page_header { height:25px; padding:8px; font-size:18px; font-weight:bold; background-color:#d9d8d1; }
 div.page_header a:visited { color:#0000cc; }
 div.page_header a:hover { color:#880000; }
@@ -125,6 +126,7 @@ span.logtags span.bookmarktag {
 	background-color: #afdffa;
 	border-color: #ccecff #46ace6 #46ace6 #ccecff;
 }
+*/
 span.difflineplus { color:#008800; }
 span.difflineminus { color:#cc0000; }
 span.difflineat { color:#990099; }
@@ -132,10 +134,9 @@ div.diffblocks { counter-reset: lineno; }
 div.diffblock { counter-increment: lineno; }
 pre.sourcelines { position: relative; counter-reset: lineno; }
 pre.sourcelines > span {
-	display: inline-block;
 	box-sizing: border-box;
 	width: 100%;
-	padding: 0 0 0 5em;
+	padding: 0 0 0 1em;
 	counter-increment: lineno;
 	vertical-align: top;
 }
@@ -146,7 +147,6 @@ pre.sourcelines > span:before {
 	-ms-user-select: none;
 	user-select: none;
 	display: inline-block;
-	margin-left: -5em;
 	width: 4em;
 	color: #999;
 	text-align: right;
@@ -163,6 +163,40 @@ pre.sourcelines > a {
 tr:target td,
 pre.sourcelines > span:target,
 pre.sourcelines.stripes > span:target {
+	background-color: #bfdfff;
+}
+
+div.chunk { position: relative; }
+div.chunk > span {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 0 0 0 1em;
+	counter-increment: lineno;
+	vertical-align: top;
+}
+div.chunk > span:before {
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	display: inline-block;
+	width: 4em;
+	color: #999;
+	text-align: right;
+	content: counters(lineno,".");
+	float: left;
+}
+div.chunk > a {
+	display: inline-block;
+	position: absolute;
+	left: 0px;
+	width: 4em;
+	height: 1em;
+}
+tr:target td,
+div.chunk > span:target,
+div.chunk.stripes > span:target {
 	background-color: #bfdfff;
 }
 
