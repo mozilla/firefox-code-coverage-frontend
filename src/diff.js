@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import * as FetchAPI from './fetch_data'
 
 var parse = require('parse-diff');
 
@@ -15,6 +16,7 @@ function Change(props) {
   }
   // We need to use Template literal expression to put span tags in new lines
   // since we're rendering within a pre tag
+  // XXX: See if we're using key properly or not
   return (<span key={props.index} className={css_class}>{`${props.change.content}
 `}</span>);
 }
@@ -54,20 +56,35 @@ function DiffBlock(props) {
  * shiptit-uplift and shows a diff with code coverage information for added
  * lines.
  */
-function DiffViewer(props) {
-  var parsed_changeset = parse(props.raw_diff);
-  return (
-    <div className="page_body diffblocks">
-      {parsed_changeset.map((diff_block, index) => <DiffBlock key={index} diff_block={diff_block} />)}
-    </div>
-  );
+class DiffViewer extends Component {
+  state = {
+    parsed_changeset: []
+  }
+
+  componentDidMount() {
+    FetchAPI.getDiff(this.props.changeset).then(response =>
+      response.text()
+    ).then(text =>
+      this.setState({parsed_changeset: parse(text)})
+    ).catch(error =>
+      console.log(error))
+  }
+
+  render() {
+    return (
+      <div className="page_body diffblocks">
+        {this.state.parsed_changeset.map((diff_block, index) =>
+          <DiffBlock key={index} diff_block={diff_block} />)}
+      </div>
+    );
+  }
 }
 
 // Main component
 export function CodeCoverageDiffViewer(props) {
   return (
       <div className="page_body codecoverage-diffviewer">
-        <DiffViewer raw_diff={props.raw_diff}/>
+        <DiffViewer changeset={props.changeset}/>
       </div>
   );
 }
