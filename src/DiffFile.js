@@ -5,7 +5,10 @@ import { DiffBlock } from './DiffBlock'
 export function DiffFile(props) {
   return (
     <div className='difffile'>
-      <div className='filepath'>{props.diff_block.from}</div>
+      <div className='filesummary'>
+        <div className='filepath'>{props.diff_block.from}</div>
+        <div className='filecoveragesummary'>summary</div>
+      </div>
       {props.diff_block.chunks.map((block, index) =>
         <DiffBlock
           key={index}

@@ -16,7 +16,13 @@ td {
 .difffile {
 	border:1px solid #eaeaea;
 }
-.filepath, .diffblock, .difflineat {
+.filepath {
+	display: inline;
+}
+.filecoveragesummary {
+	float: right;
+}
+.filesummary, .diffblock, .difflineat {
 	border-bottom:1px solid #eaeaea;
 }
 .difflineat {
