@@ -5,39 +5,42 @@ body {
 }
 /* XXX: The lines inside of pre overrun if the window is very little */
 pre { margin: 0; }
-div.difffile {
-	border:1px solid #eaeaea;
-}
-.filepath, .diffblock, .difflineat {
-	border-bottom:1px solid #eaeaea;
-}
-div.difflineat {
-	border-bottom:1px solid #eaeaea;
-	color:#990099;
-}
-table.diffblock {
-	width: 100%;
-}
 table, th, tr, td {
 	border-collapse: collapse;
 }
-tr.add { background-color:#b6fc88; }
-tr.del { background-color:#f9c8c5; }
 td {
 	border-right:1px solid #eaeaea;
 	color: #85878c;
 	padding: 1px;
 }
+.difffile {
+	border:1px solid #eaeaea;
+}
+.filepath, .diffblock, .difflineat {
+	border-bottom:1px solid #eaeaea;
+}
+.difflineat {
+	border-bottom:1px solid #eaeaea;
+	color:#990099;
+}
+.diffblock {
+	width: 100%;
+}
+/* Row */
+.add { background-color:#b6fc88; }
+.del { background-color:#f9c8c5; }
 /* Line coverage status*/
-td.hit {
-	background-color:#8ec669;
-	color: #000000;
+.hit, .miss, .nocovchange {
 	width: 20px;
 }
-td.miss {
+.hit {
+	background-color:#8ec669;
+}
+.miss {
 	background-color:#cc1b12;
-	color: #000000;
-	width: 20px;
+}
+.nocovchange {
+	background-color:#fff;
 }
 /* Line numbers */
 .old_line_number,.new_line_number {
