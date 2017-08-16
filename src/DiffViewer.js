@@ -25,7 +25,7 @@ export class DiffViewer extends Component {
 
   render() {
     return (
-      <div className="page_body diffblocks">
+      <div className="page_body codecoverage-diffviewer">
         {this.state.parsed_changeset.map(
           (diff_block, index) => {
             // We try to see if the file modified shows up in the code
