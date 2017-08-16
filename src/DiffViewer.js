@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
+
 import * as FetchAPI from './fetch_data'
 import { DiffFile } from './DiffFile'
 
@@ -26,6 +28,7 @@ export class DiffViewer extends Component {
   render() {
     return (
       <div className="page_body codecoverage-diffviewer">
+        <Link className="return-home" to="/">Return main page</Link>
         {this.state.parsed_changeset.map(
           (diff_block, index) => {
             // We try to see if the file modified shows up in the code
