@@ -1,13 +1,13 @@
-import { CodeCoverageDiffViewer } from './App.js';
+import { App } from './App.js';
+import { BrowserRouter } from 'react-router-dom'
 import React from 'react';
 import ReactDOM from 'react-dom';
 // Using hg-web's CSS file
 import './style.css';
 
-// https://hg.mozilla.org/mozilla-central/rev/12e33b9d6f91
-var changeset = '12e33b9d6f91'
-
 ReactDOM.render(
-  <CodeCoverageDiffViewer changeset={changeset} />,
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
   document.getElementById('root')
 );
