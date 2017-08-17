@@ -8,11 +8,11 @@
   "devDependencies": {
     "gh-pages": "^1.0.0",
     "neutrino": "^6.1.4",
-    "neutrino-preset-react": "^6.1.4",
-    "parse-diff": "^0.4.0"
+    "neutrino-preset-react": "^6.1.4"
   },
   "dependencies": {
     "form-serialize": "^0.7.2",
+    "parse-diff": "^0.4.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.2"
