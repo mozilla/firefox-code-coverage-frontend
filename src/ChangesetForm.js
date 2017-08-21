@@ -8,17 +8,8 @@ export class ChangesetForm extends Component {
 
   constructor(props) {
     super(props)
-    this.state = {value: props.initialValue}
-  }
-
-  onChange = (e) => {
-    // XXX: When I paste a changeset I get this error:
-    // TypeError: Cannot read property 'target' of undefined
-    if (!e.value) {
-      debugger;
-    }
-    debugger;
-    //this.setState({value: e.value.target})
+    // XXX: This changeset has some hand crafted code coverage data
+    this.state = {value: '12e33b9d6f91'}
   }
 
   handleSubmit = (e) => {
@@ -44,7 +35,6 @@ export class ChangesetForm extends Component {
               type='text'
               name='changeset'
               defaultValue={this.state.value}
-              // onChange={this.onChange}
               placeholder='changeset'
             />
             <button>Request code coverage data</button>
