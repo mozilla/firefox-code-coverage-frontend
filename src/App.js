@@ -18,7 +18,6 @@ export class App extends Component {
           <div className='changesets-viewer'>
             <ChangesetForm
               onSubmit={(form_values) => {
-                this.setState({changeset: form_values.changeset})
                 if (form_values.changeset) {
                   history.push('/changeset/' + form_values.changeset)
                 } else {
@@ -32,8 +31,8 @@ export class App extends Component {
             />
           </div>
         )}/>
-        <Route path="/changeset" render={() => (
-          <DiffViewer changeset={this.state.changeset}/>
+        <Route path="/changeset/:id" render={({ match }) => (
+          <DiffViewer changeset={match.params.id}/>
         )}/>
       </div>
     );
