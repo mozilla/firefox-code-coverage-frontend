@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import * as FetchAPI from './fetch_data'
 import { DiffFile } from './DiffFile'
+import { code_cov_info } from './offline_data'
 
 var parse = require('parse-diff');
 
@@ -22,7 +23,9 @@ export class DiffViewer extends Component {
     ).then(text =>
       this.setState({parsed_changeset: parse(text)})
     ).catch(error =>
-      console.log(error))
+      console.log(error)
+    )
+    this.setState({code_cov_info: code_cov_info})
   }
 
   render() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import * as FetchAPI from './fetch_data'
+import { code_cov_info, code_cov_commits } from './offline_data'
 
 /*
 Given a changeset (e.g. 12e33b9d6f91) we can inquire the GH commit id
@@ -65,15 +65,10 @@ export class ChangesetsViewer extends Component {
   }
 
   componentDidMount() {
-    FetchAPI.getCommits().then(res =>
-      res.json()
-    ).then(json =>{
-      sortCommits(json.commits, 'timestamp')
-      json.commits.reverse()
-      this.setState(json)
-    }).catch(error =>
-      console.log(error)
-    )
+    sortCommits(code_cov_commits.commits, 'timestamp')
+    code_cov_commits.commits.reverse()
+
+    this.setState(code_cov_commits)
   }
 
   render() {
