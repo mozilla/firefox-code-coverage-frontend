@@ -16,7 +16,7 @@ export function DiffLine(props) {
 
   if (change_type === 'add') {
     // Added line - <cov_status> | <blank> | <new line number>
-    row_class = change_type
+    row_class = 'miss'
     cov_status_class = 'miss' // Let's start assuming a miss
     if (cov) {
       cov.changes.new.map(line_cov_info => {
@@ -29,6 +29,7 @@ export function DiffLine(props) {
             console.log(c.content.substring(1,c.content.length))
           }
           if (line_cov_info.coverage) {
+            row_class =  'hit'
             cov_status_class = 'hit'
           }
         }
@@ -36,9 +37,8 @@ export function DiffLine(props) {
     }
     new_line_number = c.ln
   } else if (change_type === 'del') {
-    // Removed line - <blank> | <old line number> | <blank>
-    row_class = change_type
-    old_line_number = c.ln
+    // Do not show deleted lines
+    return null
   } else {
     // Unchanged line - <blank> | <old line number> | <blank>
     row_class = change_type
