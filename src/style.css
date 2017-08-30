@@ -40,12 +40,12 @@ td {
 	width: 20px;
 }
 .hit {
-  color:black;
-  background-color:#b6fc88;
+	color:black;
+	background-color:#b6fc88;
 }
 .miss {
-  color:black;
-  background-color:#f9c8c5;
+	color:black;
+	background-color:#f9c8c5;
 }
 .nocovchange {
 	background-color:#fff;
