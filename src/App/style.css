@@ -55,3 +55,7 @@ td {
 .line_content {
 	border-right:0px;
 }
+/* Error messages */
+.error_message {
+	color:#ff0000
+}
