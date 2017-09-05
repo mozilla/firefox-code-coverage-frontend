@@ -3,15 +3,16 @@ import React, { Component } from 'react';
 import * as FetchAPI from '../../fetch_data'
 
 function PushInfo(props) {
-  var p = props.push_info
+  const csets = props.push_info.changesets
+  const { author, node, desc } = csets[csets.length - 1]
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
   return (
     <tr className='push'>
-      <td className='tip-changeset-author'>{p.changesets[0].author.substring(0, 16)}</td>
-      <td className='tip-changeset-node-id'>{p.changesets[0].node.substring(0, 12)}</td>
-      <td className='tip-changeset-description'>{p.changesets[0].desc.substring(0, 30)}</td>
+      <td className='tip-changeset-author'>{author.substring(0, 16)}</td>
+      <td className='tip-changeset-node-id'>{node.substring(0, 12)}</td>
+      <td className='tip-changeset-description'>{desc.substring(0, 30)}</td>
     </tr>
   )
 }
@@ -42,7 +43,12 @@ export class ChangesetsViewer extends Component {
             <th>Changeset</th>
             <th>Description</th>
           </tr>
-          {Object.keys(this.state.pushes).sort().reverse().map((push_id) => (
+          {Object.keys(this.state.pushes).reverse().filter( (push_id) => {
+            const csets = this.state.pushes[push_id].changesets
+            if (csets[csets.length - 1].author !== 'ffxbld') {
+              return this.state.pushes[push_id]
+            }
+          }).map((push_id) => (
             <PushInfo
               key={push_id}
               push_info={this.state.pushes[push_id]}
