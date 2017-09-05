@@ -33,17 +33,19 @@ td {
 	width: 100%;
 }
 /* Row */
-.add { background-color:#b6fc88; }
-.del { background-color:#f9c8c5; }
+.add { font-weight: 200 }
+.del { }
 /* Line coverage status*/
 .hit, .miss, .nocovchange {
 	width: 20px;
 }
 .hit {
-	background-color:#8ec669;
+	color:black;
+	background-color:#b6fc88;
 }
 .miss {
-	background-color:#cc1b12;
+	color:black;
+	background-color:#f9c8c5;
 }
 .nocovchange {
 	background-color:#fff;
