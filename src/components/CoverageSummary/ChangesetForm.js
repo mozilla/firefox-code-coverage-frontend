@@ -6,12 +6,6 @@ export class ChangesetForm extends Component {
     value: ''
   }
 
-  constructor(props) {
-    super(props)
-    // XXX: This changeset has some hand crafted code coverage data
-    this.state = {value: '12e33b9d6f91'}
-  }
-
   handleSubmit = (e) => {
     e.preventDefault()
     const changeset = serializeForm(e.target, { 'hash': true })
@@ -25,8 +19,6 @@ export class ChangesetForm extends Component {
   render() {
     return (
       <div>
-        <p>DISCLAIMER: The only changeset with some hard-coded code coverage
-          data is 12e33b9d6f91.</p>
         <p>Submit the hash of a changeset and we will fetch its code
           coverage information.</p>
         <form onSubmit={this.handleSubmit}>
