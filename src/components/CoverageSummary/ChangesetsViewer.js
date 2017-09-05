@@ -19,7 +19,8 @@ function PushInfo(props) {
 
 export class ChangesetsViewer extends Component {
   state = {
-    'pushes': []
+    'pushes': [],
+    'error_message': ''
   }
 
   componentDidMount() {
@@ -29,34 +30,42 @@ export class ChangesetsViewer extends Component {
       response.json()
     ).then(text =>
       this.setState({pushes: text.pushes})
-    ).catch(error =>
+    ).catch(error => {
+      this.setState({
+        pushes: [],
+        error_message: 'We have failed to fetch pushes. See the log console for more details'
+      })
       console.error(error)
-    )
+    })
   }
 
   render() {
-    return (
-      <table>
-        <tbody>
-          <tr>
-            <th>Author</th>
-            <th>Changeset</th>
-            <th>Description</th>
-          </tr>
-          {Object.keys(this.state.pushes).reverse().filter( (push_id) => {
-            const csets = this.state.pushes[push_id].changesets
-            if (csets[csets.length - 1].author !== 'ffxbld') {
-              return this.state.pushes[push_id]
-            }
-          }).map((push_id) => (
-            <PushInfo
-              key={push_id}
-              push_info={this.state.pushes[push_id]}
-              collapsed={this.state.collapsed}
-            />
-          ))}
-        </tbody>
-      </table>
-    )
+    if (this.state.error_message) {
+      return (<div className='error_message'>{this.state.error_message}</div>)
+    } else {
+      return (
+        <table>
+          <tbody>
+            <tr>
+              <th>Author</th>
+              <th>Changeset</th>
+              <th>Description</th>
+            </tr>
+            {Object.keys(this.state.pushes).reverse().filter( (push_id) => {
+              const csets = this.state.pushes[push_id].changesets
+              if (csets[csets.length - 1].author !== 'ffxbld') {
+                return this.state.pushes[push_id]
+              }
+            }).map((push_id) => (
+              <PushInfo
+                key={push_id}
+                push_info={this.state.pushes[push_id]}
+                collapsed={this.state.collapsed}
+              />
+            ))}
+          </tbody>
+        </table>
+      )
+    }
   }
 }
