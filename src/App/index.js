@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom'
 
-import { ChangesetForm } from './ChangesetForm'
-import { ChangesetsViewer } from './ChangesetsViewer'
-import { DiffViewer } from './DiffViewer'
+import { ChangesetForm } from '../components/CoverageSummary/ChangesetForm'
+import { ChangesetsViewer } from '../components/CoverageSummary/ChangesetsViewer'
+import { DiffViewer } from '../components/DiffViewer'
+import './style.css';
 
 // Main component
 export class App extends Component {

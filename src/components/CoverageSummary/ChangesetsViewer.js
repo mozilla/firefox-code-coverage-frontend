@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import * as FetchAPI from './fetch_data'
+import * as FetchAPI from '../../fetch_data'
 
 function PushInfo(props) {
   var p = props.push_info
