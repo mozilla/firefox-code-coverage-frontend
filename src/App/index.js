@@ -9,7 +9,7 @@ import './style.css';
 // Main component
 export class App extends Component {
   state = {
-    repo_name: 'mozilla-central',
+    repoName: 'mozilla-central',
   }
 
   render() {
@@ -18,9 +18,9 @@ export class App extends Component {
         <Route exact path="/" render={({ history }) => (
           <div className='changesets-viewer'>
             <ChangesetForm
-              onSubmit={(form_values) => {
-                if (form_values.changeset) {
-                  history.push('/changeset/' + form_values.changeset)
+              onSubmit={(formValues) => {
+                if (formValues.changeset) {
+                  history.push('/changeset/' + formValues.changeset)
                 } else {
                   console.log('XXX: The changeset was undefined.')
                 }
@@ -28,7 +28,7 @@ export class App extends Component {
             />
             <hr/>
             <ChangesetsViewer
-              repo_name={this.state.repo_name}
+              repoName={this.state.repoName}
             />
           </div>
         )}/>
