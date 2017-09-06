@@ -59,3 +59,7 @@ td {
 .error_message {
 	color:#ff0000
 }
+/* Changesets */
+.hidden_changeset {
+	display: none
+}
