@@ -21,36 +21,36 @@ function ChangesetInfo({ index, author, node, description, hidden }) {
 export class ChangesetsViewer extends Component {
   state = {
     'pushes': {},
-    'error_message': '',
-    'hidden_changesets': {}
+    'errorMessage': '',
+    'hiddenChangesets': {}
   }
 
   componentDidMount() {
     // XXX: If the fetched data is the same as in the state do
     //      no call setSate to prevent one more render
-    FetchAPI.getJsonPushes(this.props.repo_name).then(response =>
+    FetchAPI.getJsonPushes(this.props.repoName).then(response =>
       response.json()
     ).then(text => {
-      let hidden_changesets = {}
-      for (var push_id in text.pushes) {
-        hidden_changesets[push_id] = false
-      }
+      let hiddenChangesets = {}
+      Object.keys(text.pushes).forEach(pushId => {
+        hiddenChangesets[pushId] = false
+      })
       this.setState({
         pushes: text.pushes,
-        hidden_changesets: hidden_changesets
+        hiddenChangesets: hiddenChangesets
       })}
     ).catch(error => {
       this.setState({
         pushes: [],
-        error_message: 'We have failed to fetch pushes. See the log console for more details'
+        errorMessage: 'We have failed to fetch pushes. See the log console for more details'
       })
       console.error(error)
     })
   }
 
   render() {
-    if (this.state.error_message) {
-      return (<div className='error_message'>{this.state.error_message}</div>)
+    if (this.state.errorMessage) {
+      return (<div className='errorMessage'>{this.state.errorMessage}</div>)
     } else {
       return (
         <table>
@@ -60,10 +60,10 @@ export class ChangesetsViewer extends Component {
               <th>Changeset</th>
               <th>Description</th>
             </tr>
-            {Object.keys(this.state.pushes).reverse().filter( (push_id) => {
-              const csets = this.state.pushes[push_id].changesets
+            {Object.keys(this.state.pushes).reverse().filter(pushId => {
+              const csets = this.state.pushes[pushId].changesets
               if (csets[csets.length - 1].author !== 'ffxbld') {
-                return this.state.pushes[push_id]
+                return this.state.pushes[pushId]
               }
             }).map(pushId => {
               const csets = this.state.pushes[pushId].changesets
