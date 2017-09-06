@@ -2,18 +2,31 @@ import React, { Component } from 'react';
 
 import * as FetchAPI from '../../fetch_data'
 
-function ChangesetInfo({ index, author, node, description, hidden }) {
+function ChangesetInfo({ index, push, pushId, visibility, onClick }) {
+  const { author, node, desc } = push.changesets[index]
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
+  // The tipmost changeset should always be visible
+  const changesetClass = (index === 0 || visibility) ? 'changeset': 'hidden_changeset'
+  const toggleText = (visibility) ? '[Collapse]' : '[Expand]'
+  const numChangesets = push.changesets.length - 1
   return (
-    <tr className='changeset'>
-      <td className='tip-changeset-author'>
+    <tr className={changesetClass}>
+      <td className='changeset-author'>
         {author.substring(0, 16)}</td>
-      <td className='tip-changeset-node-id'>
+      <td className='changeset-node-id'>
         {node.substring(0, 12)}</td>
-      <td className='tip-changeset-description'>
-        {description.substring(0, 30)}</td>
+      <td className='changeset-description'>
+        {desc.substring(0, 30)}</td>
+      <td className='changeset-collapse'>
+        {(index === 0 && numChangesets > 0) ?
+          <span>{numChangesets} changesets in push -&nbsp;
+            <a href='#' id={pushId} onClick={onClick}>{toggleText}</a></span>
+            :
+          <span></span>
+        }
+      </td>
     </tr>
   )
 }
@@ -48,6 +61,17 @@ export class ChangesetsViewer extends Component {
     })
   }
 
+  toggleRowVisibility(pushId) {
+    this.setState((prevState, props) => {
+      let newHiddenChangesets = {}
+      Object.assign(newHiddenChangesets, prevState.hiddenChangesets)
+      newHiddenChangesets[pushId] = ! newHiddenChangesets[pushId]
+      return {
+        hiddenChangesets: newHiddenChangesets
+      }
+    })
+  }
+
   render() {
     if (this.state.errorMessage) {
       return (<div className='errorMessage'>{this.state.errorMessage}</div>)
@@ -59,6 +83,7 @@ export class ChangesetsViewer extends Component {
               <th>Author</th>
               <th>Changeset</th>
               <th>Description</th>
+              <th>Collapsed csets</th>
             </tr>
             {Object.keys(this.state.pushes).reverse().filter(pushId => {
               const csets = this.state.pushes[pushId].changesets
@@ -66,16 +91,16 @@ export class ChangesetsViewer extends Component {
                 return this.state.pushes[pushId]
               }
             }).map(pushId => {
-              const csets = this.state.pushes[pushId].changesets
-              return csets.map((cset, index) => {
-                const { author, node, desc } = csets[index]
+              const push = this.state.pushes[pushId]
+              return push.changesets.map((cset, index) => {
                 return (
                   <ChangesetInfo
-                    key={node}
+                    key={push.node}
                     index={index}
-                    author={author}
-                    node={node}
-                    description={desc}
+                    push={push}
+                    pushId={pushId}
+                    visibility={this.state.hiddenChangesets[pushId]}
+                    onClick={(event) => this.toggleRowVisibility(event.target.id)}
                   />
                 )
               })
