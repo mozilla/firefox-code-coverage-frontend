@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 
 import * as FetchAPI from '../../fetch_data'
 
@@ -16,7 +17,10 @@ function ChangesetInfo({ index, push, pushId, visibility, onClick }) {
       <td className='changeset-author'>
         {author.substring(0, 16)}</td>
       <td className='changeset-node-id'>
-        {node.substring(0, 12)}</td>
+        <Link to={`/changeset/${node}`}>
+          {node.substring(0, 12)}
+        </Link>
+      </td>
       <td className='changeset-description'>
         {desc.substring(0, 30)}</td>
       <td className='changeset-collapse'>
