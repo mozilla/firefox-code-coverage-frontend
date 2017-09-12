@@ -19,10 +19,10 @@ export function DiffLine(props) {
     row_class = change_type
     cov_status_class = 'miss' // Let's start assuming a miss
     if (cov) {
-      let state = cov.changes.find(line_cov_info =>
-        (line_cov_info.new_line === c.ln) && (line_cov_info.coverage === 'Y')
-      )
-      cov_status_class = state ? 'hit' : 'miss'
+      let { coverage } = cov.changes.find(line_cov_info =>
+        (line_cov_info.new_line === c.ln))
+      cov_status_class = (coverage === 'Y') ? 'hit' :
+                         (coverage === 'N') ? 'miss': 'undefined'
     }
     new_line_number = c.ln
   } else if (change_type === 'del') {
