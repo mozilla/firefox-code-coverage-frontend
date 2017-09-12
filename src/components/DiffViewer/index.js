@@ -12,13 +12,17 @@ var parse = require('parse-diff');
  */
 export class DiffViewer extends Component {
   state = {
+    coverage_summary: {},
     diffs: [],
     error_message: '',
     parsed_changeset: []
   }
 
   componentDidMount() {
-    FetchAPI.getDiff(this.props.changeset).then(response =>
+    const { changeset } = this.props
+    const { coverage_summary, diffs, error_message, parsed_changeset } = this.state
+
+    FetchAPI.getDiff(changeset).then(response =>
       response.text()
     ).then(text =>
       this.setState({parsed_changeset: parse(text)})
@@ -26,7 +30,7 @@ export class DiffViewer extends Component {
       console.log(error)
     )
 
-    FetchAPI.getChangesetCoverage(this.props.changeset).then(response =>
+    FetchAPI.getChangesetCoverage(changeset).then(response =>
       response.text()
     ).then(text => {
       const { error, diffs } = JSON.parse(text)
@@ -38,18 +42,26 @@ export class DiffViewer extends Component {
     }).catch(error =>
       console.log(error)
     )
+
+    FetchAPI.getChangesetCoverageSummary(changeset).then(response =>
+      response.text()
+    ).then(text =>
+      this.setState({coverage_summary: JSON.parse(text)})
+    ).catch(error =>
+      console.log(error)
+    )
   }
 
   render() {
+    const { coverage_summary, diffs, error_message, parsed_changeset } = this.state
     return (
       <div className="page_body codecoverage-diffviewer">
         <Link className="return-home" to="/">Return main page</Link>
-        <div className='error_message'>{this.state.error_message}</div>
-        {(this.state.diffs.length != 0) && this.state.parsed_changeset.map(
+        <div className='error_message'>{error_message}</div>
+        {(diffs.length != 0) && parsed_changeset.map(
           (diff_block, index) => {
             // We try to see if the file modified shows up in the code
             // coverage data we have for this diff
-            const diffs = this.state.diffs
             const code_cov_info = (diffs) ?
               diffs.find(info => info['name'] === diff_block.from) : undefined
             // We only push down the subset of code coverage data
@@ -60,6 +72,7 @@ export class DiffViewer extends Component {
                 id={index}
                 diff_block={diff_block}
                 code_cov_info={code_cov_info}
+                coverage_summary={coverage_summary}
               />
             );
           }

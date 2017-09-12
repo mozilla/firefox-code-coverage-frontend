@@ -16,3 +16,8 @@ export const getChangesetCoverage = (changeset) =>
 fetch(`${backend}/coverage/changeset/${changeset}`, {
   'Accept': 'application/json'
 })
+
+export const getChangesetCoverageSummary = (changeset) =>
+fetch(`${backend}/coverage/changeset_summary/${changeset}`, {
+  'Accept': 'application/json'
+})
