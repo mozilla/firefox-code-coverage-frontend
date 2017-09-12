@@ -38,7 +38,7 @@ export class DiffViewer extends Component {
     return (
       <div className="page_body codecoverage-diffviewer">
         <Link className="return-home" to="/">Return main page</Link>
-        {this.state.parsed_changeset.map(
+        {(this.state.code_cov_info.length != 0) && this.state.parsed_changeset.map(
           (diff_block, index) => {
             // We try to see if the file modified shows up in the code
             // coverage data we have for this diff
