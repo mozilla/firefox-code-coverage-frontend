@@ -12,8 +12,9 @@ var parse = require('parse-diff');
  */
 export class DiffViewer extends Component {
   state = {
-    parsed_changeset: [],
-    code_cov_info: []
+    diffs: [],
+    error_message: '',
+    parsed_changeset: []
   }
 
   componentDidMount() {
@@ -27,9 +28,14 @@ export class DiffViewer extends Component {
 
     FetchAPI.getChangesetCoverage(this.props.changeset).then(response =>
       response.text()
-    ).then(text =>
-      this.setState({code_cov_info: JSON.parse(text)})
-    ).catch(error =>
+    ).then(text => {
+      const { error, diffs } = JSON.parse(text)
+      if (error) {
+        this.setState({error_message: error})
+      } else {
+        this.setState({diffs: diffs})
+      }
+    }).catch(error =>
       console.log(error)
     )
   }
@@ -38,14 +44,14 @@ export class DiffViewer extends Component {
     return (
       <div className="page_body codecoverage-diffviewer">
         <Link className="return-home" to="/">Return main page</Link>
-        {(this.state.code_cov_info.length != 0) && this.state.parsed_changeset.map(
+        <div className='error_message'>{this.state.error_message}</div>
+        {(this.state.diffs.length != 0) && this.state.parsed_changeset.map(
           (diff_block, index) => {
             // We try to see if the file modified shows up in the code
             // coverage data we have for this diff
-            let code_cov_info = (this.state.code_cov_info.length != 0) ?
-              this.state.code_cov_info.diffs.find(info =>
-                info['name'] === diff_block.from
-              ) : undefined
+            const diffs = this.state.diffs
+            const code_cov_info = (diffs) ?
+              diffs.find(info => info['name'] === diff_block.from) : undefined
             // We only push down the subset of code coverage data
             // applicable to a file
             return (
