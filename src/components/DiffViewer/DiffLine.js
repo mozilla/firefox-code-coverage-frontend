@@ -19,20 +19,10 @@ export function DiffLine(props) {
     row_class = change_type
     cov_status_class = 'miss' // Let's start assuming a miss
     if (cov) {
-      cov.changes.new.map(line_cov_info => {
-
-        if (line_cov_info.line === c.ln) {
-          // c.content has a '+' sign at the beginning of the line
-          if (line_cov_info.content !== c.content.substring(1, c.content.length)) {
-            console.error('The diff line and code coverage line differ.')
-            console.log(line_cov_info.content)
-            console.log(c.content.substring(1,c.content.length))
-          }
-          if (line_cov_info.coverage) {
-            cov_status_class = 'hit'
-          }
-        }
-      })
+      let state = cov.changes.find(line_cov_info =>
+        (line_cov_info.new_line === c.ln) && (line_cov_info.coverage === 'Y')
+      )
+      cov_status_class = state ? 'hit' : 'miss'
     }
     new_line_number = c.ln
   } else if (change_type === 'del') {

@@ -22,7 +22,16 @@ export class DiffViewer extends Component {
     ).then(text =>
       this.setState({parsed_changeset: parse(text)})
     ).catch(error =>
-      console.log(error))
+      console.log(error)
+    )
+
+    FetchAPI.getChangesetCoverage(this.props.changeset).then(response =>
+      response.text()
+    ).then(text =>
+      this.setState({code_cov_info: JSON.parse(text)})
+    ).catch(error =>
+      console.log(error)
+    )
   }
 
   render() {
@@ -33,11 +42,10 @@ export class DiffViewer extends Component {
           (diff_block, index) => {
             // We try to see if the file modified shows up in the code
             // coverage data we have for this diff
-            var code_cov_info = this.state.code_cov_info.map(info => {
-              if (info['name'] === diff_block.from) {
-                return info
-              }
-            });
+            let code_cov_info = (this.state.code_cov_info.length != 0) ?
+              this.state.code_cov_info.diffs.find(info =>
+                info['name'] === diff_block.from
+              ) : undefined
             // We only push down the subset of code coverage data
             // applicable to a file
             return (
@@ -45,7 +53,7 @@ export class DiffViewer extends Component {
                 key={index}
                 id={index}
                 diff_block={diff_block}
-                code_cov_info={code_cov_info[0]}
+                code_cov_info={code_cov_info}
               />
             );
           }
