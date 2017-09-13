@@ -1,0 +1,16 @@
+{
+  "name": "firefox-code-coverage-frontend",
+  "description": "A frontend to show code coverage data",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
