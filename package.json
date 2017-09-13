@@ -4,14 +4,10 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "deploy": "gh-pages -d build",
     "start": "neutrino start --use neutrino-preset-react",
     "build": "neutrino build --use neutrino-preset-react",
     "prestart": "yarn install",
     "heroku-prebuild": "yarn build"
-  },
-  "devDependencies": {
-    "gh-pages": "^1.0.0"
   },
   "dependencies": {
     "form-serialize": "^0.7.2",
