@@ -1,21 +1,25 @@
 {
   "homepage": "https://firefox-code-coverage.herokuapp.com",
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=6.0.0",
+    "npm": ">=5.0.0",
+    "yarn": ">=1.0.0"
   },
   "scripts": {
     "start": "neutrino start --use neutrino-preset-react",
     "build": "neutrino build --use neutrino-preset-react",
-    "prestart": "yarn install",
-    "heroku-prebuild": "yarn build"
+    "prestart": "yarn add neutrino neutrino-preset-react && yarn install",
+    "heroku-prebuild": "yarn add neutrino neutrino-preset-react && yarn build"
   },
   "dependencies": {
     "form-serialize": "^0.7.2",
-    "neutrino": "^6.1.5",
-    "neutrino-preset-react": "^6.1.4",
     "parse-diff": "^0.4.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.2"
+  },
+  "devDependencies": {
+    "neutrino": "^6.2.0",
+    "neutrino-preset-react": "^6.2.0"
   }
 }
