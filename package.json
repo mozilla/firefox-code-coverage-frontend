@@ -21,6 +21,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.54.1",
     "neutrino": "^6.2.0",
     "neutrino-preset-react": "^6.2.0"
   }

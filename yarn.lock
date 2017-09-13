@@ -2236,6 +2236,10 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
+flow-bin@^0.54.1:
+  version "0.54.1"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.54.1.tgz#7101bcccf006dc0652714a8aef0c72078a760510"
+
 fluture@^6.2.6:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/fluture/-/fluture-6.3.0.tgz#206297d986500131ea5bf9605725354236728a91"
