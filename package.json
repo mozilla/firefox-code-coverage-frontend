@@ -19,6 +19,8 @@
     "react-router-dom": "^4.1.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-flow": "^6.23.0",
     "neutrino": "^6.2.0",
     "neutrino-preset-react": "^6.2.0"
   }
