@@ -20,3 +20,17 @@ Checkout the code and run:
 
 * yarn install
 * yarn start
+
+# Statistical analysis
+
+In order to help with development you can run the following:
+
+```bash
+yarn run flow
+```
+
+This gives you a statistical analysis of the source code.
+
+Some IDEs support Flow. I personally use [Atom](https://atom.io/) which has [linter-flow](https://atom.io/packages/linter-flow).
+You will need to download [Flow](https://github.com/facebook/flow/releases)
+and put the binary in your PATH to make it work.
