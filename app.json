@@ -2,7 +2,7 @@
   "name": "firefox-code-coverage-frontend",
   "description": "A frontend to show code coverage data",
   "repository": "https://github.com/armenzg/firefox-code-coverage-frontend",
-  "website": "https://firefox-code-coverage.herokuapp.com",
+  "website": "https://firefox-code-coverage.herokuapp.com
   "scripts": {
   },
   "env": {
