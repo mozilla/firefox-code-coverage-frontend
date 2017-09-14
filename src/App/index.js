@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom'
 
@@ -6,8 +7,14 @@ import { ChangesetsViewer } from '../components/CoverageSummary/ChangesetsViewer
 import { DiffViewer } from '../components/DiffViewer'
 import './style.css';
 
+type Props = {};
+
+type State = {
+  repoName: string,
+};
+
 // Main component
-export class App extends Component {
+export class App extends Component<Props, State> {
   state = {
     repoName: 'mozilla-central',
   }
