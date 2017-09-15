@@ -4,8 +4,8 @@ import { Route } from 'react-router-dom'
 
 import { ChangesetForm } from '../components/CoverageSummary/ChangesetForm'
 import { ChangesetsViewer } from '../components/CoverageSummary/ChangesetsViewer'
-import { DiffViewerContainer } from '../components/DiffViewer'
-import './style.css';
+import { DiffViewerContainer } from '../components/diffviewer'
+import '../style.css'
 
 type Props = {};
 
