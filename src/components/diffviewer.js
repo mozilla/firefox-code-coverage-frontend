@@ -120,7 +120,7 @@ const DiffSummary = ({summary}) => {
 }
 
 /* A DiffBlock is *one* of the blocks changed for a specific file */
-export function DiffBlock({ block, coverageInfo }) {
+const DiffBlock = ({ block, coverageInfo }) => {
   return (
     <div className='diffblock'>
       <div className='difflineat'>{block.content}</div>
@@ -150,11 +150,11 @@ const DiffLine = ({ change, coverageInfo, id }) => {
   // Added, deleted or unchanged line
   const changeType = change.type
   // CSS tr and td classes
-  const [rowClass, covStatusClass] = ['nolinechange', 'nocovchange']
-  const row_id = id
+  let [rowClass, covStatusClass] = ['nolinechange', 'nocovchange']
+  const rowId = id
   // Cell contents
   const cov_status = ' ' // We need blank string to respect width value of cell
-  const [oldLineNumber, newLineNumber] = ['', '']
+  let [oldLineNumber, newLineNumber] = ['', '']
 
   if (changeType === 'add') {
     // Added line - <cov_status> | <blank> | <new line number>
@@ -180,8 +180,8 @@ const DiffLine = ({ change, coverageInfo, id }) => {
     }
   }
   return (
-    <tr id={row_id} className={rowClass}>
-      <td className={covStatusClass}>{covStatus}</td>
+    <tr id={rowId} className={rowClass}>
+      <td className={covStatusClass}></td>
       <td className='oldLineNumber'>{oldLineNumber}</td>
       <td className='newLineNumber'>{newLineNumber}</td>
       <td className='line_content'>
