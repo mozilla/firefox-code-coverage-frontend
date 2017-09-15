@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 
-import * as FetchAPI from '../../fetch_data'
+import * as FetchAPI from '../fetch_data'
 
 function ChangesetInfo({ index, push, pushId, visibility, onClick }) {
   const { author, node, desc } = push.changesets[index]

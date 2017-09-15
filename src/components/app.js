@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom'
 
-import { ChangesetForm } from '../components/CoverageSummary/ChangesetForm'
-import { ChangesetsViewer } from '../components/CoverageSummary/ChangesetsViewer'
+import { ChangesetForm } from '../components/changesetform'
+import { ChangesetsViewer } from '../components/summaryviewer'
 import { DiffViewerContainer } from '../components/diffviewer'
 import '../style.css'
 
