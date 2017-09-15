@@ -11,20 +11,20 @@ let parse = require('parse-diff');
  */
 export class DiffViewerContainer extends Component {
   state = {
-    coverage_summary: {},
+    coverageSummary: {},
     coverage: [],
-    error_message: '',
-    parsed_changeset: []
+    errorMessage: '',
+    parsedDiff: []
   }
 
   componentDidMount() {
     const { changeset } = this.props
-    const { coverage_summary, coverage, error_message, parsed_changeset } = this.state
+    const { coverageSummary, coverage, errorMessage, parsedDiff } = this.state
 
     FetchAPI.getDiff(changeset).then(response =>
       response.text()
     ).then(text =>
-      this.setState({parsed_changeset: parse(text)})
+      this.setState({parsedDiff: parse(text)})
     ).catch(error =>
       console.log(error)
     )
@@ -34,7 +34,7 @@ export class DiffViewerContainer extends Component {
     ).then(text => {
       const { error, diffs } = JSON.parse(text)
       if (error) {
-        this.setState({error_message: error})
+        this.setState({errorMessage: error})
       } else {
         this.setState({coverage: diffs})
       }
@@ -45,45 +45,45 @@ export class DiffViewerContainer extends Component {
     FetchAPI.getChangesetCoverageSummary(changeset).then(response =>
       response.text()
     ).then(text =>
-      this.setState({coverage_summary: JSON.parse(text)})
+      this.setState({coverageSummary: JSON.parse(text)})
     ).catch(error =>
       console.log(error)
     )
   }
 
   render() {
-    const { coverage_summary, coverage, error_message, parsed_changeset } = this.state
+    const { coverageSummary, coverage, errorMessage, parsedDiff } = this.state
     return (
       <DiffViewer
-        coverage_summary={coverage_summary}
+        coverageSummary={coverageSummary}
         coverage={coverage}
-        error_message={error_message}
-        parsed_changeset={parsed_changeset}
+        errorMessage={errorMessage}
+        parsedDiff={parsedDiff}
       />
     )
   }
 }
 
-const DiffViewer = ({ coverage_summary, coverage, error_message, parsed_changeset }) => {
+const DiffViewer = ({ coverageSummary, coverage, errorMessage, parsedDiff }) => {
   return (
     <div className="page_body codecoverage-diffviewer">
       <Link className="return-home" to="/">Return main page</Link>
-      <div className='error_message'>{error_message}</div>
-      {(coverage.length != 0) && parsed_changeset.map(
-        (diff_block, index) => {
+      <div className='errorMessage'>{errorMessage}</div>
+      {(coverage.length != 0) && parsedDiff.map(
+        (diffBlock, index) => {
           // We try to see if the file modified shows up in the code
           // coverage data we have for this diff
-          const code_cov_info = (coverage) ?
-            coverage.find(info => info['name'] === diff_block.from) : undefined
+          const coverageInfo = (coverage) ?
+            coverage.find(info => info['name'] === diffBlock.from) : undefined
           // We only push down the subset of code coverage data
           // applicable to a file
           return (
             <DiffFile
               key={index}
               id={index}
-              diff_block={diff_block}
-              code_cov_info={code_cov_info}
-              coverage_summary={coverage_summary}
+              diffBlock={diffBlock}
+              coverageInfo={coverageInfo}
+              coverageSummary={coverageSummary}
             />
           );
         }
@@ -93,18 +93,18 @@ const DiffViewer = ({ coverage_summary, coverage, error_message, parsed_changese
 }
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ code_cov_info, coverage_summary, diff_block }) => {
+const DiffFile = ({ coverageInfo, coverageSummary, diffBlock }) => {
   return (
     <div className='difffile'>
       <div className='filesummary'>
-        <div className='filepath'>{diff_block.from}</div>
-        <DiffSummary summary={coverage_summary} />
+        <div className='filepath'>{diffBlock.from}</div>
+        <DiffSummary summary={coverageSummary} />
       </div>
-      {diff_block.chunks.map((block, index) =>
+      {diffBlock.chunks.map((block, index) =>
         <DiffBlock
           key={index}
           block={block}
-          code_cov_info={code_cov_info}
+          coverageInfo={coverageInfo}
         />
       )}
     </div>
@@ -120,7 +120,7 @@ const DiffSummary = ({summary}) => {
 }
 
 /* A DiffBlock is *one* of the blocks changed for a specific file */
-export function DiffBlock({ block, code_cov_info }) {
+export function DiffBlock({ block, coverageInfo }) {
   return (
     <div className='diffblock'>
       <div className='difflineat'>{block.content}</div>
@@ -132,7 +132,7 @@ export function DiffBlock({ block, code_cov_info }) {
                  key={index}
                  id={index}
                  change={change}
-                 code_cov_info={code_cov_info}
+                 coverageInfo={coverageInfo}
                />
              )
            })}
@@ -143,47 +143,47 @@ export function DiffBlock({ block, code_cov_info }) {
 }
 
 /* A DiffLine contains metadata about a line in a DiffBlock */
-const DiffLine = ({ change, code_cov_info, id }) => {
+const DiffLine = ({ change, coverageInfo, id }) => {
   // Information about the line itself
   const c = change
-  const cov = code_cov_info
+  const cov = coverageInfo
   // Added, deleted or unchanged line
-  const change_type = change.type
+  const changeType = change.type
   // CSS tr and td classes
-  const [row_class, cov_status_class] = ['nolinechange', 'nocovchange']
+  const [rowClass, covStatusClass] = ['nolinechange', 'nocovchange']
   const row_id = id
   // Cell contents
   const cov_status = ' ' // We need blank string to respect width value of cell
-  const [old_line_number, new_line_number] = ['', '']
+  const [oldLineNumber, newLineNumber] = ['', '']
 
-  if (change_type === 'add') {
+  if (changeType === 'add') {
     // Added line - <cov_status> | <blank> | <new line number>
-    row_class = change_type
-    cov_status_class = 'miss' // Let's start assuming a miss
+    rowClass = changeType
+    covStatusClass = 'miss' // Let's start assuming a miss
     if (cov) {
       let { coverage } = cov.changes.find(line_cov_info =>
         (line_cov_info.new_line === c.ln))
-      cov_status_class = (coverage === 'Y') ? 'hit' :
+      covStatusClass = (coverage === 'Y') ? 'hit' :
                          (coverage === 'N') ? 'miss': 'undefined'
     }
-    new_line_number = c.ln
-  } else if (change_type === 'del') {
+    newLineNumber = c.ln
+  } else if (changeType === 'del') {
     // Removed line - <blank> | <old line number> | <blank>
-    row_class = change_type
-    old_line_number = c.ln
+    rowClass = changeType
+    oldLineNumber = c.ln
   } else {
     // Unchanged line - <blank> | <old line number> | <blank>
-    row_class = change_type
-    old_line_number = c.ln1
-    if (old_line_number !== c.ln2) {
-      new_line_number = c.ln2
+    rowClass = changeType
+    oldLineNumber = c.ln1
+    if (oldLineNumber !== c.ln2) {
+      newLineNumber = c.ln2
     }
   }
   return (
-    <tr id={row_id} className={row_class}>
-      <td className={cov_status_class}>{cov_status}</td>
-      <td className='old_line_number'>{old_line_number}</td>
-      <td className='new_line_number'>{new_line_number}</td>
+    <tr id={row_id} className={rowClass}>
+      <td className={covStatusClass}>{covStatus}</td>
+      <td className='oldLineNumber'>{oldLineNumber}</td>
+      <td className='newLineNumber'>{newLineNumber}</td>
       <td className='line_content'>
         <pre>{c.content}</pre>
       </td>
