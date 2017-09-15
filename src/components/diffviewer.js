@@ -11,15 +11,13 @@ let parse = require('parse-diff');
  */
 export class DiffViewerContainer extends Component {
   state = {
-    coverageSummary: {},
-    coverage: [],
-    errorMessage: '',
+    coverage: undefined,
     parsedDiff: []
   }
 
   componentDidMount() {
     const { changeset } = this.props
-    const { coverageSummary, coverage, errorMessage, parsedDiff } = this.state
+    const { coverage, parsedDiff } = this.state
 
     FetchAPI.getDiff(changeset).then(response =>
       response.text()
@@ -32,49 +30,34 @@ export class DiffViewerContainer extends Component {
     FetchAPI.getChangesetCoverage(changeset).then(response =>
       response.text()
     ).then(text => {
-      const { error, diffs } = JSON.parse(text)
-      if (error) {
-        this.setState({errorMessage: error})
-      } else {
-        this.setState({coverage: diffs})
-      }
+      this.setState({coverage: JSON.parse(text)})
     }).catch(error =>
-      console.log(error)
-    )
-
-    FetchAPI.getChangesetCoverageSummary(changeset).then(response =>
-      response.text()
-    ).then(text =>
-      this.setState({coverageSummary: JSON.parse(text)})
-    ).catch(error =>
       console.log(error)
     )
   }
 
   render() {
-    const { coverageSummary, coverage, errorMessage, parsedDiff } = this.state
+    const { coverage, parsedDiff } = this.state
     return (
       <DiffViewer
-        coverageSummary={coverageSummary}
         coverage={coverage}
-        errorMessage={errorMessage}
         parsedDiff={parsedDiff}
       />
     )
   }
 }
 
-const DiffViewer = ({ coverageSummary, coverage, errorMessage, parsedDiff }) => {
+const DiffViewer = ({ coverage, parsedDiff }) => {
   return (
     <div className="page_body codecoverage-diffviewer">
       <Link className="return-home" to="/">Return main page</Link>
-      <div className='errorMessage'>{errorMessage}</div>
-      {(coverage.length != 0) && parsedDiff.map(
+      <div className='errorMessage'>{(coverage && coverage.error) && coverage.error}</div>
+      {(coverage) && parsedDiff.map(
         (diffBlock, index) => {
           // We try to see if the file modified shows up in the code
           // coverage data we have for this diff
-          const coverageInfo = (coverage) ?
-            coverage.find(info => info['name'] === diffBlock.from) : undefined
+          const coverageInfo = (coverage.diffs) ?
+            coverage.diffs.find(info => info['name'] === diffBlock.from) : undefined
           // We only push down the subset of code coverage data
           // applicable to a file
           return (
@@ -83,7 +66,6 @@ const DiffViewer = ({ coverageSummary, coverage, errorMessage, parsedDiff }) => 
               id={index}
               diffBlock={diffBlock}
               coverageInfo={coverageInfo}
-              coverageSummary={coverageSummary}
             />
           );
         }
@@ -93,12 +75,12 @@ const DiffViewer = ({ coverageSummary, coverage, errorMessage, parsedDiff }) => 
 }
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ coverageInfo, coverageSummary, diffBlock }) => {
+const DiffFile = ({ coverageInfo, diffBlock }) => {
   return (
     <div className='difffile'>
       <div className='filesummary'>
         <div className='filepath'>{diffBlock.from}</div>
-        <DiffSummary summary={coverageSummary} />
+        <DiffSummary summary={coverageInfo} />
       </div>
       {diffBlock.chunks.map((block, index) =>
         <DiffBlock
@@ -111,10 +93,11 @@ const DiffFile = ({ coverageInfo, coverageSummary, diffBlock }) => {
   );
 }
 
-const DiffSummary = ({summary}) => {
+const DiffSummary = (coverageSummary) => {
+  debugger
   return (
-    <div className='filecoveragesummary'>{(summary) ?
-      summary.overall_cur : 'no summary available'}
+    <div className='filecoveragesummary'>{(coverageSummary) ?
+      coverageSummary.overall_cur : 'no summary available'}
     </div>
   )
 }
