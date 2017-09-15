@@ -4,7 +4,7 @@ import { Route } from 'react-router-dom'
 
 import { ChangesetForm } from '../components/CoverageSummary/ChangesetForm'
 import { ChangesetsViewer } from '../components/CoverageSummary/ChangesetsViewer'
-import { DiffViewer } from '../components/DiffViewer'
+import { DiffViewerContainer } from '../components/DiffViewer'
 import './style.css';
 
 type Props = {};
@@ -40,7 +40,7 @@ export class App extends Component<Props, State> {
           </div>
         )}/>
         <Route path="/changeset/:id" render={({ match }) => (
-          <DiffViewer changeset={match.params.id}/>
+          <DiffViewerContainer changeset={match.params.id}/>
         )}/>
       </div>
     );
