@@ -161,46 +161,40 @@ const DiffBlock = ({ block, coverageInfo }) => (
 const DiffLine = ({ change, coverageInfo, id }) => {
   // Information about the line itself
   const c = change;
-  const cov = coverageInfo;
   // Added, deleted or unchanged line
   const changeType = change.type;
   // CSS tr and td classes
-  let [rowClass, covStatusClass] = ['nolinechange', 'nocovchange'];
+  let rowClass = 'nolinechange';
   const rowId = id;
   // Cell contents
   let [oldLineNumber, newLineNumber] = ['', ''];
 
   if (changeType === 'add') {
-    // Added line - <cov_status> | <blank> | <new line number>
-    rowClass = changeType;
-    covStatusClass = 'miss'; // Let's start assuming a miss
-    if (cov) {
-      const { coverage } = cov.changes.find(lineCovInfo =>
+    // Added line - <blank> | <new line number>
+    if (coverageInfo) {
+      const { coverage } = coverageInfo.changes.find(lineCovInfo =>
         (lineCovInfo.new_line === c.ln));
+
       if (coverage === 'Y') {
-        covStatusClass = 'hit';
-      } else if (coverage === 'N') {
-        covStatusClass = 'miss';
+        rowClass = 'hit';
       } else {
-        covStatusClass = 'undefined';
+        rowClass = 'miss'; // Let's start assuming a miss
       }
     }
     newLineNumber = c.ln;
   } else if (changeType === 'del') {
-    // Removed line - <blank> | <old line number> | <blank>
-    rowClass = changeType;
+    // Removed line - <old line number> | <blank>
     oldLineNumber = c.ln;
   } else {
-    // Unchanged line - <blank> | <old line number> | <blank>
-    rowClass = changeType;
+    // Unchanged line - <old line number> | <blank>
     oldLineNumber = c.ln1;
     if (oldLineNumber !== c.ln2) {
       newLineNumber = c.ln2;
     }
   }
+
   return (
     <tr id={rowId} className={rowClass}>
-      <td className={covStatusClass}></td>
       <td className="old_line_number">{oldLineNumber}</td>
       <td className="new_line_number">{newLineNumber}</td>
       <td className="line_content">

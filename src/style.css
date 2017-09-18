@@ -29,18 +29,15 @@ td.line_content, td.new_line_number, td.old_line_number {
 .diffblock {
 	width: 100%;
 }
-/* Row */
-.add { background-color:#b6fc88; }
-.del { background-color:#f9c8c5; }
 /* Line coverage status*/
 .hit, .miss, .nocovchange {
 	width: 20px;
 }
 .hit {
-	background-color:#8ec669;
+	background-color:#b6fc88;
 }
 .miss {
-	background-color:#cc1b12;
+	background-color:#f9c8c5;
 }
 .nocovchange {
 	background-color:#fff;
