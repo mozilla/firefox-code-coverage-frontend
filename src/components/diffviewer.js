@@ -109,7 +109,13 @@ const CoverageMeta = ({ changeset, coverage }) => {
   return (
     <table>
       <tbody>
-        <tr><td><CoverageSummary coverage={coverage} /></td></tr>
+        <tr><td>
+          <span>{(coverage) ?
+            `Current coverage: ${coverage.overall_cur}` :
+            'No coverage data available.'}</span></td></tr>
+        <tr><td>
+          <span>{(coverage) ?
+            `Build changeset: ${coverage.build_changeset}` : ''}</span></td></tr>
         <tr><td><span className='error_message'>{errorMessage}</span></td></tr>
       </tbody>
     </table>
