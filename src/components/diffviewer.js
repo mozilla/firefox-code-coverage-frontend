@@ -11,6 +11,7 @@ let parse = require('parse-diff');
  */
 export class DiffViewerContainer extends Component {
   state = {
+    app_error: undefined,
     coverage: undefined,
     parsedDiff: []
   }
@@ -38,9 +39,10 @@ export class DiffViewerContainer extends Component {
 
   render() {
     const { changeset, repoName } = this.props
-    const { coverage, parsedDiff } = this.state
+    const { app_error, coverage, parsedDiff } = this.state
     return (
       <DiffViewer
+        app_error={app_error}
         repoName={repoName}
         changeset={changeset}
         coverage={coverage}
@@ -50,11 +52,11 @@ export class DiffViewerContainer extends Component {
   }
 }
 
-const DiffViewer = ({ repoName, changeset, coverage, parsedDiff }) => {
+const DiffViewer = ({ app_error, repoName, changeset, coverage, parsedDiff }) => {
   return (
     <div className="page_body codecoverage-diffviewer">
       <Link className="return-home" to="/">Return to main page</Link>
-      <DiffMeta changeset={changeset} />
+      <AppMeta app_error={app_error} changeset={changeset} />
       <CoverageMeta changeset={changeset} coverage={coverage} />
       <br />
       {parsedDiff.map(
@@ -75,13 +77,16 @@ const DiffViewer = ({ repoName, changeset, coverage, parsedDiff }) => {
   )
 }
 
-const DiffMeta = ({ changeset }) => {
+const AppMeta = ({ app_error, changeset }) => {
   const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`
+  const ccovUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`
 
   return (
     <table>
       <tbody>
+        <tr><td><span className='error_message'>{app_error}</span></td></tr>
         <tr><td>Link to <a className="hg-rev" href={hgRev}>Hg diff ({changeset})</a></td></tr>
+        <tr><td>Link to <a className="coverage-changeset-api" href={ccovUrl}>Code coverage backend</a></td></tr>
       </tbody>
     </table>
   )
@@ -89,7 +94,6 @@ const DiffMeta = ({ changeset }) => {
 
 const CoverageMeta = ({ changeset, coverage }) => {
   const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`
-  const ccovUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`
 
   let errorMessage
   if (coverage) {
@@ -105,7 +109,6 @@ const CoverageMeta = ({ changeset, coverage }) => {
   return (
     <table>
       <tbody>
-        <tr><td>Link to <a className="coverage-changeset-api" href={ccovUrl}>Code coverage backend</a></td></tr>
         <tr><td><CoverageSummary coverage={coverage} /></td></tr>
         <tr><td><span className='error_message'>{errorMessage}</span></td></tr>
       </tbody>
