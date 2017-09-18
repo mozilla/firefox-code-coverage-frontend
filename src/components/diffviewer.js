@@ -1,109 +1,101 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
-import * as FetchAPI from '../fetch_data'
+import * as FetchAPI from '../fetch_data';
 
-let parse = require('parse-diff');
+const parse = require('parse-diff');
 
 /* DiffViewer loads a raw diff from Mozilla's hg-web and code coverage from
  * shiptit-uplift to show a diff with code coverage information for added
  * lines.
  */
-export class DiffViewerContainer extends Component {
+export default class DiffViewerContainer extends Component {
   state = {
-    app_error: undefined,
+    appError: undefined,
     coverage: undefined,
     parsedDiff: []
   }
 
   componentDidMount() {
-    const { changeset } = this.props
-    const { coverage, parsedDiff } = this.state
+    const { changeset } = this.props;
 
     FetchAPI.getDiff(changeset).then(response =>
       response.text()
     ).then(text =>
-      this.setState({parsedDiff: parse(text)})
+      this.setState({ parsedDiff: parse(text) })
     ).catch(error =>
-      console.log(error)
-    )
+      this.setState({ appError: error })
+    );
 
     FetchAPI.getChangesetCoverage(changeset).then(response =>
       response.text()
-    ).then(text => {
-      this.setState({coverage: JSON.parse(text)})
-    }).catch(error =>
-      console.log(error)
-    )
+    ).then(text =>
+      this.setState({ coverage: JSON.parse(text) })
+    ).catch(error =>
+      this.setState({ appError: error })
+    );
   }
 
   render() {
-    const { changeset, repoName } = this.props
-    const { app_error, coverage, parsedDiff } = this.state
+    const { changeset } = this.props;
+    const { appError, coverage, parsedDiff } = this.state;
     return (
       <DiffViewer
-        app_error={app_error}
-        repoName={repoName}
+        appError={appError}
         changeset={changeset}
         coverage={coverage}
-        parsedDiff={parsedDiff}
-      />
-    )
+        parsedDiff={parsedDiff} />
+    );
   }
 }
 
-const DiffViewer = ({ app_error, repoName, changeset, coverage, parsedDiff }) => {
-  return (
-    <div className="page_body codecoverage-diffviewer">
-      <Link className="return-home" to="/">Return to main page</Link>
-      <AppMeta app_error={app_error} changeset={changeset} />
-      <CoverageMeta changeset={changeset} coverage={coverage} />
-      <br />
-      {parsedDiff.map(
-        (diffBlock, index) => {
-          // We only push down the subset of code coverage data
-          // applicable to a file
-          return (
-            <DiffFile
-              key={index}
-              id={index}
-              diffBlock={diffBlock}
-              coverage={coverage}
-            />
-          );
-        }
-      )}
-    </div>
-  )
-}
+const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
+  <div className="page_body codecoverage-diffviewer">
+    <Link className="return-home" to="/">Return to main page</Link>
+    <AppMeta appError={appError} changeset={changeset} />
+    <CoverageMeta changeset={changeset} coverage={coverage} />
+    <br />
+    {parsedDiff.map(
+      (diffBlock, index) =>
+        // We only push down the subset of code coverage data
+        // applicable to a file
+        (
+          <DiffFile
+            key={index}
+            id={index}
+            diffBlock={diffBlock}
+            coverage={coverage} />
+        )
+    )}
+  </div>
+);
 
-const AppMeta = ({ app_error, changeset }) => {
-  const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`
-  const ccovUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`
+const AppMeta = ({ appError, changeset }) => {
+  const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`;
+  const ccovUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`;
 
   return (
     <table>
       <tbody>
-        <tr><td><span className='error_message'>{app_error}</span></td></tr>
+        <tr><td><span className="error_message">{appError}</span></td></tr>
         <tr><td>Link to <a className="hg-rev" href={hgRev}>Hg diff ({changeset})</a></td></tr>
         <tr><td>Link to <a className="coverage-changeset-api" href={ccovUrl}>Code coverage backend</a></td></tr>
       </tbody>
     </table>
-  )
-}
+  );
+};
 
-const CoverageMeta = ({ changeset, coverage }) => {
-  const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`
+const CoverageMeta = ({ coverage }) => {
+  let errorMessage;
 
-  let errorMessage
   if (coverage) {
     if (coverage.error) {
-      errorMessage = coverage.error
+      errorMessage = coverage.error;
     } else if (!coverage.diffs) {
-      errorMessage = "This change does not have NEW LINES."
+      errorMessage = 'This change does not have NEW LINES.';
     }
   } else {
-    errorMessage = "We're waiting for coverage data from the backend."
+    errorMessage = "We're waiting for coverage data from the backend.";
   }
 
   return (
@@ -116,115 +108,104 @@ const CoverageMeta = ({ changeset, coverage }) => {
         <tr><td>
           <span>{(coverage) ?
             `Build changeset: ${coverage.build_changeset}` : ''}</span></td></tr>
-        <tr><td><span className='error_message'>{errorMessage}</span></td></tr>
+        <tr><td><span className="error_message">{errorMessage}</span></td></tr>
       </tbody>
     </table>
-  )
-}
-
-const CoverageSummary = ({ coverage }) => {
-  return (
-    <span className='filecoveragesummary'>{(coverage) ?
-      `Current coverage: ${coverage.overall_cur}` :
-      'No coverage data available.'}
-    </span>
-  )
-}
+  );
+};
 
 /* A DiffLine contains all diff changes for a specific file */
 const DiffFile = ({ coverage, diffBlock }) => {
   // We try to see if the file modified shows up in the code
   // coverage data we have for this diff
-  let coverageInfo
+  let coverageInfo;
   if (coverage) {
     coverageInfo = (coverage.diffs) ?
-      coverage.diffs.find(info => info['name'] === diffBlock.from) : undefined
+      coverage.diffs.find(info => info.name === diffBlock.from) : undefined;
   }
 
   return (
-    <div className='difffile'>
-      <div className='filesummary'>
-        <div className='filepath'>{diffBlock.from}</div>
+    <div className="'difffile'">
+      <div className="filesummary">
+        <div className="filepath">{diffBlock.from}</div>
       </div>
-      {diffBlock.chunks.map((block, index) =>
+      {diffBlock.chunks.map((block, index) => (
         <DiffBlock
           key={index}
           block={block}
-          coverageInfo={coverageInfo}
-        />
-      )}
+          coverageInfo={coverageInfo} />
+      ))}
     </div>
   );
-}
+};
 
 /* A DiffBlock is *one* of the blocks changed for a specific file */
-const DiffBlock = ({ block, coverageInfo }) => {
-  return (
-    <div className='diffblock'>
-      <div className='difflineat'>{block.content}</div>
-      <table className='diffblock'>
-        <tbody>
-          {block.changes.map((change, index) => {
-             return (
-               <DiffLine
-                 key={index}
-                 id={index}
-                 change={change}
-                 coverageInfo={coverageInfo}
-               />
-             )
-           })}
-       </tbody>
-     </table>
-    </div>
-  );
-}
+const DiffBlock = ({ block, coverageInfo }) => (
+  <div className="diffblock">
+    <div className="difflineat">{block.content}</div>
+    <table className="diffblock">
+      <tbody>
+        {block.changes.map((change, index) => (
+          <DiffLine
+            key={index}
+            id={index}
+            change={change}
+            coverageInfo={coverageInfo} />
+         ))}
+      </tbody>
+    </table>
+  </div>
+);
 
 /* A DiffLine contains metadata about a line in a DiffBlock */
 const DiffLine = ({ change, coverageInfo, id }) => {
   // Information about the line itself
-  const c = change
-  const cov = coverageInfo
+  const c = change;
+  const cov = coverageInfo;
   // Added, deleted or unchanged line
-  const changeType = change.type
+  const changeType = change.type;
   // CSS tr and td classes
-  let [rowClass, covStatusClass] = ['nolinechange', 'nocovchange']
-  const rowId = id
+  let [rowClass, covStatusClass] = ['nolinechange', 'nocovchange'];
+  const rowId = id;
   // Cell contents
-  const cov_status = ' ' // We need blank string to respect width value of cell
-  let [oldLineNumber, newLineNumber] = ['', '']
+  let [oldLineNumber, newLineNumber] = ['', ''];
 
   if (changeType === 'add') {
     // Added line - <cov_status> | <blank> | <new line number>
-    rowClass = changeType
-    covStatusClass = 'miss' // Let's start assuming a miss
+    rowClass = changeType;
+    covStatusClass = 'miss'; // Let's start assuming a miss
     if (cov) {
-      let { coverage } = cov.changes.find(line_cov_info =>
-        (line_cov_info.new_line === c.ln))
-      covStatusClass = (coverage === 'Y') ? 'hit' :
-                         (coverage === 'N') ? 'miss': 'undefined'
+      const { coverage } = cov.changes.find(lineCovInfo =>
+        (lineCovInfo.new_line === c.ln));
+      if (coverage === 'Y') {
+        covStatusClass = 'hit';
+      } else if (coverage === 'N') {
+        covStatusClass = 'miss';
+      } else {
+        covStatusClass = 'undefined';
+      }
     }
-    newLineNumber = c.ln
+    newLineNumber = c.ln;
   } else if (changeType === 'del') {
     // Removed line - <blank> | <old line number> | <blank>
-    rowClass = changeType
-    oldLineNumber = c.ln
+    rowClass = changeType;
+    oldLineNumber = c.ln;
   } else {
     // Unchanged line - <blank> | <old line number> | <blank>
-    rowClass = changeType
-    oldLineNumber = c.ln1
+    rowClass = changeType;
+    oldLineNumber = c.ln1;
     if (oldLineNumber !== c.ln2) {
-      newLineNumber = c.ln2
+      newLineNumber = c.ln2;
     }
   }
   return (
     <tr id={rowId} className={rowClass}>
       <td className={covStatusClass}></td>
-      <td className='old_line_number'>{oldLineNumber}</td>
-      <td className='new_line_number'>{newLineNumber}</td>
-      <td className='line_content'>
+      <td className="old_line_number">{oldLineNumber}</td>
+      <td className="new_line_number">{newLineNumber}</td>
+      <td className="line_content">
         <pre>{c.content}</pre>
       </td>
     </tr>
   );
-}
+};

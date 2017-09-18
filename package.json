@@ -6,10 +6,13 @@
     "yarn": ">=1.0.0"
   },
   "scripts": {
-    "start": "neutrino start --use neutrino-preset-react",
-    "build": "neutrino build --use neutrino-preset-react",
-    "prestart": "yarn add neutrino neutrino-preset-react && yarn install",
-    "heroku-prebuild": "yarn add neutrino neutrino-preset-react && yarn build"
+    "start": "neutrino start",
+    "build": "neutrino build",
+    "lint": "neutrino lint",
+    "neutrino-dependencies": "yarn add neutrino neutrino-preset-mozilla-rpweb",
+    "prestart": "yarn neutrino-dependencies && yarn install",
+    "test": "yarn lint && yarn build",
+    "heroku-prebuild": "yarn neutrino-dependencies && yarn build"
   },
   "dependencies": {
     "form-serialize": "^0.7.2",
@@ -23,6 +26,7 @@
     "babel-preset-flow": "^6.23.0",
     "flow-bin": "^0.54.1",
     "neutrino": "^6.2.0",
+    "neutrino-preset-mozilla-rpweb": "^4.2.0",
     "neutrino-preset-react": "^6.2.0"
   }
 }
