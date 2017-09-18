@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom'
 
-import { ChangesetForm } from '../components/changesetform'
 import { ChangesetsViewer } from '../components/summaryviewer'
 import { DiffViewerContainer } from '../components/diffviewer'
 import '../style.css'
@@ -23,18 +22,8 @@ export class App extends Component<Props, State> {
     const { repoName } = this.state
     return (
       <div className='app'>
-        <Route exact path="/" render={({ history }) => (
+        <Route exact path="/" render={() => (
           <div className='changesets-viewer'>
-            <ChangesetForm
-              onSubmit={(formValues) => {
-                if (formValues.changeset) {
-                  history.push('/changeset/' + formValues.changeset)
-                } else {
-                  console.log('XXX: The changeset was undefined.')
-                }
-              }}
-            />
-            <hr/>
             <ChangesetsViewer
               repoName={repoName}
             />
