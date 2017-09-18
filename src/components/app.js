@@ -20,6 +20,7 @@ export class App extends Component<Props, State> {
   }
 
   render() {
+    const { repoName } = this.state
     return (
       <div className='app'>
         <Route exact path="/" render={({ history }) => (
@@ -35,12 +36,15 @@ export class App extends Component<Props, State> {
             />
             <hr/>
             <ChangesetsViewer
-              repoName={this.state.repoName}
+              repoName={repoName}
             />
           </div>
         )}/>
         <Route path="/changeset/:id" render={({ match }) => (
-          <DiffViewerContainer changeset={match.params.id}/>
+          <DiffViewerContainer
+            changeset={match.params.id}
+            repoName={repoName}
+          />
         )}/>
       </div>
     );

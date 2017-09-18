@@ -5,10 +5,10 @@ body {
 }
 /* XXX: The lines inside of pre overrun if the window is very little */
 pre { margin: 0; }
-table, th, tr, td {
+table.diffblock, th.diffblock, tr.diffblock, td.diffblock {
 	border-collapse: collapse;
 }
-td {
+td.line_content, td.new_line_number, td.old_line_number {
 	border-right:1px solid #eaeaea;
 	color: #85878c;
 	padding: 1px;
@@ -18,9 +18,6 @@ td {
 }
 .filepath {
 	display: inline;
-}
-.filecoveragesummary {
-	float: right;
 }
 .filesummary, .diffblock, .difflineat {
 	border-bottom:1px solid #eaeaea;

@@ -37,9 +37,12 @@ export class DiffViewerContainer extends Component {
   }
 
   render() {
+    const { changeset, repoName } = this.props
     const { coverage, parsedDiff } = this.state
     return (
       <DiffViewer
+        repoName={repoName}
+        changeset={changeset}
         coverage={coverage}
         parsedDiff={parsedDiff}
       />
@@ -47,17 +50,15 @@ export class DiffViewerContainer extends Component {
   }
 }
 
-const DiffViewer = ({ coverage, parsedDiff }) => {
+const DiffViewer = ({ repoName, changeset, coverage, parsedDiff }) => {
   return (
     <div className="page_body codecoverage-diffviewer">
-      <Link className="return-home" to="/">Return main page</Link>
-      <div className='errorMessage'>{(coverage && coverage.error) && coverage.error}</div>
-      {(coverage) && parsedDiff.map(
+      <Link className="return-home" to="/">Return to main page</Link>
+      <DiffMeta changeset={changeset} />
+      <CoverageMeta changeset={changeset} coverage={coverage} />
+      <br />
+      {parsedDiff.map(
         (diffBlock, index) => {
-          // We try to see if the file modified shows up in the code
-          // coverage data we have for this diff
-          const coverageInfo = (coverage.diffs) ?
-            coverage.diffs.find(info => info['name'] === diffBlock.from) : undefined
           // We only push down the subset of code coverage data
           // applicable to a file
           return (
@@ -65,7 +66,7 @@ const DiffViewer = ({ coverage, parsedDiff }) => {
               key={index}
               id={index}
               diffBlock={diffBlock}
-              coverageInfo={coverageInfo}
+              coverage={coverage}
             />
           );
         }
@@ -74,13 +75,67 @@ const DiffViewer = ({ coverage, parsedDiff }) => {
   )
 }
 
+const DiffMeta = ({ changeset }) => {
+  const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`
+
+  return (
+    <table>
+      <tbody>
+        <tr><td>Link to <a className="hg-rev" href={hgRev}>Hg diff ({changeset})</a></td></tr>
+      </tbody>
+    </table>
+  )
+}
+
+const CoverageMeta = ({ changeset, coverage }) => {
+  const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`
+  const ccovUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`
+
+  let errorMessage
+  if (coverage) {
+    if (coverage.error) {
+      errorMessage = coverage.error
+    } else if (!coverage.diffs) {
+      errorMessage = "This change does not have NEW LINES."
+    }
+  } else {
+    errorMessage = "We're waiting for coverage data from the backend."
+  }
+
+  return (
+    <table>
+      <tbody>
+        <tr><td>Link to <a className="coverage-changeset-api" href={ccovUrl}>Code coverage backend</a></td></tr>
+        <tr><td><CoverageSummary coverage={coverage} /></td></tr>
+        <tr><td><span className='error_message'>{errorMessage}</span></td></tr>
+      </tbody>
+    </table>
+  )
+}
+
+const CoverageSummary = ({ coverage }) => {
+  return (
+    <span className='filecoveragesummary'>{(coverage) ?
+      `Current coverage: ${coverage.overall_cur}` :
+      'No coverage data available.'}
+    </span>
+  )
+}
+
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ coverageInfo, diffBlock }) => {
+const DiffFile = ({ coverage, diffBlock }) => {
+  // We try to see if the file modified shows up in the code
+  // coverage data we have for this diff
+  let coverageInfo
+  if (coverage) {
+    coverageInfo = (coverage.diffs) ?
+      coverage.diffs.find(info => info['name'] === diffBlock.from) : undefined
+  }
+
   return (
     <div className='difffile'>
       <div className='filesummary'>
         <div className='filepath'>{diffBlock.from}</div>
-        <DiffSummary summary={coverageInfo} />
       </div>
       {diffBlock.chunks.map((block, index) =>
         <DiffBlock
@@ -91,15 +146,6 @@ const DiffFile = ({ coverageInfo, diffBlock }) => {
       )}
     </div>
   );
-}
-
-const DiffSummary = (coverageSummary) => {
-  debugger
-  return (
-    <div className='filecoveragesummary'>{(coverageSummary) ?
-      coverageSummary.overall_cur : 'no summary available'}
-    </div>
-  )
 }
 
 /* A DiffBlock is *one* of the blocks changed for a specific file */
@@ -165,8 +211,8 @@ const DiffLine = ({ change, coverageInfo, id }) => {
   return (
     <tr id={rowId} className={rowClass}>
       <td className={covStatusClass}></td>
-      <td className='oldLineNumber'>{oldLineNumber}</td>
-      <td className='newLineNumber'>{newLineNumber}</td>
+      <td className='old_line_number'>{oldLineNumber}</td>
+      <td className='new_line_number'>{newLineNumber}</td>
       <td className='line_content'>
         <pre>{c.content}</pre>
       </td>
