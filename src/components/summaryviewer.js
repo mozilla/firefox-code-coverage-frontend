@@ -50,7 +50,7 @@ export default class ChangesetsViewer extends Component {
     ).then((text) => {
       const hidden = {};
       Object.keys(text.pushes).forEach((pushId) => {
-        hidden[pushId] = false;
+        hidden[pushId] = true;
       });
       this.setState({
         hiddenChangesets: hidden,
