@@ -94,14 +94,12 @@ const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
 );
 
 const CoverageMeta = ({ coverage, parsedDiff }) => {
-  if (!coverage || coverage.error || !coverage.diffs) {
-    let errorMessage;
+  let errorMessage;
+  if (!coverage || coverage.error) {
     if (!coverage) {
       errorMessage = "We're waiting for coverage data from the backend.";
     } else if (coverage.error) {
       errorMessage = coverage.error;
-    } else if (!coverage.diffs) {
-      errorMessage = 'This change does not have NEW LINES.';
     }
     return (
       <table><tbody>
@@ -112,11 +110,22 @@ const CoverageMeta = ({ coverage, parsedDiff }) => {
 
   const addedLines = parsedDiff.reduce((sum, file) => (
     sum + file.additions), 0);
-  const coveredLines = coverage.diffs.reduce((sum, file) => (
-    sum + file.changes.reduce((acumm, lineCov) => (
-      (lineCov.coverage === 'Y') ? acumm + 1 : acumm), 0)
-  ), 0);
-  const netGain = (addedLines !== 0) ? coveredLines / addedLines : 0;
+  const coveredLines = (coverage.diffs.length !== 0) ?
+    coverage.diffs.reduce((sum, file) => (
+      ('changes' in file) ?
+        sum + file.changes.reduce((acumm, lineCov) => (
+            (lineCov.coverage === 'Y') ? acumm + 1 : acumm), 0) :
+        sum), 0) : 0;
+
+  let netGain = ((addedLines !== 0) ?
+    (coveredLines / addedLines) * 100 : 0);
+  if (netGain.length > 1) {
+    netGain = netGain.toPrecision(3);
+  }
+
+  if (coverage.diffs.length === 0) {
+    errorMessage = 'This change does not have NEW LINES.';
+  }
 
   return (
     <table>
@@ -132,7 +141,7 @@ const CoverageMeta = ({ coverage, parsedDiff }) => {
         <tr><td>
           <span>{(coverage) ?
             `Build changeset: ${coverage.build_changeset}` : ''}</span></td></tr>
-
+        <tr><td><span className="error_message">{errorMessage}</span></td></tr>
       </tbody>
     </table>
   );
