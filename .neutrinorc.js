@@ -3,13 +3,8 @@ module.exports = {
     ['neutrino-preset-mozilla-rpweb', {
       eslint: {
         rules: {
-          'consistent-return': 'off',
-          'no-unused-expressions': 'off',
-          'no-shadow': 'off',
-          'no-return-assign': 'off',
-          'babel/new-cap': 'off',
-          'no-mixed-operators': 'off',
-          'array-callback-return': 'off'
+          'array-callback-return': 'off',
+          'consistent-return': 'off'
         }
       },
       react: {
