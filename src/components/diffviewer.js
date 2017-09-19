@@ -52,8 +52,8 @@ export default class DiffViewerContainer extends Component {
 const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
   <div className="page_body codecoverage-diffviewer">
     <Link className="return-home" to="/">Return to main page</Link>
-    <AppMeta appError={appError} changeset={changeset} />
-    <CoverageMeta changeset={changeset} coverage={coverage} />
+    <DiffViewerMeta appError={appError} changeset={changeset} />
+    <CoverageMeta coverage={coverage} parsedDiff={parsedDiff} />
     <br />
     {parsedDiff.map(
       (diffBlock, index) =>
@@ -70,37 +70,61 @@ const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
   </div>
 );
 
-const AppMeta = ({ appError, changeset }) => {
+const DiffViewerMeta = ({ appError, changeset }) => {
   const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`;
   const ccovUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`;
 
   return (
     <table>
       <tbody>
-        <tr><td><span className="error_message">{appError}</span></td></tr>
         <tr><td>Link to <a className="hg-rev" href={hgRev}>Hg diff ({changeset})</a></td></tr>
         <tr><td>Link to <a className="coverage-changeset-api" href={ccovUrl}>Code coverage backend</a></td></tr>
+        <tr><td><span className="error_message">{appError}</span></td></tr>
       </tbody>
     </table>
   );
 };
 
-const CoverageMeta = ({ coverage }) => {
-  let errorMessage;
+const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
+  <tr><td>
+    {`New lines coverage change: ${netGain}% / `}
+    {`Added lines: ${addedLines} / `}
+    {`Covered lines: ${coveredLines}`}
+  </td></tr>
+);
 
-  if (coverage) {
-    if (coverage.error) {
+const CoverageMeta = ({ coverage, parsedDiff }) => {
+  if (!coverage || coverage.error || !coverage.diffs) {
+    let errorMessage;
+    if (!coverage) {
+      errorMessage = "We're waiting for coverage data from the backend.";
+    } else if (coverage.error) {
       errorMessage = coverage.error;
     } else if (!coverage.diffs) {
       errorMessage = 'This change does not have NEW LINES.';
     }
-  } else {
-    errorMessage = "We're waiting for coverage data from the backend.";
+    return (
+      <table><tbody>
+        <tr><td><span className="error_message">{errorMessage}</span></td></tr>
+      </tbody></table>
+    );
   }
+
+  const addedLines = parsedDiff.reduce((sum, file) => (
+    sum + file.additions), 0);
+  const coveredLines = coverage.diffs.reduce((sum, file) => (
+    sum + file.changes.reduce((acumm, lineCov) => (
+      (lineCov.coverage === 'Y') ? acumm + 1 : acumm), 0)
+  ), 0);
+  const netGain = (addedLines !== 0) ? coveredLines / addedLines : 0;
 
   return (
     <table>
       <tbody>
+        <NetCoverage
+          addedLines={addedLines}
+          coveredLines={coveredLines}
+          netGain={netGain} />
         <tr><td>
           <span>{(coverage) ?
             `Current coverage: ${coverage.overall_cur}` :
@@ -108,7 +132,7 @@ const CoverageMeta = ({ coverage }) => {
         <tr><td>
           <span>{(coverage) ?
             `Build changeset: ${coverage.build_changeset}` : ''}</span></td></tr>
-        <tr><td><span className="error_message">{errorMessage}</span></td></tr>
+
       </tbody>
     </table>
   );
