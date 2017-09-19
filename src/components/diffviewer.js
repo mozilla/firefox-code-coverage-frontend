@@ -77,8 +77,15 @@ const DiffViewerMeta = ({ appError, changeset }) => {
   return (
     <table>
       <tbody>
-        <tr><td>Link to <a className="hg-rev" href={hgRev}>Hg diff ({changeset})</a></td></tr>
-        <tr><td>Link to <a className="coverage-changeset-api" href={ccovUrl}>Code coverage backend</a></td></tr>
+        <tr><td>Link to <a
+          className="hg-rev"
+          href={hgRev}
+          target="_blank">Hg diff ({changeset})</a>
+        </td></tr>
+        <tr><td>Link to <a
+          className="coverage-changeset-api"
+          href={ccovUrl}
+          target="_blank">Code coverage backend</a></td></tr>
         <tr><td><span className="error_message">{appError}</span></td></tr>
       </tbody>
     </table>
@@ -127,20 +134,26 @@ const CoverageMeta = ({ coverage, parsedDiff }) => {
     errorMessage = 'This change does not have NEW LINES.';
   }
 
+  const codecov = `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverage.git_build_changeset}`;
+  const gh = `https://github.com/mozilla/gecko-dev/commit/${coverage.git_build_changeset}`;
+
   return (
     <table>
       <tbody>
+        <tr><td>Link to <a
+          className="codecov"
+          href={codecov}
+          target="_blank">Codecov</a></td></tr>
+        <tr><td>Link to <a
+          className="GH"
+          href={gh}
+          target="_blank">GitHub</a></td></tr>
         <NetCoverage
           addedLines={addedLines}
           coveredLines={coveredLines}
           netGain={netGain} />
-        <tr><td>
-          <span>{(coverage) ?
-            `Current coverage: ${coverage.overall_cur}` :
-            'No coverage data available.'}</span></td></tr>
-        <tr><td>
-          <span>{(coverage) ?
-            `Build changeset: ${coverage.build_changeset}` : ''}</span></td></tr>
+        <tr><td>{`Current coverage: ${coverage.overall_cur}`}</td></tr>
+        <tr><td>{`Build changeset: ${coverage.build_changeset}`}</td></tr>
         <tr><td><span className="error_message">{errorMessage}</span></td></tr>
       </tbody>
     </table>
