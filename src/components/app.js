@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 
-import ChangesetsViewer from './summaryviewer';
+import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
 import '../style.css';
 
@@ -25,7 +25,7 @@ export default class App extends Component<Props, State> {
         <Route
           exact path="/" render={() => (
             <div className="changesets-viewer">
-              <ChangesetsViewer
+              <ChangesetsViewerContainer
                 repoName={repoName} />
             </div>
         )} />

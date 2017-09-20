@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import * as FetchAPI from '../fetch_data';
 
-function ChangesetInfo({ index, push, pushId, visibility, onClick }) {
+const ChangesetInfo = ({ index, push, pushId, visibility, onClick }) => {
   const { author, node, desc } = push.changesets[index];
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
@@ -26,16 +26,40 @@ function ChangesetInfo({ index, push, pushId, visibility, onClick }) {
       <td className="changeset-collapse">
         {(index === 0 && numChangesets > 0) ?
           <span>{numChangesets} changesets in push -&nbsp;
-            <a href="#" id={pushId} onClick={onClick}>{toggleText}</a></span>
-            :
-          <span></span>
+            <a href="#" id={pushId} onClick={onClick}>{toggleText}</a>
+          </span> : <span></span>
         }
       </td>
     </tr>
   );
-}
+};
 
-export default class ChangesetsViewer extends Component {
+const ChangesetsViewer = ({ pushes, hiddenChangesets, onClick }) => (
+  <table>
+    <tbody>
+      <tr>
+        <th>Author</th>
+        <th>Changeset</th>
+        <th>Description</th>
+        <th>Collapsed csets</th>
+      </tr>
+      {Object.keys(pushes).reverse().map((pushId) => {
+        const push = pushes[pushId];
+        return push.changesets.map((cset, index) => (
+          <ChangesetInfo
+            key={push.node}
+            index={index}
+            push={push}
+            pushId={pushId}
+            visibility={hiddenChangesets[pushId]}
+            onClick={onClick} />
+        ));
+      })}
+    </tbody>
+  </table>
+);
+
+export default class ChangesetsViewerContainer extends Component {
   state = {
     pushes: {},
     errorMessage: '',
@@ -43,23 +67,34 @@ export default class ChangesetsViewer extends Component {
   }
 
   componentDidMount() {
+    const { repoName } = this.props;
     // XXX: If the fetched data is the same as in the state do
     //      no call setSate to prevent one more render
-    FetchAPI.getJsonPushes(this.props.repoName).then(response =>
+    FetchAPI.getJsonPushes(repoName).then(response =>
       response.json()
     ).then((text) => {
       const hidden = {};
+      const hgPushes = {};
       Object.keys(text.pushes).forEach((pushId) => {
-        hidden[pushId] = true;
+        const csets = text.pushes[pushId].changesets;
+        const tipCset = csets[csets.length - 1];
+
+        if ((tipCset.author !== 'ffxbld') &&
+           (tipCset.desc.search('ack out') === -1) &&
+           (tipCset.desc.search('acked out') === -1)) {
+          hidden[pushId] = true;
+          hgPushes[pushId] = text.pushes[pushId];
+        }
       });
       this.setState({
         hiddenChangesets: hidden,
-        pushes: text.pushes
+        pushes: hgPushes
       });
     }).catch((error) => {
+      console.log(error);
       this.setState({
         pushes: [],
-        errorMessage: `We have failed to fetch pushes.\n${error}`
+        errorMessage: 'We have failed to fetch pushes.'
       });
     });
   }
@@ -76,38 +111,16 @@ export default class ChangesetsViewer extends Component {
   }
 
   render() {
-    if (this.state.errorMessage) {
-      return (<div className="errorMessage">{this.state.errorMessage}</div>);
+    const { errorMessage, pushes, hiddenChangesets } = this.state;
+    if (errorMessage) {
+      return (<div className="errorMessage">{errorMessage}</div>);
     }
 
     return (
-      <table>
-        <tbody>
-          <tr>
-            <th>Author</th>
-            <th>Changeset</th>
-            <th>Description</th>
-            <th>Collapsed csets</th>
-          </tr>
-          {Object.keys(this.state.pushes).reverse().filter((pushId) => {
-            const csets = this.state.pushes[pushId].changesets;
-            if (csets[csets.length - 1].author !== 'ffxbld') {
-              return this.state.pushes[pushId];
-            }
-          }).map((pushId) => {
-            const push = this.state.pushes[pushId];
-            return push.changesets.map((cset, index) => (
-              <ChangesetInfo
-                key={push.node}
-                index={index}
-                push={push}
-                pushId={pushId}
-                visibility={this.state.hiddenChangesets[pushId]}
-                onClick={event => this.toggleRowVisibility(event.target.id)} />
-            ));
-          })}
-        </tbody>
-      </table>
+      <ChangesetsViewer
+        pushes={pushes}
+        hiddenChangesets={hiddenChangesets}
+        onClick={event => this.toggleRowVisibility(event.target.id)} />
     );
   }
 }

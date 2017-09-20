@@ -15,7 +15,7 @@ export const getJsonPushes = repoName =>
   fetch(`${hgHost}/${repoName}/json-pushes?version=2&full=1`, { jsonHeaders });
 
 export const getChangesetCoverage = changeset =>
-fetch(`${ccovBackend}/coverage/changeset/${changeset}`, { jsonHeaders });
+  fetch(`${ccovBackend}/coverage/changeset/${changeset}`, { jsonHeaders });
 
 export const getChangesetCoverageSummary = changeset =>
-fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
+  fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
