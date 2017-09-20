@@ -92,6 +92,28 @@ const DiffViewerMeta = ({ appError, changeset }) => {
   );
 };
 
+const NetCoverageContainer = ({ coverage, parsedDiff }) => {
+  if (parsedDiff.length > 0) {
+    const addedLines = parsedDiff.reduce((sum, file) => (
+      sum + file.additions), 0);
+    const coveredLines = (coverage.diffs.length !== 0) ?
+      coverage.diffs.reduce((sum, file) => (
+        ('changes' in file) ?
+          sum + file.changes.reduce((acumm, lineCov) => (
+              (lineCov.coverage === 'Y') ? acumm + 1 : acumm), 0) :
+          sum), 0) : 0;
+
+    let netGain = ((addedLines !== 0) ?
+      (coveredLines / addedLines) * 100 : 0);
+    netGain = netGain.toPrecision(3);
+
+    return (<NetCoverage
+      addedLines={addedLines}
+      coveredLines={coveredLines}
+      netGain={netGain} />);
+  }
+};
+
 const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
   <tr><td>
     {`New lines coverage change: ${netGain}% / `}
@@ -115,21 +137,6 @@ const CoverageMeta = ({ coverage, parsedDiff }) => {
     );
   }
 
-  const addedLines = parsedDiff.reduce((sum, file) => (
-    sum + file.additions), 0);
-  const coveredLines = (coverage.diffs.length !== 0) ?
-    coverage.diffs.reduce((sum, file) => (
-      ('changes' in file) ?
-        sum + file.changes.reduce((acumm, lineCov) => (
-            (lineCov.coverage === 'Y') ? acumm + 1 : acumm), 0) :
-        sum), 0) : 0;
-
-  let netGain = ((addedLines !== 0) ?
-    (coveredLines / addedLines) * 100 : 0);
-  if (netGain.length > 1) {
-    netGain = netGain.toPrecision(3);
-  }
-
   if (coverage.diffs.length === 0) {
     errorMessage = 'This change does not have NEW LINES.';
   }
@@ -148,11 +155,11 @@ const CoverageMeta = ({ coverage, parsedDiff }) => {
           className="GH"
           href={gh}
           target="_blank">GitHub</a></td></tr>
-        <NetCoverage
-          addedLines={addedLines}
-          coveredLines={coveredLines}
-          netGain={netGain} />
-        <tr><td>{`Current coverage: ${coverage.overall_cur}`}</td></tr>
+        {(parsedDiff.length > 0 && coverage) &&
+          <NetCoverageContainer
+            coverage={coverage}
+            parsedDiff={parsedDiff} />}
+        <tr><td>{`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}</td></tr>
         <tr><td>{`Build changeset: ${coverage.build_changeset}`}</td></tr>
         <tr><td><span className="error_message">{errorMessage}</span></td></tr>
       </tbody>
