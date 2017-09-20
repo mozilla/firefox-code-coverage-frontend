@@ -230,6 +230,8 @@ const DiffLine = ({ change, coverageInfo, id }) => {
 
       if (coverage === 'Y') {
         rowClass = 'hit';
+      } else if (coverage === '?') {
+        rowClass = 'nolinechange';
       } else {
         rowClass = 'miss'; // Let's start assuming a miss
       }
