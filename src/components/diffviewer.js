@@ -23,17 +23,23 @@ export default class DiffViewerContainer extends Component {
       response.text()
     ).then(text =>
       this.setState({ parsedDiff: parse(text) })
-    ).catch(error =>
-      this.setState({ appError: error })
-    );
+    ).catch((error) => {
+      console.error(error);
+      this.setState({
+        appError: 'We did not manage to parse the diff correctly.'
+      });
+    });
 
     FetchAPI.getChangesetCoverage(changeset).then(response =>
       response.text()
     ).then(text =>
       this.setState({ coverage: JSON.parse(text) })
-    ).catch(error =>
-      this.setState({ appError: error })
-    );
+    ).catch((error) => {
+      console.error(error);
+      this.setState({
+        appError: 'There was an error fetching the code coverage data.'
+      });
+    });
   }
 
   render() {
@@ -138,7 +144,8 @@ const CoverageMeta = ({ coverage, parsedDiff }) => {
   }
 
   if (coverage.diffs.length === 0) {
-    errorMessage = 'This change does not have NEW LINES.';
+    errorMessage = `There is no code coverage for this diff
+                    or no new lines are being added to this diff.`;
   }
 
   const codecov = `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverage.git_build_changeset}`;
