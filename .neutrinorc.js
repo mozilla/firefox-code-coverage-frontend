@@ -4,7 +4,8 @@ module.exports = {
       eslint: {
         rules: {
           'array-callback-return': 'off',
-          'consistent-return': 'off'
+          'consistent-return': 'off',
+          'no-console': 'off',
         }
       },
       react: {
