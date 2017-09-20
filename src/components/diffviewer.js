@@ -59,8 +59,9 @@ export default class DiffViewerContainer extends Component {
 const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
   <div className="page_body codecoverage-diffviewer">
     <Link className="return-home" to="/">Return to main page</Link>
-    <DiffViewerMeta appError={appError} changeset={changeset} />
+    <DiffViewerMeta changeset={changeset} />
     <CoverageMeta coverage={coverage} parsedDiff={parsedDiff} />
+    <span className="error_message">{appError}</span>
     <br />
     {parsedDiff.map(
       (diffBlock, index) =>

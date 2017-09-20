@@ -2,25 +2,24 @@ import React from 'react';
 
 import * as FetchAPI from '../fetch_data';
 
-export const DiffViewerMeta = ({ appError, changeset }) => {
+export const DiffViewerMeta = ({ changeset }) => {
   const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`;
-  const ccovUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`;
+  const shipitUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`;
 
   return (
-    <table>
-      <tbody>
-        <tr><td>Link to <a
-          className="hg-rev"
-          href={hgRev}
-          target="_blank">Hg diff ({changeset})</a>
-        </td></tr>
-        <tr><td>Link to <a
-          className="coverage-changeset-api"
-          href={ccovUrl}
-          target="_blank">Code coverage backend</a></td></tr>
-        <tr><td><span className="error_message">{appError}</span></td></tr>
-      </tbody>
-    </table>
+    <div>
+      <span><b>Meta for diff ({changeset})</b></span>
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <a href={hgRev} target="_blank">Hg diff</a>&nbsp;-&nbsp;
+              <a href={shipitUrl} target="_blank">Shipit backend</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   );
 };
 
@@ -54,6 +53,26 @@ const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
   </td></tr>
 );
 
+const ParentMeta = ({ coverage }) => {
+  const pushlog = `https://hg.mozilla.org/mozilla-central/pushloghtml?changeset=${coverage.build_changeset}`;
+  const codecov = `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverage.git_build_changeset}`;
+  const gh = `https://github.com/mozilla/gecko-dev/commit/${coverage.git_build_changeset}`;
+
+  return (
+    <div>
+      <div>
+        <b>Meta for parent code coverage build ({coverage.build_changeset})</b>
+      </div>
+      <div>
+        {`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}&nbsp;-&nbsp;
+        <a href={pushlog} target="_blank">Push log</a>&nbsp;-&nbsp;
+        <a href={gh} target="_blank">GitHub</a>&nbsp;-&nbsp;
+        <a href={codecov} target="_blank">Codecov</a>
+      </div>
+    </div>
+  );
+};
+
 export const CoverageMeta = ({ coverage, parsedDiff }) => {
   let errorMessage;
   if (!coverage || coverage.error) {
@@ -63,9 +82,7 @@ export const CoverageMeta = ({ coverage, parsedDiff }) => {
       errorMessage = coverage.error;
     }
     return (
-      <table><tbody>
-        <tr><td><span className="error_message">{errorMessage}</span></td></tr>
-      </tbody></table>
+      <div className="error_message">{errorMessage}</div>
     );
   }
 
@@ -74,28 +91,14 @@ export const CoverageMeta = ({ coverage, parsedDiff }) => {
                     or no new lines are being added to this diff.`;
   }
 
-  const codecov = `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverage.git_build_changeset}`;
-  const gh = `https://github.com/mozilla/gecko-dev/commit/${coverage.git_build_changeset}`;
-
   return (
-    <table>
-      <tbody>
-        <tr><td>Link to <a
-          className="codecov"
-          href={codecov}
-          target="_blank">Codecov</a></td></tr>
-        <tr><td>Link to <a
-          className="GH"
-          href={gh}
-          target="_blank">GitHub</a></td></tr>
-        {(parsedDiff.length > 0 && coverage) &&
-          <NetCoverageContainer
-            coverage={coverage}
-            parsedDiff={parsedDiff} />}
-        <tr><td>{`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}</td></tr>
-        <tr><td>{`Build changeset: ${coverage.build_changeset}`}</td></tr>
-        <tr><td><span className="error_message">{errorMessage}</span></td></tr>
-      </tbody>
-    </table>
+    <div>
+      {(parsedDiff.length > 0 && coverage) &&
+        <NetCoverageContainer
+          coverage={coverage}
+          parsedDiff={parsedDiff} />}
+      <ParentMeta coverage={coverage} />
+      <div className="error_message">{errorMessage}</div>
+    </div>
   );
 };
