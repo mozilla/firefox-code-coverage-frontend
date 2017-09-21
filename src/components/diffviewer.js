@@ -137,7 +137,7 @@ const DiffLine = ({ change, coverageInfo, id }) => {
     // Added line - <blank> | <new line number>
     if (coverageInfo) {
       const { coverage } = coverageInfo.changes.find(lineCovInfo =>
-        (lineCovInfo.new_line === c.ln));
+        (lineCovInfo.line === c.ln));
 
       if (coverage === 'Y') {
         rowClass = 'hit';
