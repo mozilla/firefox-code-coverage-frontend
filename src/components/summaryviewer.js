@@ -5,7 +5,7 @@ import * as FetchAPI from '../fetch_data';
 
 const ChangesetInfo = ({ changeset, push, onClick }) => {
   const { author, node, desc, index, showToggle, pushId } = changeset;
-  const { hidden } = push;
+  const { hidden, linkify } = push;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
@@ -17,9 +17,9 @@ const ChangesetInfo = ({ changeset, push, onClick }) => {
       <td className="changeset-author">
         {author.substring(0, 22)}</td>
       <td className="changeset-node-id">
-        <Link to={`/changeset/${node}`}>
-          {node.substring(0, 12)}
-        </Link>
+        {(linkify) ?
+          <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
+          : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">
         {desc.substring(0, 40)}</td>
@@ -92,7 +92,8 @@ export default class ChangesetsViewerContainer extends Component {
           filteredPushes[id] = {
             numCsets: lenCsets,
             tipmost: tipmost.node,
-            hidden: false
+            hidden: false,
+            linkify: true
           };
           csets.reverse().filter(c => !ignore(c)).map((cset, position) => {
             const newCset = {
