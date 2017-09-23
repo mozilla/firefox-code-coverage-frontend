@@ -29,6 +29,10 @@ td.line_content, td.new_line_number, td.old_line_number {
 .diffblock {
 	width: 100%;
 }
+/* Diff viewer meta */
+.net-lines-coverage-change {
+	font-size: 150%;
+}
 /* Line coverage status*/
 .hit, .miss, .nocovchange {
 	width: 20px;
