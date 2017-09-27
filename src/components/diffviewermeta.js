@@ -25,8 +25,14 @@ export const DiffViewerMeta = ({ changeset }) => {
 
 const NetCoverageContainer = ({ coverage, parsedDiff }) => {
   if (parsedDiff.length > 0) {
-    const addedLines = parsedDiff.reduce((sum, file) => (
-      sum + file.additions), 0);
+    // addedLines: The total number of new executable lines
+    const addedLines = (coverage.diffs.length !== 0) ?
+      coverage.diffs.reduce((sum, file) => (
+        ('changes' in file) ?
+          sum + file.changes.reduce((acumm, lineCov) => (
+              (lineCov.coverage === 'Y' || lineCov.coverage === 'N') ? acumm + 1 : acumm), 0) :
+          sum), 0) : 0;
+    // coveredLines: The total number of new covered lines
     const coveredLines = (coverage.diffs.length !== 0) ?
       coverage.diffs.reduce((sum, file) => (
         ('changes' in file) ?
