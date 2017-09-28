@@ -33,8 +33,13 @@ td.new_line_number, td.old_line_number {
 	width: 100%;
 }
 /* Diff viewer meta */
+.diff-meta, .net-coverage-meta, .parent-meta {
+	margin-bottom: 10px;
+}
 .net-lines-coverage-change {
-	font-size: 150%;
+	font-weight: bold;
+	font-size: 14px;
+	display: block;
 }
 /* Line coverage status*/
 .hit, .miss, .nocovchange {

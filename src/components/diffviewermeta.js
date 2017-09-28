@@ -2,12 +2,12 @@ import React from 'react';
 
 import * as FetchAPI from '../fetch_data';
 
-export const DiffViewerMeta = ({ changeset }) => {
+export const DiffMeta = ({ changeset }) => {
   const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`;
   const shipitUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`;
 
   return (
-    <div>
+    <div className="diff-meta">
       <span><b>Meta for diff ({changeset})</b></span>
       <table>
         <tbody>
@@ -52,13 +52,12 @@ const NetCoverageContainer = ({ coverage, parsedDiff }) => {
 };
 
 const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
-  <tr><td>
+  <div className="net-coverage-meta">
     <span className="net-lines-coverage-change">
-        New lines coverage change: {netGain}%;
+        New lines coverage change: {netGain}%
     </span>
-    {` / Added lines: ${addedLines} / `}
-    {`Covered lines: ${coveredLines}`}
-  </td></tr>
+    {`Added lines: ${addedLines} / Covered lines: ${coveredLines}`}
+  </div>
 );
 
 const ParentMeta = ({ coverage }) => {
@@ -67,7 +66,7 @@ const ParentMeta = ({ coverage }) => {
   const gh = `https://github.com/mozilla/gecko-dev/commit/${coverage.git_build_changeset}`;
 
   return (
-    <div>
+    <div className="parent-meta">
       <div>
         <b>Meta for parent code coverage build ({coverage.build_changeset})</b>
       </div>
@@ -101,11 +100,11 @@ export const CoverageMeta = ({ coverage, parsedDiff }) => {
 
   return (
     <div>
+      <ParentMeta coverage={coverage} />
       {(parsedDiff.length > 0 && coverage) &&
         <NetCoverageContainer
           coverage={coverage}
           parsedDiff={parsedDiff} />}
-      <ParentMeta coverage={coverage} />
       <div className="error_message">{errorMessage}</div>
     </div>
   );

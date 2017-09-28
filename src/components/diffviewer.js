@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import * as FetchAPI from '../fetch_data';
-import { DiffViewerMeta, CoverageMeta } from './diffviewermeta';
+import { DiffMeta, CoverageMeta } from './diffviewermeta';
 
 const parse = require('parse-diff');
 
@@ -59,7 +59,7 @@ export default class DiffViewerContainer extends Component {
 const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
   <div className="page_body codecoverage-diffviewer">
     <Link className="return-home" to="/">Return to main page</Link>
-    <DiffViewerMeta changeset={changeset} />
+    <DiffMeta changeset={changeset} />
     <CoverageMeta coverage={coverage} parsedDiff={parsedDiff} />
     <span className="error_message">{appError}</span>
     <br />
