@@ -58,6 +58,57 @@ const ChangesetsViewer = ({ changesets, pushes, onClick }) => (
   </table>
 );
 
+const processJsonPushes = (pushes) => {
+  const ignore = (cset) => {
+    if ((cset.author.search('ffxbld') === -1) &&
+       (cset.desc.search('ack out') === -1) &&
+       (cset.desc.search('acked out') === -1)) {
+      return false;
+    }
+
+    return true;
+  };
+  // In here we're flattening the data structure
+  // We're now going to have an array of changeset
+  // and each changeset is going to have the original
+  // metadata explicitely declared
+  // This improves manipulating the data structure
+  const filteredCsets = [];
+  const filteredPushes = {};
+
+  Object.keys(pushes).reverse().forEach((id) => {
+    const push = pushes[id];
+    const csets = push.changesets;
+    const lenCsets = csets.length - 1;
+    const tipmost = csets[lenCsets];
+
+    if (!ignore(tipmost)) {
+      filteredPushes[id] = {
+        date: push.date,
+        numCsets: lenCsets,
+        tipmost: tipmost.node,
+        collapsed: false,
+        linkify: true
+      };
+      csets.reverse().filter(c => !ignore(c)).map((cset, position) => {
+        const newCset = {
+          index: position,
+          pushId: id,
+          ...cset
+        };
+        if (position === 0 && lenCsets > 1) {
+          newCset.showToggle = true;
+        }
+        filteredCsets.push(newCset);
+      });
+    }
+  });
+  return {
+    csets: filteredCsets,
+    pushList: filteredPushes
+  };
+};
+
 export default class ChangesetsViewerContainer extends Component {
   state = {
     changesets: [],
@@ -67,56 +118,15 @@ export default class ChangesetsViewerContainer extends Component {
 
   componentDidMount() {
     const { repoName } = this.props;
-    const ignore = (cset) => {
-      if ((cset.author.search('ffxbld') === -1) &&
-         (cset.desc.search('ack out') === -1) &&
-         (cset.desc.search('acked out') === -1)) {
-        return false;
-      }
-
-      return true;
-    };
 
     FetchAPI.getJsonPushes(repoName).then(response =>
       response.json()
     ).then((text) => {
-      // In here we're flattening the data structure
-      // We're now going to have an array of changeset
-      // and each changeset is going to have the original
-      // metadata explicitely declared
-      // This improves manipulating the data structure
-      const filteredCsets = [];
-      const filteredPushes = {};
-      Object.keys(text.pushes).reverse().forEach((id) => {
-        const push = text.pushes[id];
-        const csets = push.changesets;
-        const lenCsets = csets.length - 1;
-        const tipmost = csets[lenCsets];
+      const { csets, pushList } = processJsonPushes(text.pushes);
 
-        if (!ignore(tipmost)) {
-          filteredPushes[id] = {
-            date: push.date,
-            numCsets: lenCsets,
-            tipmost: tipmost.node,
-            collapsed: false,
-            linkify: true
-          };
-          csets.reverse().filter(c => !ignore(c)).map((cset, position) => {
-            const newCset = {
-              index: position,
-              pushId: id,
-              ...cset
-            };
-            if (position === 0 && lenCsets > 1) {
-              newCset.showToggle = true;
-            }
-            filteredCsets.push(newCset);
-          });
-        }
-      });
       this.setState({
-        changesets: filteredCsets,
-        pushes: filteredPushes
+        changesets: csets,
+        pushes: pushList
       });
     }).catch((error) => {
       console.log(error);
