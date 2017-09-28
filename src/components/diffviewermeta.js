@@ -53,8 +53,10 @@ const NetCoverageContainer = ({ coverage, parsedDiff }) => {
 
 const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
   <tr><td>
-    {`New lines coverage change: ${netGain}% / `}
-    {`Added lines: ${addedLines} / `}
+    <span className="net-lines-coverage-change">
+        New lines coverage change: {netGain}%;
+    </span>
+    {` / Added lines: ${addedLines} / `}
     {`Covered lines: ${coveredLines}`}
   </td></tr>
 );
