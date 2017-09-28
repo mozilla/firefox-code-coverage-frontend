@@ -13,6 +13,9 @@ td.line_content, td.new_line_number, td.old_line_number {
 	color: #85878c;
 	padding: 1px;
 }
+td.new_line_number, td.old_line_number {
+	text-align: right
+}
 .difffile {
 	border:1px solid #eaeaea;
 }
