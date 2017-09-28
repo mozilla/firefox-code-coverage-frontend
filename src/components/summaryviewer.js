@@ -6,13 +6,13 @@ import dateFromUnixTimestamp from '../utils/date';
 
 const ChangesetInfo = ({ changeset, push, onClick }) => {
   const { author, node, desc, index, showToggle, pushId } = changeset;
-  const { hidden, linkify, date } = push;
+  const { collapsed, linkify, date } = push;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
   // The tipmost changeset should always be visible
-  const changesetClass = (index !== 0 && hidden) ? 'hidden_changeset' : 'changeset';
-  const toggleText = (hidden) ? '[Expand]' : '[Collapse]';
+  const changesetClass = (index !== 0 && collapsed) ? 'collapsed_changeset' : 'changeset';
+  const toggleText = (collapsed) ? '[Expand]' : '[Collapse]';
   return (
     <tr className={changesetClass}>
       <td className="changeset-date">
@@ -98,7 +98,7 @@ export default class ChangesetsViewerContainer extends Component {
             date: push.date,
             numCsets: lenCsets,
             tipmost: tipmost.node,
-            hidden: false,
+            collapsed: false,
             linkify: true
           };
           csets.reverse().filter(c => !ignore(c)).map((cset, position) => {
@@ -137,7 +137,7 @@ export default class ChangesetsViewerContainer extends Component {
           ...push
         };
         if (pushId === id) {
-          newPushes[id].hidden = !push[id];
+          newPushes[id].collapsed = !push.collapsed;
         }
       });
       return {

@@ -58,6 +58,6 @@ td.line_content, td.new_line_number, td.old_line_number {
 	color:#ff0000
 }
 /* Changesets */
-.hidden_changeset {
+.collapsed_changeset {
 	display: none
 }
