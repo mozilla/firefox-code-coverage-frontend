@@ -60,14 +60,17 @@ const ChangesetsViewer = ({ changesets, pushes, onClick }) => (
 );
 
 const processJsonPushes = (pushes) => {
-  const ignore = (cset) => {
-    if ((cset.author.search('ffxbld') === -1) &&
-       (cset.desc.search('ack out') === -1) &&
-       (cset.desc.search('acked out') === -1)) {
-      return false;
+  const ignore = ({ desc, author }) => {
+    if (
+      (author.includes('ffxbld')) ||
+      (desc.includes('ack out')) ||
+      (desc.includes('acked out')) ||
+      (desc.includes('=merge')) ||
+      ((desc.includes('erge')) && (desc.includes('to')))) {
+      return true;
     }
 
-    return true;
+    return false;
   };
   // In here we're flattening the data structure
   // We're now going to have an array of changeset
