@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import * as FetchAPI from '../fetch_data';
+import hash from '../utils/hash';
 import { DiffMeta, CoverageMeta } from './diffviewermeta';
 
 const parse = require('parse-diff');
@@ -100,6 +101,7 @@ const DiffFile = ({ coverage, diffBlock }) => {
       {diffBlock.chunks.map(block => (
         <DiffBlock
           key={block.content}
+          filePath={diffBlock.from}
           block={block}
           coverageInfo={coverageInfo}
         />
@@ -108,20 +110,33 @@ const DiffFile = ({ coverage, diffBlock }) => {
   );
 };
 
+const uniqueLineId = (filePath, change) => {
+  let lineNumber;
+  if (change.ln) {
+    lineNumber = change.ln;
+  } else if (change.ln2) {
+    lineNumber = change.ln2;
+  } else {
+    lineNumber = change.ln1;
+  }
+  return `${hash(filePath)}-${change.type}-${lineNumber}`;
+};
+
 /* A DiffBlock is *one* of the blocks changed for a specific file */
-const DiffBlock = ({ block, coverageInfo }) => (
+const DiffBlock = ({ filePath, block, coverageInfo }) => (
   <div className="diffblock">
     <div className="difflineat">{block.content}</div>
     <table className="diffblock">
       <tbody>
-        {block.changes.map((change, index) => (
-          <DiffLine
-            key={change.content}
-            id={index}
+        {block.changes.map((change) => {
+          const uid = uniqueLineId(filePath, change);
+          return (<DiffLine
+            key={uid}
+            id={uid}
             change={change}
             coverageInfo={coverageInfo}
-          />
-        ))}
+          />);
+        })}
       </tbody>
     </table>
   </div>
