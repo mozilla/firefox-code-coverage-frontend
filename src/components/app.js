@@ -1,16 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
 import '../style.css';
-
-type Props = {};
-
-type State = {
-  repoName: string,
-};
 
 const AppDisclaimer = () => (
   <div>
@@ -32,9 +25,12 @@ const AppDisclaimer = () => (
 );
 
 // Main component
-export default class App extends Component<Props, State> {
-  state = {
-    repoName: 'mozilla-central'
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      repoName: 'mozilla-central',
+    };
   }
 
   render() {
@@ -42,19 +38,26 @@ export default class App extends Component<Props, State> {
     return (
       <div className="app">
         <Route
-          exact path="/" render={() => (
+          exact
+          path="/"
+          render={() => (
             <div className="changesets-viewer">
               <AppDisclaimer />
               <ChangesetsViewerContainer
-                repoName={repoName} />
+                repoName={repoName}
+              />
             </div>
-        )} />
+          )}
+        />
         <Route
-          path="/changeset/:id" render={({ match }) => (
+          path="/changeset/:id"
+          render={({ match }) => (
             <DiffViewerContainer
               changeset={match.params.id}
-              repoName={repoName} />
-        )} />
+              repoName={repoName}
+            />
+          )}
+        />
       </div>
     );
   }

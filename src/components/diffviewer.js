@@ -11,36 +11,41 @@ const parse = require('parse-diff');
  * lines.
  */
 export default class DiffViewerContainer extends Component {
-  state = {
-    appError: undefined,
-    coverage: undefined,
-    parsedDiff: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      appError: undefined,
+      coverage: undefined,
+      parsedDiff: [],
+    };
   }
 
   componentDidMount() {
     const { changeset } = this.props;
 
-    FetchAPI.getDiff(changeset).then(response =>
-      response.text()
-    ).then(text =>
-      this.setState({ parsedDiff: parse(text) })
-    ).catch((error) => {
-      console.error(error);
-      this.setState({
-        appError: 'We did not manage to parse the diff correctly.'
+    FetchAPI.getDiff(changeset)
+      .then(response =>
+        response.text())
+      .then(text =>
+        this.setState({ parsedDiff: parse(text) }))
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          appError: 'We did not manage to parse the diff correctly.',
+        });
       });
-    });
 
-    FetchAPI.getChangesetCoverage(changeset).then(response =>
-      response.text()
-    ).then(text =>
-      this.setState({ coverage: JSON.parse(text) })
-    ).catch((error) => {
-      console.error(error);
-      this.setState({
-        appError: 'There was an error fetching the code coverage data.'
+    FetchAPI.getChangesetCoverage(changeset)
+      .then(response =>
+        response.text())
+      .then(text =>
+        this.setState({ coverage: JSON.parse(text) }))
+      .catch((error) => {
+        console.error(error);
+        this.setState({
+          appError: 'There was an error fetching the code coverage data.',
+        });
       });
-    });
   }
 
   render() {
@@ -51,7 +56,8 @@ export default class DiffViewerContainer extends Component {
         appError={appError}
         changeset={changeset}
         coverage={coverage}
-        parsedDiff={parsedDiff} />
+        parsedDiff={parsedDiff}
+      />
     );
   }
 }
@@ -63,18 +69,16 @@ const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
     <CoverageMeta coverage={coverage} parsedDiff={parsedDiff} />
     <span className="error_message">{appError}</span>
     <br />
-    {parsedDiff.map(
-      (diffBlock, index) =>
-        // We only push down the subset of code coverage data
-        // applicable to a file
-        (
-          <DiffFile
-            key={index}
-            id={index}
-            diffBlock={diffBlock}
-            coverage={coverage} />
-        )
-    )}
+    {parsedDiff.map(diffBlock =>
+      // We only push down the subset of code coverage data
+      // applicable to a file
+      (
+        <DiffFile
+          key={diffBlock.from}
+          diffBlock={diffBlock}
+          coverage={coverage}
+        />
+      ))}
   </div>
 );
 
@@ -89,15 +93,16 @@ const DiffFile = ({ coverage, diffBlock }) => {
   }
 
   return (
-    <div className="'difffile'">
+    <div className="difffile">
       <div className="filesummary">
         <div className="filepath">{diffBlock.from}</div>
       </div>
-      {diffBlock.chunks.map((block, index) => (
+      {diffBlock.chunks.map(block => (
         <DiffBlock
-          key={index}
+          key={block.content}
           block={block}
-          coverageInfo={coverageInfo} />
+          coverageInfo={coverageInfo}
+        />
       ))}
     </div>
   );
@@ -111,11 +116,12 @@ const DiffBlock = ({ block, coverageInfo }) => (
       <tbody>
         {block.changes.map((change, index) => (
           <DiffLine
-            key={index}
+            key={change.content}
             id={index}
             change={change}
-            coverageInfo={coverageInfo} />
-         ))}
+            coverageInfo={coverageInfo}
+          />
+        ))}
       </tbody>
     </table>
   </div>

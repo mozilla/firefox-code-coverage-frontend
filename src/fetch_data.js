@@ -2,10 +2,10 @@ export const hgHost = 'https://hg.mozilla.org';
 export const ccovBackend = 'https://uplift.shipit.staging.mozilla-releng.net';
 
 const plainHeaders = {
-  Accept: 'text/plain'
+  Accept: 'text/plain',
 };
 const jsonHeaders = {
-  Accept: 'application/json'
+  Accept: 'application/json',
 };
 
 export const getDiff = changeset =>

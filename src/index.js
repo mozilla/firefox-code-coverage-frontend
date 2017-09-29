@@ -6,5 +6,5 @@ import App from './components/app';
 
 ReactDOM.render(
   <HashRouter><App /></HashRouter>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

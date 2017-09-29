@@ -29,7 +29,7 @@ const ChangesetInfo = ({ changeset, push, onClick }) => {
       <td className="changeset-collapse">
         {(showToggle) &&
           <span>{push.numCsets} changesets in push -&nbsp;
-            <a href="#" id={pushId} onClick={onClick}>{toggleText}</a>
+            <a href={`#${pushId}`} id={pushId} onClick={onClick}>{toggleText}</a>
           </span>
         }
       </td>
@@ -52,7 +52,8 @@ const ChangesetsViewer = ({ changesets, pushes, onClick }) => (
           key={cset.node}
           changeset={cset}
           push={pushes[cset.pushId]}
-          onClick={onClick} />
+          onClick={onClick}
+        />
       ))}
     </tbody>
   </table>
@@ -88,54 +89,61 @@ const processJsonPushes = (pushes) => {
         numCsets: lenCsets,
         tipmost: tipmost.node,
         collapsed: false,
-        linkify: true
+        linkify: true,
       };
-      csets.reverse().filter(c => !ignore(c)).map((cset, position) => {
-        const newCset = {
-          index: position,
-          pushId: id,
-          ...cset
-        };
-        if (position === 0 && lenCsets > 1) {
-          newCset.showToggle = true;
-        }
-        filteredCsets.push(newCset);
-      });
+      csets.reverse()
+        .filter(c => !ignore(c))
+        .map((cset, position) => {
+          const newCset = {
+            index: position,
+            pushId: id,
+            ...cset,
+          };
+          if (position === 0 && lenCsets > 1) {
+            newCset.showToggle = true;
+          }
+          filteredCsets.push(newCset);
+          return newCset;
+        });
     }
   });
   return {
     csets: filteredCsets,
-    pushList: filteredPushes
+    pushList: filteredPushes,
   };
 };
 
 export default class ChangesetsViewerContainer extends Component {
-  state = {
-    changesets: [],
-    pushes: {},
-    errorMessage: ''
+  constructor(props) {
+    super(props);
+    this.state = {
+      changesets: [],
+      pushes: {},
+      errorMessage: '',
+    };
   }
 
   componentDidMount() {
     const { repoName } = this.props;
 
-    FetchAPI.getJsonPushes(repoName).then(response =>
-      response.json()
-    ).then((text) => {
-      const { csets, pushList } = processJsonPushes(text.pushes);
+    FetchAPI.getJsonPushes(repoName)
+      .then(response =>
+        response.json(),
+      ).then((text) => {
+        const { csets, pushList } = processJsonPushes(text.pushes);
 
-      this.setState({
-        changesets: csets,
-        pushes: pushList
+        this.setState({
+          changesets: csets,
+          pushes: pushList,
+        });
+      }).catch((error) => {
+        console.log(error);
+        this.setState({
+          changesets: [],
+          pushes: {},
+          errorMessage: 'We have failed to fetch pushes.',
+        });
       });
-    }).catch((error) => {
-      console.log(error);
-      this.setState({
-        changesets: [],
-        pushes: {},
-        errorMessage: 'We have failed to fetch pushes.'
-      });
-    });
   }
 
   toggleRowVisibility(pushId) {
@@ -144,14 +152,14 @@ export default class ChangesetsViewerContainer extends Component {
       Object.keys(prevState.pushes).forEach((id) => {
         const push = prevState.pushes[id];
         newPushes[id] = {
-          ...push
+          ...push,
         };
         if (pushId === id) {
           newPushes[id].collapsed = !push.collapsed;
         }
       });
       return {
-        pushes: newPushes
+        pushes: newPushes,
       };
     });
   }
@@ -166,7 +174,8 @@ export default class ChangesetsViewerContainer extends Component {
       <ChangesetsViewer
         changesets={changesets}
         pushes={pushes}
-        onClick={event => this.toggleRowVisibility(event.target.id)} />
+        onClick={event => this.toggleRowVisibility(event.target.id)}
+      />
     );
   }
 }

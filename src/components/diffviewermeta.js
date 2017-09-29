@@ -30,14 +30,14 @@ const NetCoverageContainer = ({ coverage, parsedDiff }) => {
       coverage.diffs.reduce((sum, file) => (
         ('changes' in file) ?
           sum + file.changes.reduce((acumm, lineCov) => (
-              (lineCov.coverage === 'Y' || lineCov.coverage === 'N') ? acumm + 1 : acumm), 0) :
+            (lineCov.coverage === 'Y' || lineCov.coverage === 'N') ? acumm + 1 : acumm), 0) :
           sum), 0) : 0;
     // coveredLines: The total number of new covered lines
     const coveredLines = (coverage.diffs.length !== 0) ?
       coverage.diffs.reduce((sum, file) => (
         ('changes' in file) ?
           sum + file.changes.reduce((acumm, lineCov) => (
-              (lineCov.coverage === 'Y') ? acumm + 1 : acumm), 0) :
+            (lineCov.coverage === 'Y') ? acumm + 1 : acumm), 0) :
           sum), 0) : 0;
 
     let netGain = ((addedLines !== 0) ?
@@ -47,8 +47,10 @@ const NetCoverageContainer = ({ coverage, parsedDiff }) => {
     return (<NetCoverage
       addedLines={addedLines}
       coveredLines={coveredLines}
-      netGain={netGain} />);
+      netGain={netGain}
+    />);
   }
+  return (<div />);
 };
 
 const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
@@ -104,7 +106,8 @@ export const CoverageMeta = ({ coverage, parsedDiff }) => {
       {(parsedDiff.length > 0 && coverage) &&
         <NetCoverageContainer
           coverage={coverage}
-          parsedDiff={parsedDiff} />}
+          parsedDiff={parsedDiff}
+        />}
       <div className="error_message">{errorMessage}</div>
     </div>
   );
