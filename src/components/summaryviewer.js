@@ -2,33 +2,25 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import * as FetchAPI from '../fetch_data';
-import dateFromUnixTimestamp from '../utils/date';
 
-const ChangesetInfo = ({ changeset, push, onClick }) => {
+const ChangesetInfo = ({ changeset, push }) => {
   const hideCset = (desc) => {
     if (desc.includes('=merge') || (desc.includes('erge') && desc.includes('to'))) {
       return true;
     }
     return false;
   };
-  const { author, node, desc, index, showToggle, pushId } = changeset;
-  const { collapsed, linkify, date, summary } = push;
+  const { author, node, desc, index, showInfo } = changeset;
+  const { linkify, summary } = push;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
-  // The tipmost changeset should always be visible
-  let changesetClass;
-  // XXX: For now do not hide timpost changesets
-  if (index !== 0 && hideCset(desc)) {
-    changesetClass = 'collapsed_changeset';
-  } else {
-    changesetClass = (index !== 0 && collapsed) ? 'collapsed_changeset' : 'changeset';
-  }
-  const toggleText = (collapsed) ? '[Expand]' : '[Collapse]';
+  // XXX: For now, the tipmost changeset should always be visible
+  const changesetClass = (index !== 0 && hideCset(desc)) ?
+    'hidden_changeset' :
+    'changeset';
   return (
     <tr className={changesetClass}>
-      <td className="changeset-date">
-        {(date && index === 0) && <span>{dateFromUnixTimestamp(date)}</span>}</td>
       <td className="changeset-author">
         {author.substring(0, 22)}</td>
       <td className="changeset-node-id">
@@ -38,18 +30,11 @@ const ChangesetInfo = ({ changeset, push, onClick }) => {
       </td>
       <td className="changeset-description">
         {desc.substring(0, 40)}</td>
-      <td className="changeset-collapse">
-        {(showToggle) &&
-          <span>{push.numCsets} changesets in push -&nbsp;
-            <a href={`#${pushId}`} id={pushId} onClick={onClick}>{toggleText}</a>
-          </span>
-        }
-      </td>
-      <td className="push-coverage-summary">
-        {(summary && index === 0 && summary.error) &&
+      <td className="changeset-info">
+        {(summary && showInfo && summary.error) &&
           <span>{summary.error}</span>
         }
-        {(summary && index === 0 && summary.overall_cur) &&
+        {(summary && showInfo && summary.overall_cur) &&
           <span>{summary.overall_cur}</span>
         }
       </td>
@@ -61,11 +46,9 @@ const ChangesetsViewer = ({ changesets, pushes, onClick }) => (
   <table>
     <tbody>
       <tr>
-        <th>Push date</th>
         <th>Author</th>
         <th>Changeset</th>
         <th>Description</th>
-        <th>Collapsed csets</th>
         <th>Coverage summary</th>
       </tr>
       {changesets.map(cset => (
@@ -110,7 +93,6 @@ const processJsonPushes = (pushes) => {
         date: push.date,
         numCsets: lenCsets,
         tipmost: tipmost.node,
-        collapsed: true,
         linkify: false,
       };
       csets.reverse()
@@ -122,7 +104,7 @@ const processJsonPushes = (pushes) => {
             ...cset,
           };
           if (position === 0 && lenCsets > 1) {
-            newCset.showToggle = true;
+            newCset.showInfo = true;
           }
           filteredCsets.push(newCset);
           return newCset;
@@ -172,7 +154,6 @@ const getSummaries = async (pushIds, pushes) => {
       if (ccSum.overall_cur) {
         // We have coverage data, thus, adding links to the coverage diff viewer
         processedPushes[pushId].linkify = true;
-        processedPushes[pushId].collapsed = false;
       }
     } else {
       processedPushes[pushId].summary = {
@@ -239,24 +220,6 @@ export default class ChangesetsViewerContainer extends Component {
       });
   }
 
-  toggleRowVisibility(pushId) {
-    this.setState((prevState) => {
-      const newPushes = [];
-      Object.keys(prevState.pushes).forEach((id) => {
-        const push = prevState.pushes[id];
-        newPushes[id] = {
-          ...push,
-        };
-        if (pushId === id) {
-          newPushes[id].collapsed = !push.collapsed;
-        }
-      });
-      return {
-        pushes: newPushes,
-      };
-    });
-  }
-
   render() {
     const { errorMessage, changesets, pushes } = this.state;
     if (errorMessage) {
@@ -267,7 +230,6 @@ export default class ChangesetsViewerContainer extends Component {
       <ChangesetsViewer
         changesets={changesets}
         pushes={pushes}
-        onClick={event => this.toggleRowVisibility(event.target.id)}
       />
     );
   }
