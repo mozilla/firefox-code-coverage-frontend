@@ -3,6 +3,8 @@ import { Route } from 'react-router-dom';
 
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
+import FileViewerContainer from './fileviewer';
+
 import '../style.css';
 
 const AppDisclaimer = () => (
@@ -55,6 +57,16 @@ export default class App extends Component {
             <DiffViewerContainer
               changeset={match.params.id}
               repoName={repoName}
+            />
+          )}
+        />
+        <Route
+          path="/revision/:id/:path"
+          render={({ match }) => (
+            <FileViewerContainer
+              revision={match.params.id}
+              path={match.params.path}
+              repoName = {repoName}
             />
           )}
         />
