@@ -61,12 +61,12 @@ export default class App extends Component {
           )}
         />
         <Route
-          path="/revision/:id/:path"
+          path="/changeset/:id/:path"
           render={({ match }) => (
             <FileViewerContainer
-              revision={match.params.id}
+              changeset={match.params.id}
               path={match.params.path}
-              repoName = {repoName}
+              repoName={repoName}
             />
           )}
         />
