@@ -19,4 +19,3 @@ export const getChangesetCoverage = changeset =>
 
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
-
