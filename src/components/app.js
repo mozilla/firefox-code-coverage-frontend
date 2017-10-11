@@ -58,6 +58,16 @@ export default class App extends Component {
             />
           )}
         />
+        <Route
+          path="/revision/:id/:path"
+          render={({ match }) => (
+            <FileViewerContainer
+              revision={match.params.id}
+              path={match.params.path}
+              repoName = {repoName}
+            />
+          )}
+        />
       </div>
     );
   }
