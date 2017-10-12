@@ -1,5 +1,8 @@
+import * as Query from './queries';
+
 export const hgHost = 'https://hg.mozilla.org';
 export const ccovBackend = 'https://uplift.shipit.staging.mozilla-releng.net';
+export const activeData = 'http://activedata.allizom.org/query'
 
 const plainHeaders = {
   Accept: 'text/plain',
@@ -19,3 +22,6 @@ export const getChangesetCoverage = changeset =>
 
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
+
+export const getRevisionNumbers = () =>
+  fetch(activeData, { jsonHeaders, method: "POST", body: JSON.stringify(Query.getRevisions) });
