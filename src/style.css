@@ -3,6 +3,16 @@ body {
 	font-size: 12px;
 	margin:20px;
 }
+.changesets-viewer {
+	position: absolute;
+	left: 280px;
+}
+/* revision viewer sidebar */
+.revision-sidebar {
+	position: absolute;
+	width: 200px;
+	border-right: 1px solid;
+}
 /* XXX: The lines inside of pre overrun if the window is very little */
 pre { margin: 0; }
 table.diffblock, th.diffblock, tr.diffblock, td.diffblock {

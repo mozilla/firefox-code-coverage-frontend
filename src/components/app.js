@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
+import RevisionSidebar from './revisionsviewer'
 import '../style.css';
 
 const AppDisclaimer = () => (
@@ -41,11 +42,14 @@ export default class App extends Component {
           exact
           path="/"
           render={() => (
-            <div className="changesets-viewer">
-              <AppDisclaimer />
-              <ChangesetsViewerContainer
-                repoName={repoName}
-              />
+            <div>
+              <RevisionSidebar />
+              <div className="changesets-viewer">
+                <AppDisclaimer />
+                <ChangesetsViewerContainer
+                  repoName={repoName}
+                />
+              </div>
             </div>
           )}
         />
