@@ -19,3 +19,7 @@ export const getChangesetCoverage = changeset =>
 
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
+
+// raw-file fetcher (fileviewer)
+export const getRawFile = (revision, path) =>
+  fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders });
