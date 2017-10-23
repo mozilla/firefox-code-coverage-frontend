@@ -13,7 +13,9 @@ export default class FileViewerContainer extends Component {
       appError: undefined,
       parsedFile: [],
     };
+  };
 
+  componentDidMount() {
     const { revision, path } = this.props;
     FetchAPI.getRawFile(revision, path)
       .then(response => {
@@ -22,33 +24,32 @@ export default class FileViewerContainer extends Component {
           return;
         }
         response.text()
-        .then((text) => this.setState(() => ({ parsedFile: text.split("\n") })))
-        .catch((error) => {
-          console.error(error);
-          this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
-        });
+      .then((text) => this.setState(() => ({ parsedFile: text.split("\n") })))
+      .catch((error) => {
+        console.error(error);
+        this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
       });
-  }
+    });
+  };
 
   render() {
-    // console.log(this.props);
     const { revision, path } = this.props;
     return (
       <div>
-        <FileViewerMeta revision={revision} path={path}/>
+        <FileViewerMeta revision={revision} path={path} />
         <FileViewer parsedFile={this.state.parsedFile} />
       </div>
     );
-  }
+  };
 }
 
-/* This viewer renders each line of the file with its line number */
-const FileViewer = (props) => {
+/* This component renders each line of the file with its line number */
+const FileViewer = ({ parsedFile }) => {
   return ( 
     <div>
       <table>
         { 
-          props.parsedFile.map((line, lineNumber) => (
+          parsedFile.map((line, lineNumber) => (
             <Line 
               key={lineNumber}
               lineNumber={lineNumber+1}
@@ -61,22 +62,22 @@ const FileViewer = (props) => {
   );
 };
 
-const Line = (props) => {
+const Line = ({ key, lineNumber, lineText }) => {
   return (
     <div>
       <tr>
-        <td width="40">{props.lineNumber}</td>
-        <td><pre>{props.lineText}</pre></td>
+        <td width="40">{lineNumber}</td>
+        <td><pre>{lineText}</pre></td>
       </tr>
     </div>
   );
 };
 
-/* This view contains meta data of the file */
+/* This component contains metadata of the file */
 const FileViewerMeta = ({ revision, path }) => {
   return (
-    <h4>
-      Revision number: {revision} <br/> Path: {path}
-    </h4>
+    <div>
+      <h4>Revision number: {revision} <br/> Path: {path}</h4>
+    </div>
   );
 };
