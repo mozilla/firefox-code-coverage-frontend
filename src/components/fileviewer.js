@@ -12,6 +12,7 @@ export default class FileViewerContainer extends Component {
     this.state = {
       appError: undefined,
       parsedFile: [],
+      coverage: undefined
     };
   };
 
@@ -36,7 +37,12 @@ export default class FileViewerContainer extends Component {
     const { revision, path } = this.props;
     return (
       <div>
-        <FileViewerMeta revision={revision} path={path} />
+        <FileViewerMeta 
+          revision={revision} 
+          path={path} 
+          appError={this.state.appError}
+        />
+        {this.state.coverage}
         <FileViewer parsedFile={this.state.parsedFile} />
       </div>
     );
@@ -66,7 +72,7 @@ const Line = ({ key, lineNumber, lineText }) => {
   return (
     <div>
       <tr>
-        <td width="40">{lineNumber}</td>
+        <td className="file_line_number">{lineNumber}</td>
         <td><pre>{lineText}</pre></td>
       </tr>
     </div>
@@ -74,9 +80,10 @@ const Line = ({ key, lineNumber, lineText }) => {
 };
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path }) => {
+const FileViewerMeta = ({ revision, path, appError }) => {
   return (
     <div>
+      {appError && <span className="error_message">{appError}</span>}
       <h4>Revision number: {revision} <br/> Path: {path}</h4>
     </div>
   );

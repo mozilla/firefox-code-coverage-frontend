@@ -69,3 +69,11 @@ td.new_line_number, td.old_line_number {
 .hidden_changeset {
 	display: none
 }
+
+/* Styling for file view. TODO merge with app. */
+.file_line_number {
+	width: 40px;
+	border-right:1px solid #eaeaea;
+	color: #85878c;
+	padding: 1px;
+}
