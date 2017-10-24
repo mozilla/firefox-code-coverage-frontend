@@ -28,6 +28,9 @@ export const getChangesetCoverageSummary = changeset =>
 export const getRawFile = (revision, path) =>
   fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders });
 
+// Taken from https://github.com/mozilla/moz-coco/blob/master/src/client/Client.js
+// On October 23, 2017
+// Under the MPL License
 export const getFileRevisionCoverage = (revision, path, callback) => {
   const body = Query.testCoverage(revision, path);
   const jsonbody = JSON.stringify(body);
@@ -63,10 +66,3 @@ export const getFileRevisionCoverage = (revision, path, callback) => {
     callback(JSON.parse(body));
   }).catch((err) => console.log(`Exception in fetch_data.js: ${err}`));
 }
-
-// export const getFileRevisionCoverage = (revision, path) => {
-//   return fetch(`${activeData}/query`, {
-//     method: 'POST',
-//     body: JSON.stringify(Query.testCoverage(revision, path))
-//   });
-// }

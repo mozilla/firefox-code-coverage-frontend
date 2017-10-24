@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 
 import * as FetchAPI from '../fetch_data';
 
-import * as Query from '../query';
-const https = require('https');
-
 /* FileViewer loads a raw file for a given revision from Mozilla's hg web.
  * It uses test coverage information from Active Data to show coverage
  * for runnable lines.
