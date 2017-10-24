@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 
 import * as FetchAPI from '../fetch_data';
 
+import * as Query from '../query';
+const https = require('https');
+
 /* FileViewer loads a raw file for a given revision from Mozilla's hg web.
  * It uses test coverage information from Active Data to show coverage
  * for runnable lines.
@@ -11,13 +14,14 @@ export default class FileViewerContainer extends Component {
     super(props);
     this.state = {
       appError: undefined,
+      coverage: undefined,
       parsedFile: [],
-      coverage: undefined
     };
   };
 
   componentDidMount() {
     const { revision, path } = this.props;
+
     FetchAPI.getRawFile(revision, path)
       .then(response => {
         if (response.status !== 200) {
@@ -31,6 +35,17 @@ export default class FileViewerContainer extends Component {
         this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
       });
     });
+
+    FetchAPI.getFileRevisionCoverage(revision, path,
+      (data) => {
+        console.log(data);
+        this.setState(() => ({ coverage: data }));
+        // TODO remove these log lines
+        console.log(this.state.coverage.data[0][0].source.file.covered);
+        console.log(this.state.coverage.data[0][0].source.file.uncovered);
+        console.log(this.state.coverage.data[0][0].source.file.percentage_covered);
+      }
+    )
   };
 
   render() {
@@ -42,40 +57,42 @@ export default class FileViewerContainer extends Component {
           path={path} 
           appError={this.state.appError}
         />
-        {this.state.coverage}
-        <FileViewer parsedFile={this.state.parsedFile} />
+        <FileViewer 
+          parsedFile={this.state.parsedFile} 
+          coverage={this.state.coverage}
+        />
       </div>
     );
   };
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile }) => {
+const FileViewer = ({ parsedFile, coverage }) => {
   return ( 
     <div>
       <table>
-        { 
-          parsedFile.map((line, lineNumber) => (
-            <Line 
-              key={lineNumber}
-              lineNumber={lineNumber+1}
-              lineText={line}
-            />
-          ))
-        }
+        <tbody>
+          { 
+            parsedFile.map((line, lineNumber) => (
+              <Line 
+                key={lineNumber}
+                lineNumber={lineNumber+1}
+                lineText={line}
+              />
+            ))
+          }
+        </tbody>
       </table>
     </div>
   );
 };
 
-const Line = ({ key, lineNumber, lineText }) => {
+const Line = (props) => {
   return (
-    <div>
       <tr>
-        <td className="file_line_number">{lineNumber}</td>
-        <td><pre>{lineText}</pre></td>
+        <td className="file_line_number">{props.lineNumber}</td>
+        <td><pre>{props.lineText}</pre></td>
       </tr>
-    </div>
   );
 };
 

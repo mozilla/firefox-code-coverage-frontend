@@ -1,5 +1,9 @@
+import * as Query from './query';
+const https = require('https');
+
 export const hgHost = 'https://hg.mozilla.org';
 export const ccovBackend = 'https://uplift.shipit.staging.mozilla-releng.net';
+export const activeData = 'activedata.allizom.org';
 
 const plainHeaders = {
   Accept: 'text/plain',
@@ -23,3 +27,46 @@ export const getChangesetCoverageSummary = changeset =>
 // raw-file fetcher (fileviewer)
 export const getRawFile = (revision, path) =>
   fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders });
+
+export const getFileRevisionCoverage = (revision, path, callback) => {
+  const body = Query.testCoverage(revision, path);
+  const jsonbody = JSON.stringify(body);
+  const options = {
+    hostname: `${activeData}`,
+    port: 443,
+    path: '/query',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/plain',
+      'Content-Length': Buffer.byteLength(jsonbody)
+    }
+  }
+  console.log("Query sent: " + jsonbody);
+  const respchunks = [];
+  const p = new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      res.setEncoding('utf8');
+      res.on('data', (chunk) => {
+        respchunks.push(new Buffer(chunk));
+      });
+      res.on('end', (chunk) => {
+        resolve(Buffer.concat(respchunks).toString('utf8'));
+      });
+      res.on('error', (e) => {
+        reject(e);
+      });
+    });
+    req.write(jsonbody);
+    req.end();
+  });
+  p.then((body) => {
+    callback(JSON.parse(body));
+  }).catch((err) => console.log(`Exception in fetch_data.js: ${err}`));
+}
+
+// export const getFileRevisionCoverage = (revision, path) => {
+//   return fetch(`${activeData}/query`, {
+//     method: 'POST',
+//     body: JSON.stringify(Query.testCoverage(revision, path))
+//   });
+// }
