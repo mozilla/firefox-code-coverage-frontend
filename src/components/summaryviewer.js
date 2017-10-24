@@ -4,27 +4,17 @@ import { Link } from 'react-router-dom';
 import * as FetchAPI from '../fetch_data';
 
 const ChangesetInfo = ({ changeset, push }) => {
-  const hideCset = (desc) => {
-    if (desc.includes('=merge') || (desc.includes('erge') && desc.includes('to'))) {
-      return true;
-    }
-    return false;
-  };
-  const { author, node, desc, index, showInfo } = changeset;
+  const { author, node, desc, showInfo } = changeset;
   const { linkify, summary } = push;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
-  // XXX: For now, the tipmost changeset should always be visible
-  const changesetClass = (index !== 0 && hideCset(desc)) ?
-    'hidden_changeset' :
-    'changeset';
   return (
-    <tr className={changesetClass}>
+    <tr className="changeset">
       <td className="changeset-author">
         {author.substring(0, 22)}</td>
       <td className="changeset-node-id">
-        {(linkify && index !== 0) ?
+        {(linkify) ?
           <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
           : <span>{node.substring(0, 12)}</span>}
       </td>
@@ -67,6 +57,8 @@ const processJsonPushes = (pushes) => {
   const ignore = ({ desc, author }) => {
     if (
       (author.includes('ffxbld')) ||
+      (desc.includes('a=merge') && desc.includes('r=merge')) ||
+      (desc.includes('erge') && (desc.includes('to'))) ||
       (desc.includes('ack out')) ||
       (desc.includes('acked out'))) {
       return true;
@@ -82,33 +74,36 @@ const processJsonPushes = (pushes) => {
   const filteredCsets = [];
   const filteredPushes = {};
 
+  // Populate filteredPushes and filteredChangesets
   Object.keys(pushes).reverse().forEach((id) => {
     const push = pushes[id];
-    const csets = push.changesets;
+    // Re-order csets and filter out those we don't want
+    const csets = push.changesets.reverse().filter(c => !ignore(c));
     const lenCsets = csets.length - 1;
-    const tipmost = csets[lenCsets];
 
-    if (lenCsets > 1 || !ignore(tipmost)) {
+    if (lenCsets >= 1) {
+      // The firstcset changeset expected not to be a merge one
+      // Using firstcset terminology instead of tipmost to clarify
+      // that it does not necessarily have to be the original tipmost
+      // of a push
+      const firstcset = csets[lenCsets];
       filteredPushes[id] = {
         date: push.date,
         numCsets: lenCsets,
-        tipmost: tipmost.node,
+        firstcset: firstcset.node,
         linkify: false,
       };
-      csets.reverse()
-        .filter(c => !ignore(c))
-        .map((cset, position) => {
-          const newCset = {
-            index: position,
-            pushId: id,
-            ...cset,
-          };
-          if (position === 0 && lenCsets > 1) {
-            newCset.showInfo = true;
-          }
-          filteredCsets.push(newCset);
-          return newCset;
-        });
+      csets.map((cset, position) => {
+        const newCset = {
+          pushId: id,
+          ...cset,
+        };
+        if (position === 0 && lenCsets > 1) {
+          newCset.showInfo = true;
+        }
+        filteredCsets.push(newCset);
+        return newCset;
+      });
     }
   });
   return {
@@ -136,13 +131,13 @@ const getSummaries = async (pushIds, pushes) => {
   };
 
   try {
-    console.log(`About to fetch ${pushId} (${push.tipmost})`);
+    console.log(`About to fetch ${pushId} (${push.firstcset})`);
     // XXX: fetch does not support timeouts. I would like to add a 5 second
     // timeout rather than wait Heroku's default 30 second timeout. Specially
     // since we're doing sequential fetches.
     // XXX: Wrap fetch() in a Promise; add a setTimeout and call reject() if
     // it goes off, otherwise resolve with the result of the fetch()
-    const res = await FetchAPI.getChangesetCoverage(push.tipmost);
+    const res = await FetchAPI.getChangesetCoverage(push.firstcset);
     if (res.status === 202) {
       processedPushes[pushId].summary = {
         error: 'Pending',
