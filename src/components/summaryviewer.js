@@ -4,13 +4,16 @@ import { Link } from 'react-router-dom';
 import * as FetchAPI from '../fetch_data';
 
 const ChangesetInfo = ({ changeset, push }) => {
-  const { author, node, desc, showInfo } = changeset;
-  const { linkify, summary } = push;
+  const { author, desc, node, showInfo } = changeset;
+  const { linkify, hidden, summary } = push;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
+  const changesetClass = (hidden) ?
+    'hidden_changeset' :
+    'changeset';
   return (
-    <tr className="changeset">
+    <tr className={changesetClass}>
       <td className="changeset-author">
         {author.substring(0, 22)}</td>
       <td className="changeset-node-id">
@@ -91,6 +94,7 @@ const processJsonPushes = (pushes) => {
         date: push.date,
         numCsets: lenCsets,
         firstcset: firstcset.node,
+        hidden: true,
         linkify: false,
       };
       csets.map((cset, position) => {
@@ -145,6 +149,7 @@ const getSummaries = async (pushIds, pushes) => {
     } else if (res.status === 200) {
       const ccSum = await res.json();
       processedPushes[pushId].summary = ccSum;
+      processedPushes[pushId].hidden = false;
 
       if (ccSum.overall_cur) {
         // We have coverage data, thus, adding links to the coverage diff viewer
