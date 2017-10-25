@@ -186,38 +186,40 @@ export default class ChangesetsViewerContainer extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { repoName } = this.props;
+    this.fetchPushes(repoName);
+  }
 
-    FetchAPI.getJsonPushes(repoName)
-      .then(response =>
-        response.json(),
-      ).then(async (text) => {
-        const { csets, pushList } = processJsonPushes(text.pushes);
+  async fetchPushes(repoName) {
+    try {
+      const text = await (await FetchAPI.getJsonPushes(repoName)).json();
+      const { csets, pushList } = processJsonPushes(text.pushes);
 
+      try {
+        // Ordered from oldest to most recent
+        const pushIds = Object.keys(pushList).reverse();
+        const newPushes = await getSummaries(pushIds, pushList);
+        this.setState({
+          changesets: csets,
+          pushes: newPushes,
+        });
+      } catch (e) {
+        console.log(e);
         this.setState({
           changesets: csets,
           pushes: pushList,
+          errorMessage: 'We have failed to fetch coverage data.',
         });
-
-        try {
-          // Ordered from lowest to higher
-          const pushIds = Object.keys(pushList).reverse();
-          const newPushes = await getSummaries(pushIds, pushList);
-          this.setState({
-            pushes: newPushes,
-          });
-        } catch (e) {
-          console.log(e);
-        }
-      }).catch((error) => {
-        console.log(error);
-        this.setState({
-          changesets: [],
-          pushes: {},
-          errorMessage: 'We have failed to fetch pushes.',
-        });
+      }
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        changesets: [],
+        pushes: {},
+        errorMessage: 'We have failed to fetch pushes.',
       });
+    }
   }
 
   render() {
