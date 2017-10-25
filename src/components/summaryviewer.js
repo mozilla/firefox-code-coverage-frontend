@@ -31,7 +31,7 @@ const ChangesetInfo = ({ changeset }) => {
   );
 };
 
-const ChangesetsViewer = ({ changesets, onClick }) => (
+const ChangesetsViewer = ({ changesets }) => (
   <table>
     <tbody>
       <tr>
@@ -40,18 +40,62 @@ const ChangesetsViewer = ({ changesets, onClick }) => (
         <th>Description</th>
         <th>Coverage summary</th>
       </tr>
-      {changesets.map(cset => ((cset) &&
+      {Object.keys(changesets).map(node => (
         <ChangesetInfo
-          key={cset.node}
-          changeset={cset}
-          onClick={onClick}
+          key={node}
+          changeset={changesets[node]}
         />
       ))}
     </tbody>
   </table>
 );
 
-const processJsonPushes = (pushes) => {
+const arrayToMap = (csets) => {
+  const newCsets = {};
+  csets.forEach((cset) => {
+    newCsets[cset.node] = cset;
+  });
+  return newCsets;
+};
+
+const csetWithCcovData = async (cset) => {
+  const newCset = Object.assign({}, cset);
+  if (!cset.node) {
+    throw Error(`No node for cset: ${cset}`);
+  }
+  // XXX: fetch does not support timeouts. I would like to add a 5 second
+  // timeout rather than wait Heroku's default 30 second timeout. Specially
+  // since we're doing sequential fetches.
+  // XXX: Wrap fetch() in a Promise; add a setTimeout and call reject() if
+  // it goes off, otherwise resolve with the result of the fetch()
+  try {
+    const res = await FetchAPI.getChangesetCoverage(cset.node);
+    if (res.status === 202) {
+      // XXX: We should retry few times before giving up
+      newCset.summary = { error: 'Pending' };
+    } else if (res.status === 200) {
+      const ccSum = await res.json();
+      newCset.summary = ccSum;
+
+      // XXX: Document in which cases we would not have overall_cur
+      if (ccSum.overall_cur) {
+        // We have coverage data, thus, adding links to the coverage diff viewer
+        // and unhiding the csets
+        newCset.linkify = true;
+        newCset.hidden = false;
+      }
+    } else {
+      newCset.summary = { error: res.statusText };
+    }
+    return newCset;
+  } catch (e) {
+    console.log(`Failed to fetch data for ${cset}`);
+    return cset;
+  }
+};
+
+// Return list of changesets
+const pushesToCsets = async (pushes, hiddenDefault) => {
   const ignore = ({ desc, author }) => {
     if (
       (author.includes('ffxbld')) ||
@@ -64,152 +108,62 @@ const processJsonPushes = (pushes) => {
 
     return false;
   };
-  // In here we're flattening the data structure
-  // We're now going to have an array of changeset
-  // and each changeset is going to have the original
-  // metadata explicitely declared
-  // This improves manipulating the data structure
   const filteredCsets = [];
-  const filteredPushes = {};
-
-  // Populate filteredPushes and filteredChangesets
   Object.keys(pushes).reverse().forEach((id) => {
-    const push = pushes[id];
     // Re-order csets and filter out those we don't want
-    const csets = push.changesets.reverse().filter(c => !ignore(c));
-    const lenCsets = csets.length - 1;
+    const csets = pushes[id].changesets.reverse().filter(c => !ignore(c));
+    const lenCsets = csets.length;
 
     if (lenCsets >= 1) {
-      // The firstcset changeset expected not to be a merge one
-      // Using firstcset terminology instead of tipmost to clarify
-      // that it does not necessarily have to be the original tipmost
-      // of a push
-      filteredPushes[id] = {
-        date: push.date,
-      };
-      csets.map((cset) => {
+      csets.forEach((cset) => {
         const newCset = {
           pushId: id,
-          hidden: true,
+          hidden: hiddenDefault,
           linkify: false,
           ...cset,
         };
         filteredCsets.push(newCset);
-        return newCset;
       });
     }
   });
-  return {
-    csets: filteredCsets,
-    pushList: filteredPushes,
-  };
-};
-
-const csetWithCcovData = async (cset) => {
-  const newCset = Object.assign({}, cset);
-  // XXX: fetch does not support timeouts. I would like to add a 5 second
-  // timeout rather than wait Heroku's default 30 second timeout. Specially
-  // since we're doing sequential fetches.
-  // XXX: Wrap fetch() in a Promise; add a setTimeout and call reject() if
-  // it goes off, otherwise resolve with the result of the fetch()
-  const res = await FetchAPI.getChangesetCoverage(cset.node);
-  if (res.status === 202) {
-    // XXX: We should retry few times before giving up
-    newCset.summary = { error: 'Pending' };
-  } else if (res.status === 200) {
-    const ccSum = await res.json();
-    newCset.summary = ccSum;
-
-    // XXX: Document in which cases we would not have overall_cur
-    if (ccSum.overall_cur) {
-      // We have coverage data, thus, adding links to the coverage diff viewer
-      // and unhiding the csets associated to this push
-      newCset.linkify = true;
-      newCset.hidden = false;
-    }
-  } else {
-    newCset.summary = { error: res.statusText };
-  }
-  return newCset;
-};
-
-// Return list of csets with coverage data if available
-const addSummariesToCsets = async (csets) => {
-  console.log(csets.length);
-  let newCsets = [];
-  try {
-    const firstCset = csets[0];
-    console.log(`About to fetch ${firstCset.pushId} (${firstCset.node})`);
-    const newCset = await csetWithCcovData(firstCset);
-    newCsets = [newCset];
-    if (newCset.linkify) {
-      newCsets = newCsets.concat(await Promise.all(csets
-        .filter(cset =>
-          cset.node !== firstCset.node)
-        .map(async cset =>
-          (csetWithCcovData(cset)))));
-    }
-  } catch (e) {
-    console.log(e);
-    newCsets = csets;
-  }
+  // Separating into two blocks makes it easier to code
+  const newCsets = await Promise.all(filteredCsets
+    .map(async cset => csetWithCcovData(cset)));
   return newCsets;
-};
-
-// Return a new object of csets but with their coverage data.
-const csetsWithCoverage = async (csets, pushes) => {
-  try {
-    return (
-      await Promise.all(
-        Object
-          .keys(pushes)
-          .map(pushId => (
-            addSummariesToCsets(csets.filter(c => c.pushId === pushId))
-          ))))
-      .reduce((list, changesets) =>
-        list.concat(changesets), []);
-  } catch (e) {
-    console.log(e);
-    return csets;
-  }
 };
 
 export default class ChangesetsViewerContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      changesets: [],
-      pushes: {},
+      changesets: {},
       errorMessage: '',
+      hideCsetsWithNoCoverage: true,
     };
   }
 
   async componentDidMount() {
     const { repoName } = this.props;
-    this.fetchPushes(repoName);
+    const { hideCsetsWithNoCoverage } = this.state;
+    this.fetchPushes(repoName, hideCsetsWithNoCoverage);
   }
 
-  async fetchPushes(repoName) {
+  async fetchPushes(repoName, hideCsetsWithNoCoverage) {
     try {
       const text = await (await FetchAPI.getJsonPushes(repoName)).json();
-      const { csets, pushList } = processJsonPushes(text.pushes);
-      const changesets = await csetsWithCoverage(csets, pushList);
-      this.setState({
-        changesets,
-        pushes: pushList,
-      });
+      const csets = await pushesToCsets(text.pushes, hideCsetsWithNoCoverage);
+      this.setState({ changesets: arrayToMap(csets) });
     } catch (error) {
       console.log(error);
       this.setState({
-        changesets: [],
-        pushes: {},
+        changesets: {},
         errorMessage: 'We have failed to fetch coverage data.',
       });
     }
   }
 
   render() {
-    const { errorMessage, changesets, pushes } = this.state;
+    const { errorMessage, changesets } = this.state;
     if (errorMessage) {
       return (<div className="errorMessage">{errorMessage}</div>);
     }
@@ -217,8 +171,6 @@ export default class ChangesetsViewerContainer extends Component {
     return (
       <ChangesetsViewer
         changesets={changesets}
-        pushes={pushes}
-      />
-    );
+      />);
   }
 }
