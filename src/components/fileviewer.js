@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import * as FetchAPI from '../fetch_data';
 
+const queryString = require('query-string');
+
 /* FileViewer loads a raw file for a given revision from Mozilla's hg web.
  * It uses test coverage information from Active Data to show coverage
  * for runnable lines.
@@ -17,9 +19,15 @@ export default class FileViewerContainer extends Component {
   };
 
   componentDidMount() {
-    const { revision, path } = this.props;
+    /* get revision and path parameters from URL */
+    const parsedQuery = queryString.parse(this.props.location.search);
+    this.revision = parsedQuery.revision
+    this.path = parsedQuery.path
+    if (!this.revision || !this.path) {
+      this.setState({ appError: "Undefined URL query ('revision', 'path' fields are required)" });
+    }
 
-    FetchAPI.getRawFile(revision, path)
+    FetchAPI.getRawFile(this.revision, this.path)
       .then(response => {
         if (response.status !== 200) {
           console.log('Error status code' + response.status);
@@ -33,7 +41,7 @@ export default class FileViewerContainer extends Component {
       });
     });
 
-    FetchAPI.getFileRevisionCoverage(revision, path,
+    FetchAPI.getFileRevisionCoverage(this.revision, this.path,
       (data) => {
         console.log(data);
         this.setState(() => ({ coverage: data }));
@@ -46,16 +54,15 @@ export default class FileViewerContainer extends Component {
   };
 
   render() {
-    const { revision, path } = this.props;
     return (
       <div>
-        <FileViewerMeta 
-          revision={revision} 
-          path={path} 
+        <FileViewerMeta
+          revision={this.revision}
+          path={this.path}
           appError={this.state.appError}
         />
-        <FileViewer 
-          parsedFile={this.state.parsedFile} 
+        <FileViewer
+          parsedFile={this.state.parsedFile}
           coverage={this.state.coverage}
         />
       </div>
@@ -65,13 +72,13 @@ export default class FileViewerContainer extends Component {
 
 /* This component renders each line of the file with its line number */
 const FileViewer = ({ parsedFile, coverage }) => {
-  return ( 
+  return (
     <div>
       <table>
         <tbody>
-          { 
+          {
             parsedFile.map((line, lineNumber) => (
-              <Line 
+              <Line
                 key={lineNumber}
                 lineNumber={lineNumber+1}
                 lineText={line}
