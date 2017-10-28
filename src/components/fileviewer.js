@@ -33,17 +33,17 @@ export default class FileViewerContainer extends Component {
 
     /* Fetch source code from hg */
     FetchAPI.getRawFile(this.revision, this.path,
-      (text) => this.setState({ parsedFile: text.split("\n") })
-    );
+      (data, error) => {
+        data && this.setState({ parsedFile: data.split("\n") })
+        error && this.setState({ appError: 'We did not manage to parse the file correctly.' });
+      });
 
     /* Fetch coverages from ActiveData */
     FetchAPI.getFileRevisionCoverage(this.revision, this.path,
-      data => {
-        this.setState({ coverage: data });
-        // TODO remove these log lines
-        console.log(data);
+      (data, error) => {
+        data && this.setState({ coverage: JSON.parse(data) });
+        error && this.setState({ appError: 'There was an error fetching the coverage data.' });
       });
-
   }
 
   render() {
