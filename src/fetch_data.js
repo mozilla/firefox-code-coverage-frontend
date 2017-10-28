@@ -23,10 +23,36 @@ export const getChangesetCoverage = changeset =>
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
+
 // raw-file fetcher (fileviewer)
-export const getRawFile = (revision, path) =>
-  fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders });
+export const getRawFile = (revision, path, handleResponse) => {
+  fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders })
+    .then(response => {
+      if (response.status !== 200) {
+        console.log('Error status code' + response.status);
+        return;
+      }
+      response.text().then(handleResponse);
+    })
+    .catch(error => {
+      console.error(error);
+      this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
+    });
+}
+
 
 // get coverage from ActiveData for a particular source file
-export const getFileRevisionCoverage = (revision, path) =>
-  fetch(`${activeData}/query`, { jsonHeaders, method:"POST", body: JSON.stringify(Query.testCoverage(revision, path)) });
+export const getFileRevisionCoverage = (revision, path, handleResponse) => {
+  fetch(`${activeData}/query`, { jsonHeaders, method:"POST", body: JSON.stringify(Query.testCoverage(revision, path)) })
+    .then(response => {
+      if (response.status !== 200) {
+        console.log('Error status code' + response.status);
+        return;
+      }
+      response.json().then(handleResponse);
+    })
+    .catch(error => {
+      console.error(error);
+      this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
+    });
+}

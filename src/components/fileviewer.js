@@ -16,42 +16,35 @@ export default class FileViewerContainer extends Component {
       coverage: undefined,
       parsedFile: [],
     };
-  };
+  }
 
   componentDidMount() {
     /* get revision and path parameters from URL */
     const parsedQuery = queryString.parse(this.props.location.search);
-    this.revision = parsedQuery.revision
-    this.path = parsedQuery.path
-    if (!this.revision || !this.path) {
+    if (!parsedQuery.revision || !parsedQuery.path) {
       this.setState({ appError: "Undefined URL query ('revision', 'path' fields are required)" });
     }
+    /* remove begining '/' in the path parameter */
+    if (parsedQuery.path.startsWith('/')) {
+      parsedQuery.path = parsedQuery.path.slice(1);
+    }
+    this.revision = parsedQuery.revision
+    this.path = parsedQuery.path
 
-    FetchAPI.getRawFile(this.revision, this.path)
-      .then(response => {
-        if (response.status !== 200) {
-          console.log('Error status code' + response.status);
-          return;
-        }
-        response.text()
-      .then((text) => this.setState(() => ({ parsedFile: text.split("\n") })))
-      .catch((error) => {
-        console.error(error);
-        this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
-      });
-    });
+    /* Fetch source code from hg */
+    FetchAPI.getRawFile(this.revision, this.path,
+      (text) => this.setState({ parsedFile: text.split("\n") })
+    );
 
+    /* Fetch coverages from ActiveData */
     FetchAPI.getFileRevisionCoverage(this.revision, this.path,
-      (data) => {
-        console.log(data);
-        this.setState(() => ({ coverage: data }));
+      data => {
+        this.setState({ coverage: data });
         // TODO remove these log lines
-        console.log(this.state.coverage.data[0][0].source.file.covered);
-        console.log(this.state.coverage.data[0][0].source.file.uncovered);
-        console.log(this.state.coverage.data[0][0].source.file.percentage_covered);
-      }
-    )
-  };
+        console.log(data);
+      });
+
+  }
 
   render() {
     return (
