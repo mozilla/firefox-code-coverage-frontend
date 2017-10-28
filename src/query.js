@@ -6,7 +6,7 @@ export const testCoverage = (revision, fileName) => {
       {"eq":{"repo.changeset.id12":`${revision}`}}
     ]},
     "limit":1000,
-    "format":"table"
+    "format":"list"
   }
 }
 
@@ -19,11 +19,15 @@ export const testCoverageRestrictive = (revision, fileName) => {
       {"eq":{"repo.changeset.id12":`${revision}`}}
     ]},
     "select":[
+      "run.name",
       "run.chunk",
       "run.suite.name",
+      "source.file.covered",
+      "source.file.uncovered",
       "source.file.total_covered",
-      "source.file.total_uncovered"
+      "source.file.total_uncovered",
+      "source.file.percentage_covered"
     ],
-    "format":"table"
+    "format":"list"
   }
 }
