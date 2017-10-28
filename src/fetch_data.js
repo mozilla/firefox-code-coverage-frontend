@@ -23,18 +23,18 @@ export const getChangesetCoverage = changeset =>
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
+// raw-file fetcher (fileviewer)
 export const getRawFile = (revision, path, callback) => {
   const data = fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders })
   handleData(data, callback);
 }
 
-// raw-file fetcher (fileviewer)
+// get coverage from ActiveData for a particular source file
 export const getFileRevisionCoverage = (revision, path, callback) => {
   const data = fetch(`${activeData}/query`, { jsonHeaders, method:"POST", body: JSON.stringify(Query.testCoverage(revision, path)) })
   handleData(data, callback);
 }
 
-// get coverage from ActiveData for a particular source file
 const handleData = (data, callback) => {
   data.then(response => response.text())
   .then(text => (callback(text, undefined)))
