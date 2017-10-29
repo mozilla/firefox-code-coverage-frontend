@@ -1,5 +1,3 @@
-import * as Query from './query';
-
 export const hgHost = 'https://hg.mozilla.org';
 export const ccovBackend = 'https://uplift.shipit.staging.mozilla-releng.net';
 export const activeData = 'https://activedata.allizom.org';
@@ -24,22 +22,45 @@ export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
 // raw-file fetcher (fileviewer)
-export const getRawFile = (revision, path, callback) => {
-  const data = fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders })
-  handleData(data, callback);
-}
+export const getRawFile = (revision, path) => httpFetch({
+  url: `${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`
+});
 
-// get coverage from ActiveData for a particular source file
-export const getFileRevisionCoverage = (revision, path, callback) => {
-  const data = fetch(`${activeData}/query`, { jsonHeaders, method:"POST", body: JSON.stringify(Query.testCoverage(revision, path)) })
-  handleData(data, callback);
-}
+// query active data
+export const query = (query) => jsonPost({
+  url: `${activeData}/query`,
+  body: query
+});
 
-const handleData = (data, callback) => {
-  data.then(response => response.text())
-  .then(text => (callback(text, undefined)))
-  .catch(error => {
-    console.log(error);
-    callback(undefined, true); 
+export const jsonPost = (params) =>
+  httpFetch({
+    url: params.url,
+    headers: jsonHeaders,
+    method: "POST",
+    body: JSON.stringify(params.body)
   })
-}
+  .then(response => JSON.parse(response))
+  .catch(error => {
+    throw Error('Problem fetching JSON from URL ' + params.url + "\n" + error);
+  })
+;
+
+export const httpFetch = (params) =>
+  fetch(
+    params.url,
+    {
+      headers: params.headers || plainHeaders,
+      method: params.method || "GET",
+      body: params.body
+    }
+  )
+  .then(response => {
+    if (response.status !== 200) {
+      throw Error('Error status code' + response.status);
+    }
+    return response.text();
+  })
+  .catch(error => {
+    throw Error('Problem fetching from URL' + error);
+  })
+;

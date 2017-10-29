@@ -32,18 +32,27 @@ export default class FileViewerContainer extends Component {
     this.path = parsedQuery.path
 
     /* Fetch source code from hg */
-    FetchAPI.getRawFile(this.revision, this.path,
-      (data, error) => {
-        data && this.setState({ parsedFile: data.split("\n") })
-        error && this.setState({ appError: 'We did not manage to parse the file correctly.' });
-      });
+    FetchAPI.getRawFile(this.revision, this.path)
+      .then(text => this.setState({ parsedFile: text.split("\n") }))
+    ;
 
     /* Fetch coverages from ActiveData */
-    FetchAPI.getFileRevisionCoverage(this.revision, this.path,
-      (data, error) => {
-        data && this.setState({ coverage: JSON.parse(data) });
-        error && this.setState({ appError: 'There was an error fetching the coverage data.' });
-      });
+    FetchAPI.query({
+      "from": "coverage",
+      "where": {
+        "and": [
+          {"eq": {"source.file.name": `${this.path}`}},
+          {"eq": {"repo.changeset.id12": `${this.revision}`}}
+        ]
+      },
+      "limit": 1000,
+      "format": "list"
+    })
+    .then(data => {
+      this.setState({coverage: data});
+      // TODO remove these log lines
+      console.log(data);
+    });
   }
 
   render() {
