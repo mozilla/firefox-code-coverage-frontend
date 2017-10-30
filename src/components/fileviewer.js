@@ -32,18 +32,27 @@ export default class FileViewerContainer extends Component {
     this.path = parsedQuery.path
 
     /* Fetch source code from hg */
-    FetchAPI.getRawFile(this.revision, this.path,
-      (text) => this.setState({ parsedFile: text.split("\n") })
-    );
+    FetchAPI.getRawFile(this.revision, this.path)
+      .then(text => this.setState({ parsedFile: text.split("\n") }))
+    ;
 
     /* Fetch coverages from ActiveData */
-    FetchAPI.getFileRevisionCoverage(this.revision, this.path,
-      data => {
-        this.setState({ coverage: data });
-        // TODO remove these log lines
-        console.log(data);
-      });
-
+    FetchAPI.query({
+      "from": "coverage",
+      "where": {
+        "and": [
+          {"eq": {"source.file.name": `${this.path}`}},
+          {"eq": {"repo.changeset.id12": `${this.revision}`}}
+        ]
+      },
+      "limit": 1000,
+      "format": "list"
+    })
+    .then(data => {
+      this.setState({coverage: data});
+      // TODO remove these log lines
+      console.log(data);
+    });
   }
 
   render() {

@@ -1,5 +1,3 @@
-import * as Query from './query';
-
 export const hgHost = 'https://hg.mozilla.org';
 export const ccovBackend = 'https://uplift.shipit.staging.mozilla-releng.net';
 export const activeData = 'https://activedata.allizom.org';
@@ -23,36 +21,46 @@ export const getChangesetCoverage = changeset =>
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
-
 // raw-file fetcher (fileviewer)
-export const getRawFile = (revision, path, handleResponse) => {
-  fetch(`${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`, { plainHeaders })
-    .then(response => {
-      if (response.status !== 200) {
-        console.log('Error status code' + response.status);
-        return;
-      }
-      response.text().then(handleResponse);
-    })
-    .catch(error => {
-      console.error(error);
-      this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
-    });
-}
+export const getRawFile = (revision, path) => httpFetch({
+  url: `${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`
+});
 
+// query active data
+export const query = (query) => jsonPost({
+  url: `${activeData}/query`,
+  body: query
+});
 
-// get coverage from ActiveData for a particular source file
-export const getFileRevisionCoverage = (revision, path, handleResponse) => {
-  fetch(`${activeData}/query`, { jsonHeaders, method:"POST", body: JSON.stringify(Query.testCoverage(revision, path)) })
-    .then(response => {
-      if (response.status !== 200) {
-        console.log('Error status code' + response.status);
-        return;
-      }
-      response.json().then(handleResponse);
-    })
-    .catch(error => {
-      console.error(error);
-      this.setState(() => ({ appError: 'We did not manage to parse the file correctly.' }));
-    });
-}
+export const jsonPost = (params) =>
+  httpFetch({
+    url: params.url,
+    headers: jsonHeaders,
+    method: "POST",
+    body: JSON.stringify(params.body)
+  })
+  .then(response => JSON.parse(response))
+  .catch(error => {
+    throw Error('Problem fetching JSON from URL ' + params.url + "\n" + error);
+  })
+;
+
+export const httpFetch = (params) =>
+  fetch(
+    params.url,
+    {
+      headers: params.headers || plainHeaders,
+      method: params.method || "GET",
+      body: params.body
+    }
+  )
+  .then(response => {
+    if (response.status !== 200) {
+      throw Error('Error status code' + response.status);
+    }
+    return response.text();
+  })
+  .catch(error => {
+    throw Error('Problem fetching from URL' + error);
+  })
+;
