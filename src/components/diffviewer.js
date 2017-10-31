@@ -5,6 +5,7 @@ import * as FetchAPI from '../fetch_data';
 import hash from '../utils/hash';
 import { DiffMeta, CoverageMeta } from './diffviewermeta';
 
+const queryString = require('query-string');
 const parse = require('parse-diff');
 
 /* DiffViewer loads a raw diff from Mozilla's hg-web and code coverage from
@@ -22,7 +23,17 @@ export default class DiffViewerContainer extends Component {
   }
 
   componentDidMount() {
-    const { changeset } = this.props;
+    let changeset=undefined;
+    if (this.props.changeset) {
+      changeset = this.props.changeset;
+    } else {
+      /* get revision and path parameters from URL */
+      const parsedQuery = queryString.parse(this.props.location.search);
+      if (!parsedQuery.changeset) {
+        this.setState({appError: "Undefined URL query ('revision', 'path' fields are required)"});
+      }
+      changeset = parsedQuery.changeset
+    }
 
     FetchAPI.getDiff(changeset)
       .then(response =>

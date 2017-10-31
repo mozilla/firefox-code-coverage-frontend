@@ -58,6 +58,10 @@ export default class App extends Component {
             />
           )}
         />
+        <Route
+          path="/diff"
+          component={DiffViewerContainer}
+        />
       </div>
     );
   }
