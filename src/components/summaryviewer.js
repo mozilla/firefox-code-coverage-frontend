@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import React, { Component } from 'react';
+import ReactInterval from 'react-interval';
 
 import * as FetchAPI from '../fetch_data';
 
@@ -42,6 +43,14 @@ const ChangesetsViewer = ({ changesets }) => (
   </table>
 );
 
+const PollingStatus = ({ pollingEnabled }) => (
+  (pollingEnabled) ?
+    (<div className="polling-status"> {pollingEnabled}
+      Some changesets are still being processed and we are actively
+      polling them until we get a result.
+    </div>) : (null)
+);
+
 const arrayToMap = (csets) => {
   const newCsets = {};
   csets.forEach((cset) => {
@@ -49,6 +58,10 @@ const arrayToMap = (csets) => {
   });
   return newCsets;
 };
+
+const mapToArray = csets => (
+  Object.keys(csets).map(node => csets[node])
+);
 
 const csetWithCcovData = async (cset) => {
   if (!cset.node) {
@@ -63,7 +76,7 @@ const csetWithCcovData = async (cset) => {
   try {
     const res = await FetchAPI.getChangesetCoverage(cset.node);
     if (res.status === 202) {
-      // XXX: We should retry few times before giving up
+      // This is the only case when we poll again
       newCset.summary = PENDING;
     } else if (res.status === 200) {
       const ccSum = await res.json();
@@ -75,9 +88,13 @@ const csetWithCcovData = async (cset) => {
         newCset.linkify = true;
         newCset.hidden = false;
         newCset.summary = ccSum.overall_cur;
+      } else {
+        console.error(`No overall_cur: ${ccSum}`);
       }
-    } else {
+    } else if (res.status === 500) {
       newCset.summary = res.statusText;
+    } else {
+      console.log(`Unexpected HTTP code (${res.status}) for ${newCset}`);
     }
     return newCset;
   } catch (e) {
@@ -129,8 +146,10 @@ export default class ChangesetsViewerContainer extends Component {
     super(props);
     this.state = {
       changesets: {},
+      pollingEnabled: false, // We don't start polling until we're ready
       errorMessage: '',
       hideCsetsWithNoCoverage: true,
+      timeout: 30000, // How often we poll for csets w/o coverage status
     };
   }
 
@@ -142,27 +161,69 @@ export default class ChangesetsViewerContainer extends Component {
 
   async fetchPushes(repoName, hideCsetsWithNoCoverage) {
     try {
+      // Fetch last 10 pushes
       const text = await (await FetchAPI.getJsonPushes(repoName)).json();
       const csets = await pushesToCsets(text.pushes, hideCsetsWithNoCoverage);
-      this.setState({ changesets: arrayToMap(csets) });
+      console.log(`We have ${csets.length} changesets.`);
+      this.setState({ changesets: arrayToMap(csets), pollingEnabled: true });
     } catch (error) {
       console.log(error);
       this.setState({
         changesets: {},
+        pollingEnabled: false,
         errorMessage: 'We have failed to fetch coverage data.',
       });
     }
   }
 
+  // We poll on an interval for coverage for csets without it
+  async pollPending(changesets) {
+    console.log('Polling for csets w/o coverage data...');
+    try {
+      let newCsets = mapToArray(changesets);
+      newCsets = await Promise.all(
+        newCsets.map((c) => {
+          if (c.summary !== PENDING) {
+            return c;
+          }
+          return csetWithCcovData(c);
+        }));
+      const count = newCsets.filter(c => c.summary === PENDING).length;
+      const csetsMap = arrayToMap(newCsets);
+      if (count === 0) {
+        this.setState({ changesets: csetsMap, pollingEnabled: false });
+      } else {
+        this.setState({ changesets: csetsMap });
+      }
+    } catch (e) {
+      this.setState({ pollingEnabled: false });
+    }
+  }
+
   render() {
-    const { errorMessage, changesets } = this.state;
+    const { changesets, pollingEnabled, errorMessage, timeout } = this.state;
     if (errorMessage) {
       return (<div className="errorMessage">{errorMessage}</div>);
     }
 
     return (
-      <ChangesetsViewer
-        changesets={changesets}
-      />);
+      <div>
+        {pollingEnabled && (
+          <div>
+            <ReactInterval
+              timeout={timeout}
+              enabled={pollingEnabled}
+              callback={() => this.pollPending(changesets)}
+            />
+            <PollingStatus
+              pollingEnabled={pollingEnabled}
+            />
+          </div>
+        )}
+        <ChangesetsViewer
+          changesets={changesets}
+        />
+      </div>
+    );
   }
 }

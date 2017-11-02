@@ -69,3 +69,15 @@ td.new_line_number, td.old_line_number {
 .hidden_changeset {
 	display: none
 }
+
+/* Polling status */
+.polling-status {
+	/* Lemon yellow */
+	background-color: #fff44f; /* Fallback */
+	background-color: rgba(255, 244, 79, 0.3);
+	font-style: italic;
+	font-weight: 400;
+	margin: 0em 0em 1em;
+	padding: 1em;
+	text-align: center;
+}
