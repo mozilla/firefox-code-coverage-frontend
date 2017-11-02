@@ -78,3 +78,15 @@ td.new_line_number, td.old_line_number {
 	color: #85878c;
 	padding: 1px;
 }
+
+.file_line_text:hover {
+	background-color: LightGrey ;
+}
+
+.tests_viewer {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 400px;
+	height: 100%;
+}
