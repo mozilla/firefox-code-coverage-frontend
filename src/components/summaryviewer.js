@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import * as FetchAPI from '../fetch_data';
 
+const PENDING = 'Pending';
+
 const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, linkify, node, summary } = changeset;
   // XXX: For author remove the email address
@@ -10,23 +12,13 @@ const ChangesetInfo = ({ changeset }) => {
   // XXX: linkify bug numbers
   return (
     <tr className={(hidden) ? 'hidden_changeset' : 'changeset'}>
-      <td className="changeset-author">
-        {author.substring(0, 22)}</td>
-      <td className="changeset-node-id">
-        {(linkify) ?
-          <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
-          : <span>{node.substring(0, 12)}</span>}
+      <td className="changeset-author">{author.substring(0, 22)}</td>
+      <td className="changeset-node-id">{(linkify) ?
+        <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
+        : <span>{node.substring(0, 12)}</span>}
       </td>
-      <td className="changeset-description">
-        {desc.substring(0, 40)}</td>
-      <td className="changeset-info">
-        {(summary && summary.error) &&
-          <span>{summary.error}</span>
-        }
-        {(summary && summary.overall_cur) &&
-          <span>{summary.overall_cur}</span>
-        }
-      </td>
+      <td className="changeset-description">{desc.substring(0, 40)}</td>
+      <td className="changeset-info">{summary}</td>
     </tr>
   );
 };
@@ -59,10 +51,10 @@ const arrayToMap = (csets) => {
 };
 
 const csetWithCcovData = async (cset) => {
-  const newCset = Object.assign({}, cset);
   if (!cset.node) {
     throw Error(`No node for cset: ${cset}`);
   }
+  const newCset = Object.assign({}, cset);
   // XXX: fetch does not support timeouts. I would like to add a 5 second
   // timeout rather than wait Heroku's default 30 second timeout. Specially
   // since we're doing sequential fetches.
@@ -72,10 +64,9 @@ const csetWithCcovData = async (cset) => {
     const res = await FetchAPI.getChangesetCoverage(cset.node);
     if (res.status === 202) {
       // XXX: We should retry few times before giving up
-      newCset.summary = { error: 'Pending' };
+      newCset.summary = PENDING;
     } else if (res.status === 200) {
       const ccSum = await res.json();
-      newCset.summary = ccSum;
 
       // XXX: Document in which cases we would not have overall_cur
       if (ccSum.overall_cur) {
@@ -83,9 +74,10 @@ const csetWithCcovData = async (cset) => {
         // and unhiding the csets
         newCset.linkify = true;
         newCset.hidden = false;
+        newCset.summary = ccSum.overall_cur;
       }
     } else {
-      newCset.summary = { error: res.statusText };
+      newCset.summary = res.statusText;
     }
     return newCset;
   } catch (e) {
