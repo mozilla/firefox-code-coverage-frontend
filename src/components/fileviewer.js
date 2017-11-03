@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import * as FetchAPI from '../fetch_data';
+import { TestsSideViewer } from './fileviewercov';
 
 const queryString = require('query-string');
 
@@ -67,7 +68,6 @@ export default class FileViewerContainer extends Component {
 
     for (var i = 0; i < data.length; i++) {
       var coveredLines = data[i].source.file.covered;
-
       for (var j = 0; j < coveredLines.length; j++) {
         var line = coveredLines[j];
         if (!stat[line]) {
@@ -101,11 +101,11 @@ export default class FileViewerContainer extends Component {
         />
         <FileViewer
           parsedFile={this.state.parsedFile}
-          coverage={this.state.coverage}
           testsPerLines={this.state.testsPerLines}
           onLineClick={this.setSelectedLine}
+          selectedLine={this.state.selectedLine}
         />
-        <TestsViewer
+        <TestsSideViewer
           coverage={this.state.coverage}
           testsPerLines={this.state.testsPerLines}
           selectedLine={this.state.selectedLine}
@@ -116,7 +116,7 @@ export default class FileViewerContainer extends Component {
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, coverage, testsPerLines, onLineClick }) => {
+const FileViewer = ({ parsedFile, testsPerLines, onLineClick, selectedLine }) => {
   return (
     <div>
       <table>
@@ -128,6 +128,7 @@ const FileViewer = ({ parsedFile, coverage, testsPerLines, onLineClick }) => {
                 lineNumber={lineNumber+1}
                 lineText={line}
                 onLineClick={onLineClick}
+                selectedLine={selectedLine}
               />
             ))
           }
@@ -142,120 +143,18 @@ const Line = (props) => {
     props.onLineClick(props.lineNumber);
   }
 
+  let lineClass = "";
+  if (props.selectedLine === props.lineNumber ) {
+    lineClass = "selected"
+  }
+
   return (
       <tr>
         <td className="file_line_number">{props.lineNumber}</td>
-        <td className="file_line_text" onClick={handleOnClick}><pre>{props.lineText}</pre></td>
+        <td className={`file_line_text ${lineClass}`} onClick={handleOnClick}><pre>{props.lineText}</pre></td>
       </tr>
   );
 };
-
-
-
-
-
-
-/* Sidebar component, show which tests will cover the given selected line */
-const TestsViewer = ({coverage, testsPerLines, selectedLine}) => {
-
-  if (!testsPerLines) {
-    return (
-      <div className="tests_viewer">
-        <h3>"Fetching coverage from backend..."</h3>
-      </div>
-    );
-  }
-
-  // TODO if no line has been selected, show coverage of the file
-  else if (!selectedLine) {
-    return (
-      <div className="tests_viewer">
-        <h3>Select a line to view tests</h3>
-      </div>
-    );
-  }
-
-  return (
-    <div className="tests_viewer">
-      <h3>Line: {selectedLine}</h3>
-      <TestsDetail
-        coverage={coverage}
-        testsPerLines={testsPerLines}
-        selectedLine={selectedLine}
-      />
-    </div>
-  );
-};
-
-const TestsDetail = ({coverage, testsPerLines, selectedLine}) => {
-  const testList = testsPerLines[selectedLine];
-    if (!testList) {
-      return <div>No test covers this line</div>
-    }
-
-  const testItems = testList.map((testNum) => {
-    const test = coverage.data[testNum];
-    const testName = test.run.name;
-    return <li key={testName}>{testName}</li>
-  });
-
-  return (
-    <ul>
-      {testItems}
-    </ul>
-  );
-}
-
-
-
-
-
-
-
-
-
-/* Sidebar component, show which tests will cover the given selected line */
-// const TestsViewer = ({coverage, testsPerLines, selectedLine}) => {
-//
-//   if (!testsPerLines || !selectedLine) {
-//     return (
-//       <ul className="tests_viewer">
-//         <li>waiting</li>
-//       </ul>
-//     );
-//   }
-//
-//   const testList = testsPerLines[selectedLine];
-//   if (!testList) {
-//     return <div className="tests_viewer">'No test for this line'</div>
-//   }
-//
-//   // console.log(coverage.data[3]);
-//   // return (<div />)
-//
-//   const testItems = testList.map((testNum) => {
-//     const test = coverage.data[testNum];
-//     // console.log(test);
-//     const testName = test.run.name;
-//     return <li key={testName}>{testName}</li>
-//   });
-//
-//
-//   return (
-//     <ul className="tests_viewer">
-//       {testItems}
-//     </ul>
-//   );
-// };
-
-
-
-
-
-
-
-
-
 
 
 /* This component contains metadata of the file */
