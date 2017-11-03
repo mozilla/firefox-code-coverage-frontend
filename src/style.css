@@ -78,3 +78,40 @@ td.new_line_number, td.old_line_number {
 	color: #85878c;
 	padding: 1px;
 }
+
+div.coverage_meta {
+	height: 3.8em;
+}
+
+div.coverage_meta_totals {
+	border: 1px solid #d4d4d5;
+	border-radius: 0.20rem;
+	padding-top: 1.0em;
+	padding-right: 0.3em;
+	padding-bottom: 1.0em;
+	padding-left: 0.3em;
+	float: right;
+}
+
+span.totals {
+	border-radius: 0.25rem;
+	color: rgb(255, 255, 255);
+	font-size: 1em;
+	padding-top: 0.6em;
+	padding-right: 0.8em;
+	padding-bottom: 0.6em;
+	padding-left: 0.8em;
+	margin: 0.05em;
+}
+
+span.percentage_covered {
+	background-color: #f071b0;
+}
+
+span.total_covered {
+	background-color: #6bff7d;
+}	
+
+span.total_uncovered {
+	background-color: #f76161;
+}

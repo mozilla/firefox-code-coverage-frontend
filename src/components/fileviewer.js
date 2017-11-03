@@ -49,23 +49,27 @@ export default class FileViewerContainer extends Component {
       "format": "list"
     })
     .then(data => {
-      this.setState({coverage: data});
-      // TODO remove these log lines
       console.log(data);
+      this.setState({coverage: data});
     });
   }
 
   render() {
+    const { appError, coverage, parsedFile } = this.state;
+
     return (
       <div>
         <FileViewerMeta
           revision={this.revision}
           path={this.path}
-          appError={this.state.appError}
+          appError={appError}
+        />
+        <CoverageMeta 
+          coverage={coverage}
         />
         <FileViewer
-          parsedFile={this.state.parsedFile}
-          coverage={this.state.coverage}
+          parsedFile={parsedFile}
+          coverage={coverage}
         />
       </div>
     );
@@ -108,6 +112,30 @@ const FileViewerMeta = ({ revision, path, appError }) => {
     <div>
       {appError && <span className="error_message">{appError}</span>}
       <h4>Revision number: {revision} <br/> Path: {path}</h4>
+    </div>
+  );
+};
+
+const CoverageMeta = ({ coverage }) => {
+  let [percentageCovered, totalCovered, totalUncovered] = [undefined, undefined, undefined];
+
+  if (coverage) {
+    /* TODO Currently showing coverage totals for one particular test:
+     * test-linux64-ccov/opt-web-platform-tests-1.
+     * In the future, test will be passed as a prop. */
+    const test = coverage.data[0].source.file;
+    this.percentageCovered=(test.percentage_covered * 100).toPrecision(4);
+    this.totalCovered=test.total_covered;
+    this.totalUncovered=test.total_uncovered; 
+  }
+
+  return (
+    <div className="coverage_meta">
+      <div className="coverage_meta_totals">
+        <span className="totals percentage_covered">{this.percentageCovered}%</span>
+        <span className="totals total_covered">{this.totalCovered}</span>
+        <span className="totals total_uncovered">{this.totalUncovered}</span>
+      </div>
     </div>
   );
 };
