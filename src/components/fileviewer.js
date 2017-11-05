@@ -66,16 +66,16 @@ export default class FileViewerContainer extends Component {
     console.log(data.length);
     var stat = []
 
-    for (var i = 0; i < data.length; i++) {
-      var coveredLines = data[i].source.file.covered;
-      for (var j = 0; j < coveredLines.length; j++) {
-        var line = coveredLines[j];
+    data.forEach(d => {
+      const coveredLines = d.source.file.covered;
+      coveredLines.forEach(line => {
         if (!stat[line]) {
           stat[line] = [];
         }
-        stat[line].push(i);
-      }
-    }
+        stat[line].push(d);
+      });
+    });
+
     console.log(stat);
     this.setState({testsPerLines: stat});
   }
@@ -106,7 +106,6 @@ export default class FileViewerContainer extends Component {
           selectedLine={this.state.selectedLine}
         />
         <TestsSideViewer
-          coverage={this.state.coverage}
           testsPerLines={this.state.testsPerLines}
           selectedLine={this.state.selectedLine}
         />

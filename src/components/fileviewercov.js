@@ -3,7 +3,7 @@
 import React from 'react';
 
 /* Sidebar component, show which tests will cover the given selected line */
-export const TestsSideViewer = ({coverage, testsPerLines, selectedLine}) => {
+export const TestsSideViewer = ({testsPerLines, selectedLine}) => {
 
   if (!testsPerLines) {
     return (
@@ -26,7 +26,6 @@ export const TestsSideViewer = ({coverage, testsPerLines, selectedLine}) => {
     <div className="tests_viewer">
       <h3>Line: {selectedLine}</h3>
       <TestsDetail
-        coverage={coverage}
         testsPerLines={testsPerLines}
         selectedLine={selectedLine}
       />
@@ -35,16 +34,14 @@ export const TestsSideViewer = ({coverage, testsPerLines, selectedLine}) => {
 };
 
 /* Sidebar list component*/
-const TestsDetail = ({coverage, testsPerLines, selectedLine}) => {
+const TestsDetail = ({testsPerLines, selectedLine}) => {
   const testList = testsPerLines[selectedLine];
     if (!testList) {
       return <div>No test covers this line</div>
     }
 
-  const testItems = testList.map((testNum) => {
-    const test = coverage.data[testNum];
-    const testName = test.run.name;
-    return <li key={testName}>{testName}</li>
+  const testItems = testList.map((test) => {
+    return <li key={test.run.name}>{test.run.name}</li>
   });
 
   return (

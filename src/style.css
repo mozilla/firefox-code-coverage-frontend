@@ -96,7 +96,7 @@ td.new_line_number, td.old_line_number {
 .file_line_text.selected {
 	border-style: solid;
   border-width: 2px;
-	border-color: LightGrey;
+	border-color: Grey;
 	padding: 0px;
 }
 
