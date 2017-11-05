@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import * as FetchAPI from '../fetch_data';
+import { TestsSideViewer } from './fileviewercov';
 
 const queryString = require('query-string');
 
@@ -15,7 +16,11 @@ export default class FileViewerContainer extends Component {
       appError: undefined,
       coverage: undefined,
       parsedFile: [],
+      selectedLine: null,
+      testsPerLines: undefined,
     };
+
+    this.setSelectedLine = this.setSelectedLine.bind(this)
   }
 
   componentDidMount() {
@@ -49,10 +54,41 @@ export default class FileViewerContainer extends Component {
       "format": "list"
     })
     .then(data => {
-      this.setState({coverage: data});
       // TODO remove these log lines
       console.log(data);
+      this.setState({coverage: data});
+      this.parseTestsCoverage(data.data);
     });
+  }
+
+  /* Parse data returns from ActiveData */
+  parseTestsCoverage(data) {
+    console.log(data.length);
+    var stat = []
+
+    data.forEach(d => {
+      const coveredLines = d.source.file.covered;
+      coveredLines.forEach(line => {
+        if (!stat[line]) {
+          stat[line] = [];
+        }
+        stat[line].push(d);
+      });
+    });
+
+    console.log(stat);
+    this.setState({testsPerLines: stat});
+  }
+
+  /* handle fileviewer's line onclick event */
+  setSelectedLine(lineNumber) {
+    console.log(lineNumber);
+    this.setState({selectedLine: lineNumber});
+    // if (this.state.selectedLine == lineNumber) {
+    //   this.setState({selectedLine: null})
+    // } else {
+    //   this.setState({selectedLine: lineNumber});
+    // }
   }
 
   render() {
@@ -65,7 +101,13 @@ export default class FileViewerContainer extends Component {
         />
         <FileViewer
           parsedFile={this.state.parsedFile}
-          coverage={this.state.coverage}
+          testsPerLines={this.state.testsPerLines}
+          onLineClick={this.setSelectedLine}
+          selectedLine={this.state.selectedLine}
+        />
+        <TestsSideViewer
+          testsPerLines={this.state.testsPerLines}
+          selectedLine={this.state.selectedLine}
         />
       </div>
     );
@@ -73,7 +115,7 @@ export default class FileViewerContainer extends Component {
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, coverage }) => {
+const FileViewer = ({ parsedFile, testsPerLines, onLineClick, selectedLine }) => {
   return (
     <div>
       <table>
@@ -84,6 +126,8 @@ const FileViewer = ({ parsedFile, coverage }) => {
                 key={lineNumber}
                 lineNumber={lineNumber+1}
                 lineText={line}
+                onLineClick={onLineClick}
+                selectedLine={selectedLine}
               />
             ))
           }
@@ -94,13 +138,23 @@ const FileViewer = ({ parsedFile, coverage }) => {
 };
 
 const Line = (props) => {
+  const handleOnClick = () => {
+    props.onLineClick(props.lineNumber);
+  }
+
+  let lineClass = "";
+  if (props.selectedLine === props.lineNumber ) {
+    lineClass = "selected"
+  }
+
   return (
       <tr>
         <td className="file_line_number">{props.lineNumber}</td>
-        <td><pre>{props.lineText}</pre></td>
+        <td className={`file_line_text ${lineClass}`} onClick={handleOnClick}><pre>{props.lineText}</pre></td>
       </tr>
   );
 };
+
 
 /* This component contains metadata of the file */
 const FileViewerMeta = ({ revision, path, appError }) => {
