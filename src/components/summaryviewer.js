@@ -12,20 +12,20 @@ const ChangesetInfo = ({ changeset }) => {
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
   return (
-    <tr className={(hidden) ? 'hidden_changeset' : 'changeset'}>
+    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
       <td className="changeset-author">{author.substring(0, 22)}</td>
       <td className="changeset-node-id">{(linkify) ?
         <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
         : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">{desc.substring(0, 40)}</td>
-      <td className="changeset-info">{summary}</td>
+      <td className="changeset-summary">{summary}</td>
     </tr>
   );
 };
 
 const ChangesetsViewer = ({ changesets }) => (
-  <table>
+  <table className="changeset-viewer">
     <tbody>
       <tr>
         <th>Author</th>
@@ -203,7 +203,7 @@ export default class ChangesetsViewerContainer extends Component {
   render() {
     const { changesets, pollingEnabled, errorMessage, timeout } = this.state;
     if (errorMessage) {
-      return (<div className="errorMessage">{errorMessage}</div>);
+      return (<div className="error-message">{errorMessage}</div>);
     }
 
     return (
