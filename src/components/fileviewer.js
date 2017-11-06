@@ -172,19 +172,29 @@ const FileViewerMeta = ({ revision, path, appError }) => {
 };
 
 const CoverageMeta = ({ coverage }) => {
+  // if there is no coverage information, then do not display the percentage covered
   let percentageCovered = undefined;
   
   if (coverage) {
-    let total_covered = _.union(_.flatten(coverage.data.map((d) => d.source.file.covered)));
+    let totalCovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.covered)));
     let uncovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.uncovered)));
-    let total_uncovered = _.difference(uncovered, total_covered);
-    this.percentageCovered = total_covered.length / total_uncovered.length;
+    let totalUncovered = _.difference(uncovered, totalCovered);
+    // if there is coverage information and no lines are uncovered, percentage covered is 100%
+    if (totalCovered.length > 0 && totalUncovered.length === 0) {
+      this.percentageCovered = 1;
+    }
+    // calculate the percentage covered if there is coverage information
+    if (!(totalCovered === 0 && uncovered === 0)) {
+      this.percentageCovered = totalCovered.length / totalUncovered.length;
+    }
   }
 
   return (
     <div className="coverage_meta">
       <div className="coverage_meta_totals">
-        <span className="percentage_covered">{(this.percentageCovered * 100).toPrecision(4)}%</span>
+        {this.percentageCovered && 
+          <span className="percentage_covered">{(this.percentageCovered * 100).toPrecision(4)}%</span>
+        }
       </div>
     </div>
   );
