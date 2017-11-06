@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import * as FetchAPI from '../fetch_data';
 
 const queryString = require('query-string');
+const _ = require('lodash')
 
 /* FileViewer loads a raw file for a given revision from Mozilla's hg web.
  * It uses test coverage information from Active Data to show coverage
@@ -117,24 +118,19 @@ const FileViewerMeta = ({ revision, path, appError }) => {
 };
 
 const CoverageMeta = ({ coverage }) => {
-  let [percentageCovered, totalCovered, totalUncovered] = [undefined, undefined, undefined];
-
+  let percentageCovered = undefined;
+  
   if (coverage) {
-    /* TODO Currently showing coverage totals for one particular test:
-     * test-linux64-ccov/opt-web-platform-tests-1.
-     * In the future, test will be passed as a prop. */
-    const test = coverage.data[0].source.file;
-    this.percentageCovered=(test.percentage_covered * 100).toPrecision(4);
-    this.totalCovered=test.total_covered;
-    this.totalUncovered=test.total_uncovered; 
+    let total_covered = _.union(_.flatten(coverage.data.map((d) => d.source.file.covered)));
+    let uncovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.uncovered)));
+    let total_uncovered = _.difference(uncovered, total_covered);
+    this.percentageCovered = total_covered.length / total_uncovered.length;
   }
 
   return (
     <div className="coverage_meta">
       <div className="coverage_meta_totals">
-        <span className="totals percentage_covered">{this.percentageCovered}%</span>
-        <span className="totals total_covered">{this.totalCovered}</span>
-        <span className="totals total_uncovered">{this.totalUncovered}</span>
+        <span className="percentage_covered">{(this.percentageCovered * 100).toPrecision(4)}%</span>
       </div>
     </div>
   );

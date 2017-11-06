@@ -93,7 +93,7 @@ div.coverage_meta_totals {
 	float: right;
 }
 
-span.totals {
+span.percentage_covered {
 	border-radius: 0.25rem;
 	color: rgb(255, 255, 255);
 	font-size: 1em;
@@ -102,16 +102,5 @@ span.totals {
 	padding-bottom: 0.6em;
 	padding-left: 0.8em;
 	margin: 0.05em;
-}
-
-span.percentage_covered {
 	background-color: #f071b0;
-}
-
-span.total_covered {
-	background-color: #6bff7d;
-}	
-
-span.total_uncovered {
-	background-color: #f76161;
 }
