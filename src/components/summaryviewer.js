@@ -25,22 +25,23 @@ const ChangesetInfo = ({ changeset }) => {
 };
 
 const ChangesetsViewer = ({ changesets }) => (
-  <table className="changeset-viewer">
-    <tbody>
-      <tr>
-        <th>Author</th>
-        <th>Changeset</th>
-        <th>Description</th>
-        <th>Coverage summary</th>
-      </tr>
-      {Object.keys(changesets).map(node => (
-        <ChangesetInfo
-          key={node}
-          changeset={changesets[node]}
-        />
-      ))}
-    </tbody>
-  </table>
+  (changesets.length > 0) ?
+    (<table className="changeset-viewer">
+      <tbody>
+        <tr>
+          <th>Author</th>
+          <th>Changeset</th>
+          <th>Description</th>
+          <th>Coverage summary</th>
+        </tr>
+        {Object.keys(changesets).map(node => (
+          <ChangesetInfo
+            key={node}
+            changeset={changesets[node]}
+          />
+        ))}
+      </tbody>
+    </table>) : null
 );
 
 const PollingStatus = ({ pollingEnabled }) => (
@@ -165,7 +166,10 @@ export default class ChangesetsViewerContainer extends Component {
       const text = await (await FetchAPI.getJsonPushes(repoName)).json();
       const csets = await pushesToCsets(text.pushes, hideCsetsWithNoCoverage);
       console.log(`We have ${csets.length} changesets.`);
-      this.setState({ changesets: arrayToMap(csets), pollingEnabled: true });
+      this.setState({
+        changesets: arrayToMap(csets),
+        pollingEnabled: csets.filter(c => c.summary === PENDING).length > 0,
+      });
     } catch (error) {
       console.log(error);
       this.setState({
@@ -178,7 +182,7 @@ export default class ChangesetsViewerContainer extends Component {
 
   // We poll on an interval for coverage for csets without it
   async pollPending(changesets) {
-    console.log('Polling for csets w/o coverage data...');
+    console.log('Determine if we need to poll csets w/o coverage data...');
     try {
       let newCsets = mapToArray(changesets);
       newCsets = await Promise.all(
@@ -191,6 +195,7 @@ export default class ChangesetsViewerContainer extends Component {
       const count = newCsets.filter(c => c.summary === PENDING).length;
       const csetsMap = arrayToMap(newCsets);
       if (count === 0) {
+        console.log('No more polling required.');
         this.setState({ changesets: csetsMap, pollingEnabled: false });
       } else {
         this.setState({ changesets: csetsMap });
@@ -205,6 +210,7 @@ export default class ChangesetsViewerContainer extends Component {
     if (errorMessage) {
       return (<div className="error-message">{errorMessage}</div>);
     }
+    const viewableCsets = mapToArray(changesets).filter(c => c.hidden === false);
 
     return (
       <div>
@@ -221,7 +227,7 @@ export default class ChangesetsViewerContainer extends Component {
           </div>
         )}
         <ChangesetsViewer
-          changesets={changesets}
+          changesets={viewableCsets}
         />
       </div>
     );
