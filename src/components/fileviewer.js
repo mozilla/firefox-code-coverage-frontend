@@ -64,14 +64,18 @@ export default class FileViewerContainer extends Component {
   /* Parse data returns from ActiveData */
   parseTestsCoverage(data) {
     console.log(data.length);
-    var stat = []
+    var stat = [];
+
+    // initial list for each coverable line
+    if (data.length > 0) {
+      const fileCov = data[0].source.file;
+      fileCov.covered.concat(fileCov.uncovered).forEach(line => {
+        stat[line] = [];
+      });
+    }
 
     data.forEach(d => {
-      const coveredLines = d.source.file.covered;
-      coveredLines.forEach(line => {
-        if (!stat[line]) {
-          stat[line] = [];
-        }
+      d.source.file.covered.forEach(line => {
         stat[line].push(d);
       });
     });
