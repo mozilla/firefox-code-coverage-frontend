@@ -94,9 +94,9 @@ const DiffFile = ({ coverage, diffBlock }) => {
   }
 
   return (
-    <div className="difffile">
-      <div className="filesummary">
-        <div className="filepath">{diffBlock.from}</div>
+    <div className="diff-file">
+      <div className="file-summary">
+        <div className="file-path">{diffBlock.from}</div>
       </div>
       {diffBlock.chunks.map(block => (
         <DiffBlock
@@ -124,21 +124,23 @@ const uniqueLineId = (filePath, change) => {
 
 /* A DiffBlock is *one* of the blocks changed for a specific file */
 const DiffBlock = ({ filePath, block, coverageInfo }) => (
-  <div className="diffblock">
-    <div className="difflineat">{block.content}</div>
-    <table className="diffblock">
-      <tbody>
-        {block.changes.map((change) => {
-          const uid = uniqueLineId(filePath, change);
-          return (<DiffLine
-            key={uid}
-            id={uid}
-            change={change}
-            coverageInfo={coverageInfo}
-          />);
-        })}
-      </tbody>
-    </table>
+  <div>
+    <div className="diff-line-at">{block.content}</div>
+    <div className="diff-block">
+      <table className="diff-block-table">
+        <tbody>
+          {block.changes.map((change) => {
+            const uid = uniqueLineId(filePath, change);
+            return (<DiffLine
+              key={uid}
+              id={uid}
+              change={change}
+              coverageInfo={coverageInfo}
+            />);
+          })}
+        </tbody>
+      </table>
+    </div>
   </div>
 );
 
@@ -181,10 +183,10 @@ const DiffLine = ({ change, coverageInfo, id }) => {
   }
 
   return (
-    <tr id={rowId} className={rowClass}>
-      <td className="old_line_number">{oldLineNumber}</td>
-      <td className="new_line_number">{newLineNumber}</td>
-      <td className="line_content">
+    <tr id={rowId} className={`${rowClass} diff-row`}>
+      <td className="old-line-number diff-cell">{oldLineNumber}</td>
+      <td className="new-line-number diff-cell">{newLineNumber}</td>
+      <td className="line-content diff-cell">
         <pre>{c.content}</pre>
       </td>
     </tr>
