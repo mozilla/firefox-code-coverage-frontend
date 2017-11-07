@@ -97,6 +97,7 @@ pre { margin: 0; }
 	text-align: center;
 }
 .changeset-viewer {
+	border-spacing: 0px;
 	margin: auto;
 }
 .error-message {
@@ -107,4 +108,19 @@ pre { margin: 0; }
 }
 .changeset-summary {
 	text-align: center;
+}
+.low-coverage {
+	/* Warm red */
+	background-color: #ff4f5e; /* Fallback */
+	background-color: rgba(255, 79, 94, 0.3);
+}
+.medium-coverage {
+	/* Lemon yellow */
+	background-color: #fff44f; /* Fallback */
+	background-color: rgba(255, 244, 79, 0.3);
+}
+.high-coverage {
+	/* Neon green */
+	background-color: #54ffbd; /* Fallback */
+	background-color: rgba(84, 255, 189, 0.3);
 }

@@ -2,6 +2,29 @@ import React from 'react';
 
 import * as FetchAPI from '../utils/fetch_data';
 
+export const coverageSummary = (coverage) => {
+  const s = {
+    addedLines: 0,
+    coveredLines: 0,
+  };
+  if (coverage.diffs.length > 0) {
+    coverage.diffs.forEach((diff) => {
+      diff.changes.forEach((change) => {
+        if (change.coverage === 'Y') {
+          s.coveredLines += 1;
+        }
+        if (change.coverage !== '?') {
+          s.addedLines += 1;
+        }
+      });
+      s.percentage = (s.addedLines === 0) ?
+        undefined :
+        100 * (s.coveredLines / s.addedLines);
+    });
+  }
+  return s;
+};
+
 export const DiffMeta = ({ changeset }) => {
   const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`;
   const shipitUrl = `${FetchAPI.ccovBackend}/coverage/changeset/${changeset}`;
@@ -23,7 +46,7 @@ export const DiffMeta = ({ changeset }) => {
   );
 };
 
-const NetCoverageContainer = ({ coverage, parsedDiff }) => {
+export const determineCoverageMeta = (coverage, parsedDiff) => {
   if (parsedDiff.length > 0) {
     // addedLines: The total number of new executable lines
     const addedLines = (coverage.diffs.length !== 0) ?
@@ -44,13 +67,20 @@ const NetCoverageContainer = ({ coverage, parsedDiff }) => {
       (coveredLines / addedLines) * 100 : 0);
     netGain = netGain.toPrecision(3);
 
-    return (<NetCoverage
-      addedLines={addedLines}
-      coveredLines={coveredLines}
-      netGain={netGain}
-    />);
+    return {
+      addedLines,
+      coveredLines,
+      netGain,
+    };
   }
-  return (<div />);
+  return undefined;
+};
+
+const NetCoverageContainer = ({ coverage, parsedDiff }) => {
+  const status = determineCoverageMeta(coverage, parsedDiff);
+  return (status) ? (
+    <NetCoverage {...status} />
+  ) : null;
 };
 
 const NetCoverage = ({ addedLines, coveredLines, netGain }) => (
