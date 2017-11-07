@@ -1,6 +1,6 @@
 import React from 'react';
 
-import * as FetchAPI from '../fetch_data';
+import * as FetchAPI from '../utils/fetch_data';
 
 export const DiffMeta = ({ changeset }) => {
   const hgRev = `${FetchAPI.hgHost}/mozilla-central/rev/${changeset}`;
