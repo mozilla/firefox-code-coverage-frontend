@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import * as FetchAPI from '../fetch_data';
+import * as FetchAPI from '../utils/fetch_data';
 import hash from '../utils/hash';
 import { DiffMeta, CoverageMeta } from './diffviewermeta';
 

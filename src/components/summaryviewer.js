@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
-import * as FetchAPI from '../fetch_data';
+// XXX: Create module that fetches ccov data + diff data
+import { coverageSummaryText } from './diffviewermeta';
+import * as FetchAPI from '../utils/fetch_data';
 
 const PENDING = 'Pending';
 
