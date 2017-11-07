@@ -4,6 +4,7 @@ import * as FetchAPI from '../fetch_data';
 import { TestsSideViewer } from './fileviewercov';
 
 const queryString = require('query-string');
+const _ = require('lodash')
 
 /* FileViewer loads a raw file for a given revision from Mozilla's hg web.
  * It uses test coverage information from Active Data to show coverage
@@ -54,7 +55,6 @@ export default class FileViewerContainer extends Component {
       "format": "list"
     })
     .then(data => {
-      // TODO remove these log lines
       console.log(data);
       this.setState({coverage: data});
       this.parseTestsCoverage(data.data);
@@ -92,12 +92,17 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
+    const { appError, coverage, parsedFile } = this.state;
+
     return (
       <div>
         <FileViewerMeta
           revision={this.revision}
           path={this.path}
-          appError={this.state.appError}
+          appError={appError}
+        />
+        <CoverageMeta 
+          coverage={coverage}
         />
         <FileViewer
           parsedFile={this.state.parsedFile}
@@ -162,6 +167,32 @@ const FileViewerMeta = ({ revision, path, appError }) => {
     <div>
       {appError && <span className="error_message">{appError}</span>}
       <h4>Revision number: {revision} <br/> Path: {path}</h4>
+    </div>
+  );
+};
+
+const CoverageMeta = ({ coverage }) => {
+  let percentageCovered = undefined;
+  
+  if (coverage) {
+    let totalCovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.covered)));
+    let uncovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.uncovered)));
+    let totalLines = _.union(uncovered, totalCovered).length;
+
+    if (totalCovered !== 0 || uncovered !== 0) {
+      this.percentageCovered = totalCovered.length / totalLines;
+    } else {
+      //this.percentageCovered is left undefined
+    }
+  }
+
+  return (
+    <div className="coverage_meta">
+      <div className="coverage_meta_totals">
+        {this.percentageCovered && 
+          <span className="percentage_covered">{(this.percentageCovered * 100).toPrecision(4)}%</span>
+        }
+      </div>
     </div>
   );
 };
