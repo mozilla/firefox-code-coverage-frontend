@@ -3,14 +3,27 @@ import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
 // XXX: Create module that fetches ccov data + diff data
-import { coverageSummaryText } from './diffviewermeta';
+import { coverageSummary } from './diffviewermeta';
 import * as FetchAPI from '../utils/fetch_data';
 import { arrayToMap, mapToArray } from '../utils/data';
 
 const PENDING = 'Pending';
+const COV_BANDS = {
+  low: {
+    threshold: 20,
+    className: 'low-coverage',
+  },
+  medium: {
+    threshold: 70,
+    className: 'medium-coverage',
+  },
+  high: {
+    className: 'high-coverage',
+  },
+};
 
 const ChangesetInfo = ({ changeset }) => {
-  const { author, desc, hidden, linkify, node, summary } = changeset;
+  const { author, desc, hidden, linkify, node, summary, summaryClassName } = changeset;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
@@ -22,7 +35,7 @@ const ChangesetInfo = ({ changeset }) => {
         : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">{desc.substring(0, 40)}</td>
-      <td className="changeset-summary">{summary}</td>
+      <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
     </tr>
   );
 };
@@ -55,6 +68,23 @@ const PollingStatus = ({ pollingEnabled }) => (
     </div>) : (null)
 );
 
+const coverageSummaryText = (coverage) => {
+  const s = coverageSummary(coverage);
+  const result = { className: 'no-change', text: 'No changes' };
+  if (typeof s.percentage !== 'undefined') {
+    const perc = parseInt(s.percentage, 10);
+    if (perc < COV_BANDS.low.threshold) {
+      result.className = COV_BANDS.low.className;
+    } else if (perc < COV_BANDS.medium.threshold) {
+      result.className = COV_BANDS.medium.className;
+    } else {
+      result.className = COV_BANDS.high.className;
+    }
+    result.text = `${perc}% - ${s.coveredLines} lines covered out of ${s.addedLines} added`;
+  }
+  return result;
+};
+
 const csetWithCcovData = async (cset) => {
   if (!cset.node) {
     throw Error(`No node for cset: ${cset}`);
@@ -79,7 +109,9 @@ const csetWithCcovData = async (cset) => {
         // and unhiding the csets
         newCset.linkify = true;
         newCset.hidden = false;
-        newCset.summary = ccSum.overall_cur;
+        const result = coverageSummaryText(ccSum);
+        newCset.summary = result.text;
+        newCset.summaryClassName = result.className;
       } else {
         console.error(`No overall_cur: ${ccSum}`);
       }
@@ -90,7 +122,8 @@ const csetWithCcovData = async (cset) => {
     }
     return newCset;
   } catch (e) {
-    console.log(`Failed to fetch data for ${cset}`);
+    console.log(e);
+    console.log(`Failed to fetch data for ${cset.node}`);
     return cset;
   }
 };
