@@ -179,7 +179,7 @@ const CoverageMeta = ({ coverage }) => {
     let uncovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.uncovered)));
     let totalLines = _.union(uncovered, totalCovered).length;
 
-    if (totalCovered !== 0 && uncovered !== 0) {
+    if (totalCovered !== 0 || uncovered !== 0) {
       this.percentageCovered = totalCovered.length / totalLines;
     } else {
       //this.percentageCovered is left undefined
