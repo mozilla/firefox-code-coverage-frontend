@@ -5,6 +5,7 @@ import ReactInterval from 'react-interval';
 // XXX: Create module that fetches ccov data + diff data
 import { coverageSummaryText } from './diffviewermeta';
 import * as FetchAPI from '../utils/fetch_data';
+import { arrayToMap, mapToArray } from '../utils/data';
 
 const PENDING = 'Pending';
 
@@ -52,18 +53,6 @@ const PollingStatus = ({ pollingEnabled }) => (
       Some changesets are still being processed and we are actively
       polling them until we get a result.
     </div>) : (null)
-);
-
-const arrayToMap = (csets) => {
-  const newCsets = {};
-  csets.forEach((cset) => {
-    newCsets[cset.node] = cset;
-  });
-  return newCsets;
-};
-
-const mapToArray = csets => (
-  Object.keys(csets).map(node => csets[node])
 );
 
 const csetWithCcovData = async (cset) => {
