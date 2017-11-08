@@ -2,13 +2,9 @@ import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
-// XXX: Create module that fetches ccov data + diff data
-import { coverageSummary } from './diffviewermeta';
 import * as FetchAPI from '../utils/fetch_data';
-import { arrayToMap, mapToArray } from '../utils/data';
-import SETTINGS from '../settings';
-
-const PENDING = 'Pending';
+import { PENDING } from '../settings';
+import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, linkify, node, summary, summaryClassName } = changeset;
@@ -55,68 +51,6 @@ const PollingStatus = ({ pollingEnabled }) => (
       polling them until we get a result.
     </div>) : (null)
 );
-
-const coverageSummaryText = (coverage) => {
-  const { coverageThresholds } = SETTINGS;
-  const { low, medium, high } = coverageThresholds;
-  const s = coverageSummary(coverage);
-  const result = { className: 'no-change', text: 'No changes' };
-  if (typeof s.percentage !== 'undefined') {
-    const perc = parseInt(s.percentage, 10);
-    if (perc < low.threshold) {
-      result.className = low.className;
-    } else if (perc < medium.threshold) {
-      result.className = medium.className;
-    } else {
-      result.className = high.className;
-    }
-    result.text = `${perc}% - ${s.coveredLines} lines covered out of ${s.addedLines} added`;
-  }
-  return result;
-};
-
-const csetWithCcovData = async (cset) => {
-  if (!cset.node) {
-    throw Error(`No node for cset: ${cset}`);
-  }
-  const newCset = Object.assign({}, cset);
-  // XXX: fetch does not support timeouts. I would like to add a 5 second
-  // timeout rather than wait Heroku's default 30 second timeout. Specially
-  // since we're doing sequential fetches.
-  // XXX: Wrap fetch() in a Promise; add a setTimeout and call reject() if
-  // it goes off, otherwise resolve with the result of the fetch()
-  try {
-    const res = await FetchAPI.getChangesetCoverage(cset.node);
-    if (res.status === 202) {
-      // This is the only case when we poll again
-      newCset.summary = PENDING;
-    } else if (res.status === 200) {
-      const ccSum = await res.json();
-
-      // XXX: Document in which cases we would not have overall_cur
-      if (ccSum.overall_cur) {
-        // We have coverage data, thus, adding links to the coverage diff viewer
-        // and unhiding the csets
-        newCset.linkify = true;
-        newCset.hidden = false;
-        const result = coverageSummaryText(ccSum);
-        newCset.summary = result.text;
-        newCset.summaryClassName = result.className;
-      } else {
-        console.error(`No overall_cur: ${ccSum}`);
-      }
-    } else if (res.status === 500) {
-      newCset.summary = res.statusText;
-    } else {
-      console.log(`Unexpected HTTP code (${res.status}) for ${newCset}`);
-    }
-    return newCset;
-  } catch (e) {
-    console.log(e);
-    console.log(`Failed to fetch data for ${cset.node}`);
-    return cset;
-  }
-};
 
 // Return list of changesets
 const pushesToCsets = async (pushes, hiddenDefault) => {

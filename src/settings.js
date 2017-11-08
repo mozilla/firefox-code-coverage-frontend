@@ -1,4 +1,4 @@
-const SETTINGS = {
+export const SETTINGS = {
   coverageThresholds: {
     low: {
       threshold: 20,
@@ -14,4 +14,4 @@ const SETTINGS = {
   },
 };
 
-export default SETTINGS;
+export const PENDING = 'Pending';
