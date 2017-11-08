@@ -9,6 +9,39 @@ const jsonHeaders = {
   Accept: 'application/json',
 };
 
+export const httpFetch = params =>
+  fetch(
+    params.url,
+    {
+      headers: params.headers || plainHeaders,
+      method: params.method || 'GET',
+      body: params.body,
+    },
+  )
+    .then((response) => {
+      if (response.status !== 200) {
+        throw Error(`Error status code${response.status}`);
+      }
+      return response.text();
+    })
+    .catch((error) => {
+      throw Error(`Problem fetching from URL${error}`);
+    })
+;
+
+export const jsonPost = params =>
+  httpFetch({
+    url: params.url,
+    headers: jsonHeaders,
+    method: 'POST',
+    body: JSON.stringify(params.body),
+  })
+    .then(response => JSON.parse(response))
+    .catch((error) => {
+      throw Error(`Problem fetching JSON from URL ${params.url}\n${error}`);
+    })
+;
+
 export const getDiff = changeset =>
   fetch(`${hgHost}/mozilla-central/raw-rev/${changeset}`, { plainHeaders });
 
@@ -23,44 +56,11 @@ export const getChangesetCoverageSummary = changeset =>
 
 // raw-file fetcher (fileviewer)
 export const getRawFile = (revision, path) => httpFetch({
-  url: `${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`
+  url: `${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`,
 });
 
 // query active data
-export const query = (query) => jsonPost({
+export const query = body => jsonPost({
   url: `${activeData}/query`,
-  body: query
+  body,
 });
-
-export const jsonPost = (params) =>
-  httpFetch({
-    url: params.url,
-    headers: jsonHeaders,
-    method: "POST",
-    body: JSON.stringify(params.body)
-  })
-  .then(response => JSON.parse(response))
-  .catch(error => {
-    throw Error('Problem fetching JSON from URL ' + params.url + "\n" + error);
-  })
-;
-
-export const httpFetch = (params) =>
-  fetch(
-    params.url,
-    {
-      headers: params.headers || plainHeaders,
-      method: params.method || "GET",
-      body: params.body
-    }
-  )
-  .then(response => {
-    if (response.status !== 200) {
-      throw Error('Error status code' + response.status);
-    }
-    return response.text();
-  })
-  .catch(error => {
-    throw Error('Problem fetching from URL' + error);
-  })
-;
