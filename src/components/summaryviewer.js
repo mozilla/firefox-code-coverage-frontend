@@ -6,21 +6,9 @@ import ReactInterval from 'react-interval';
 import { coverageSummary } from './diffviewermeta';
 import * as FetchAPI from '../utils/fetch_data';
 import { arrayToMap, mapToArray } from '../utils/data';
+import SETTINGS from '../settings';
 
 const PENDING = 'Pending';
-const COV_BANDS = {
-  low: {
-    threshold: 20,
-    className: 'low-coverage',
-  },
-  medium: {
-    threshold: 70,
-    className: 'medium-coverage',
-  },
-  high: {
-    className: 'high-coverage',
-  },
-};
 
 const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, linkify, node, summary, summaryClassName } = changeset;
@@ -69,16 +57,18 @@ const PollingStatus = ({ pollingEnabled }) => (
 );
 
 const coverageSummaryText = (coverage) => {
+  const { coverageThresholds } = SETTINGS;
+  const { low, medium, high } = coverageThresholds;
   const s = coverageSummary(coverage);
   const result = { className: 'no-change', text: 'No changes' };
   if (typeof s.percentage !== 'undefined') {
     const perc = parseInt(s.percentage, 10);
-    if (perc < COV_BANDS.low.threshold) {
-      result.className = COV_BANDS.low.className;
-    } else if (perc < COV_BANDS.medium.threshold) {
-      result.className = COV_BANDS.medium.className;
+    if (perc < low.threshold) {
+      result.className = low.className;
+    } else if (perc < medium.threshold) {
+      result.className = medium.className;
     } else {
-      result.className = COV_BANDS.high.className;
+      result.className = high.className;
     }
     result.text = `${perc}% - ${s.coveredLines} lines covered out of ${s.addedLines} added`;
   }
