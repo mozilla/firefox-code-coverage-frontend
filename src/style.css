@@ -19,8 +19,32 @@ a {
 /* XXX: The lines inside of pre overrun if the window is very little */
 pre { margin: 0; }
 .codecoverage-diffviewer table,th,tr,td {
-		border-collapse: collapse;
-		padding: 0px;
+	border-collapse: collapse;
+	padding: 0px;
+}
+.return-home {
+	margin: 0em 0em 1em;
+}
+.coverage-meta {
+	display: flex;
+	flex-direction: column;
+	margin: 0em 0em 1em;
+	min-width: 530px;
+	max-width: 600px;
+}
+.coverage-meta-row {
+	display: flex;
+	justify-content: space-between;
+}
+.parent-meta-subtitle {
+	font-weight: 400;
+	text-align: left;
+}
+.meta {
+	flex-direction: row;
+}
+.meta-right {
+	text-align: right;
 }
 .diff-block {
 	border: 1px solid #eaeaea;
@@ -34,6 +58,7 @@ pre { margin: 0; }
 }
 .diff-file {
 	margin: 0em 0em 1em;
+	min-width: 530px;
 	width: 100%;
 }
 .file-path {

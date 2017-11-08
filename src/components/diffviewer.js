@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import * as FetchAPI from '../utils/fetch_data';
+import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
-import { DiffMeta, CoverageMeta } from './diffviewermeta';
+import * as FetchAPI from '../utils/fetch_data';
 
 const parse = require('parse-diff');
 
@@ -16,60 +16,63 @@ export default class DiffViewerContainer extends Component {
     super(props);
     this.state = {
       appError: undefined,
-      coverage: undefined,
+      csetMeta: {
+        coverage: undefined,
+      },
       parsedDiff: [],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { changeset } = this.props;
+    await this.fetchCsetData(changeset);
+  }
 
-    FetchAPI.getDiff(changeset)
-      .then(response =>
-        response.text())
-      .then(text =>
-        this.setState({ parsedDiff: parse(text) }))
-      .catch((error) => {
-        console.error(error);
-        this.setState({
-          appError: 'We did not manage to parse the diff correctly.',
-        });
+  async fetchCsetData(changeset) {
+    try {
+      this.setState({ csetMeta: await csetWithCcovData({ node: changeset }) });
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        appError: 'There was an error fetching the code coverage data.',
       });
+    }
 
-    FetchAPI.getChangesetCoverage(changeset)
-      .then(response =>
-        response.text())
-      .then(text =>
-        this.setState({ coverage: JSON.parse(text) }))
-      .catch((error) => {
-        console.error(error);
-        this.setState({
-          appError: 'There was an error fetching the code coverage data.',
-        });
+    try {
+      const text = await (await FetchAPI.getDiff(changeset)).text();
+      this.setState({ parsedDiff: parse(text) });
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        appError: 'We did not manage to parse the diff correctly.',
       });
+    }
   }
 
   render() {
-    const { changeset } = this.props;
-    const { appError, coverage, parsedDiff } = this.state;
+    const { appError, csetMeta, parsedDiff } = this.state;
     return (
       <DiffViewer
+        {...csetMeta}
         appError={appError}
-        changeset={changeset}
-        coverage={coverage}
         parsedDiff={parsedDiff}
       />
     );
   }
 }
 
-const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
-  <div className="page_body codecoverage-diffviewer">
-    <Link className="return-home" to="/">Return to main page</Link>
-    <DiffMeta changeset={changeset} />
-    <CoverageMeta coverage={coverage} parsedDiff={parsedDiff} />
+const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
+  <div className="codecoverage-diffviewer">
+    <div className="return-home"><Link to="/">Return to main page</Link></div>
+    {(coverage) &&
+      <CoverageMeta
+        {...coverage.parentMeta(coverage)}
+        {...coverage.diffMeta(node)}
+        coverage={coverage}
+        node={node}
+        summary={summary}
+      />}
     <span className="error_message">{appError}</span>
-    <br />
     {parsedDiff.map(diffBlock =>
       // We only push down the subset of code coverage data
       // applicable to a file
@@ -80,6 +83,30 @@ const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
           coverage={coverage}
         />
       ))}
+  </div>
+);
+
+const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summary }) => (
+  <div className="coverage-meta">
+    <div className="coverage-meta-row">
+      <span className="meta parent-meta-subtitle">Parent meta</span>
+      <span className="meta">
+        {`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}
+      </span>
+      <span className="meta meta-right">
+        <a href={pushlog} target="_blank">Push log</a>&nbsp;
+        <a href={gh} target="_blank">GitHub</a>&nbsp;
+        <a href={codecov} target="_blank">Codecov</a>
+      </span>
+    </div>
+    <div className="coverage-meta-row">
+      <span className="meta parent-meta-subtitle">Changeset meta</span>
+      <span className="meta">{summary}</span>
+      <span className="meta meta-right">
+        <a href={hgRev} target="_blank">Hg diff</a>&nbsp;
+        <a href={ccovBackend} target="_blank">Coverage backend</a>
+      </span>
+    </div>
   </div>
 );
 
