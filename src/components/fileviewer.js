@@ -17,8 +17,8 @@ export default class FileViewerContainer extends Component {
       appError: undefined,
       coverage: undefined,
       parsedFile: [],
+      testsPerLines: [],
       selectedLine: null,
-      testsPerLines: undefined,
     };
 
     this.setSelectedLine = this.setSelectedLine.bind(this)
@@ -64,14 +64,18 @@ export default class FileViewerContainer extends Component {
   /* Parse data returns from ActiveData */
   parseTestsCoverage(data) {
     console.log(data.length);
-    var stat = []
+    var stat = [];
+
+    // initial list for each coverable line
+    if (data.length > 0) {
+      const fileCov = data[0].source.file;
+      fileCov.covered.concat(fileCov.uncovered).forEach(line => {
+        stat[line] = [];
+      });
+    }
 
     data.forEach(d => {
-      const coveredLines = d.source.file.covered;
-      coveredLines.forEach(line => {
-        if (!stat[line]) {
-          stat[line] = [];
-        }
+      d.source.file.covered.forEach(line => {
         stat[line].push(d);
       });
     });
@@ -123,7 +127,7 @@ export default class FileViewerContainer extends Component {
 const FileViewer = ({ parsedFile, testsPerLines, onLineClick, selectedLine }) => {
   return (
     <div>
-      <table>
+      <table className="file_viewer">
         <tbody>
           {
             parsedFile.map((line, lineNumber) => (
@@ -133,6 +137,7 @@ const FileViewer = ({ parsedFile, testsPerLines, onLineClick, selectedLine }) =>
                 lineText={line}
                 onLineClick={onLineClick}
                 selectedLine={selectedLine}
+                testsPerLines={testsPerLines}
               />
             ))
           }
@@ -149,13 +154,26 @@ const Line = (props) => {
 
   let lineClass = "";
   if (props.selectedLine === props.lineNumber ) {
-    lineClass = "selected"
+    lineClass = "selected";
+  }
+
+  let nTests, coverage = "";
+  if (props.testsPerLines[props.lineNumber]) {
+    nTests = props.testsPerLines[props.lineNumber].length
+    if (nTests > 0) {
+      coverage = "hit";
+    } else {
+      coverage = "miss";
+    }
   }
 
   return (
-      <tr>
+      <tr className={`file_line ${coverage} ${lineClass}`}>
         <td className="file_line_number">{props.lineNumber}</td>
-        <td className={`file_line_text ${lineClass}`} onClick={handleOnClick}><pre>{props.lineText}</pre></td>
+        <td className="file_line_tests">
+          { coverage === "hit" ? <span className="tests">{nTests}</span> : null }
+        </td>
+        <td className="file_line_text" onClick={handleOnClick}><pre>{props.lineText}</pre></td>
       </tr>
   );
 };
