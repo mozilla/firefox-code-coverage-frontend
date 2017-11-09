@@ -173,28 +173,29 @@ const DiffBlock = ({ filePath, block, coverageInfo }) => (
 
 /* A DiffLine contains metadata about a line in a DiffBlock */
 const DiffLine = ({ change, coverageInfo, id }) => {
-  // Information about the line itself
-  const c = change;
-  // Added, deleted or unchanged line
-  const changeType = change.type;
-  // CSS tr and td classes
-  let rowClass = 'nolinechange';
+  const c = change; // Information about the line itself
+  const changeType = change.type; // Added, deleted or unchanged line
+  let rowClass = 'nolinechange'; // CSS tr and td classes
   const rowId = id;
-  // Cell contents
-  let [oldLineNumber, newLineNumber] = ['', ''];
+  let [oldLineNumber, newLineNumber] = ['', '']; // Cell contents
 
   if (changeType === 'add') {
     // Added line - <blank> | <new line number>
     if (coverageInfo) {
-      const { coverage } = coverageInfo.changes.find(lineCovInfo =>
-        (lineCovInfo.line === c.ln));
+      try {
+        const { coverage } = coverageInfo.changes.find(lineCovInfo =>
+          (lineCovInfo.line === c.ln));
 
-      if (coverage === 'Y') {
-        rowClass = 'hit';
-      } else if (coverage === '?') {
-        rowClass = 'nolinechange';
-      } else {
-        rowClass = 'miss'; // Let's start assuming a miss
+        if (coverage === 'Y') {
+          rowClass = 'hit';
+        } else if (coverage === '?') {
+          rowClass = 'nolinechange';
+        } else {
+          rowClass = 'miss'; // Let's start assuming a miss
+        }
+      } catch (e) {
+        console.log(e);
+        rowClass = 'miss';
       }
     }
     newLineNumber = c.ln;
