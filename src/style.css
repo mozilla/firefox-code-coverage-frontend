@@ -1,45 +1,87 @@
+/*
+ *   CSS colours based on https://mozilla.ninja/visualelements/
+ */
 body {
-	font-family: sans-serif;
-	font-size: 12px;
-	margin:20px;
+	font-family: 'Fira Sans', sans-serif;
+	font-size: 14px;
+	font-weight: 300;
+	margin: 20px;
+	white-space: nowrap;
 }
+
+a {
+	color: #ff4f5e; /* Warm red */
+}
+
+/*
+ *  CSS for diff viewer
+ */
 /* XXX: The lines inside of pre overrun if the window is very little */
 pre { margin: 0; }
-table.diffblock, th.diffblock, tr.diffblock, td.diffblock {
+.codecoverage-diffviewer table,th,tr,td {
 	border-collapse: collapse;
+	padding: 0px;
 }
-td.line_content, td.new_line_number, td.old_line_number {
-	border-right:1px solid #eaeaea;
-	color: #85878c;
-	padding: 1px;
+.return-home {
+	margin: 0em 0em 1em;
 }
-td.new_line_number, td.old_line_number {
-	text-align: right
+.coverage-meta {
+	display: flex;
+	flex-direction: column;
+	margin: 0em 0em 1em;
+	min-width: 530px;
+	max-width: 600px;
 }
-.difffile {
-	border:1px solid #eaeaea;
+.coverage-meta-row {
+	display: flex;
+	justify-content: space-between;
 }
-.filepath {
-	display: inline;
+.parent-meta-subtitle {
+	font-weight: 400;
+	text-align: left;
 }
-.filesummary, .diffblock, .difflineat {
-	border-bottom:1px solid #eaeaea;
+.meta {
+	flex-direction: row;
 }
-.difflineat {
-	border-bottom:1px solid #eaeaea;
-	color:#990099;
+.meta-right {
+	text-align: right;
 }
-.diffblock {
+.diff-block {
+	border: 1px solid #eaeaea;
+}
+.diff-block-table {
+	margin: 0.5em;
+}
+.diff-cell {
+	color: #959595; /* Dark grey */
+	padding: 0px 0.4em 0px 0px;
+}
+.diff-file {
+	margin: 0em 0em 1em;
+	min-width: 530px;
 	width: 100%;
+}
+.file-path {
+	color: white;
+	font-weight: bold;
+}
+.file-summary {
+	background-color: black;
+	padding: 0.8em;
+}
+.diff-line-at {
+	background-color: #959595; /* Dark grey */
+	font-weight: 400;
+	padding: 0.3em;
 }
 /* Diff viewer meta */
 .diff-meta, .net-coverage-meta, .parent-meta {
 	margin-bottom: 10px;
 }
 .net-lines-coverage-change {
+	display: block;
 	font-weight: bold;
 	font-size: 14px;
-	display: block;
 }
 /* Line coverage status*/
 .hit, .miss, .nocovchange {
@@ -55,14 +97,35 @@ td.new_line_number, td.old_line_number {
 	background-color:#fff;
 }
 /* Line numbers */
-.old_line_number,.new_line_number {
-	width: 25px;
+.old-line-number, .new-line-number {
+	text-align: right
 }
-.line_content {
-	border-right:0px;
+
+/*
+ *  CSS for main view
+ */
+.app-disclaimer {
+	background-color: #54ffbd;
+	background-color: rgba(84, 255, 189, 0.1);
+	font-style: italic;
+	margin: 0em 0em 1em;
+	padding: 1em;
 }
-/* Error messages */
-.error_message {
+.polling-status {
+	/* Lemon yellow */
+	background-color: #fff44f; /* Fallback */
+	background-color: rgba(255, 244, 79, 0.3);
+	font-style: italic;
+	font-weight: 400;
+	margin: 0em 0em 1em;
+	padding: 1em;
+	text-align: center;
+}
+.changeset-viewer {
+	border-spacing: 0px;
+	margin: auto;
+}
+.error-message {
 	color:#ff0000
 }
 
@@ -71,7 +134,24 @@ td.new_line_number, td.old_line_number {
 	display: none
 }
 
-
+.changeset-summary {
+	text-align: center;
+}
+.low-coverage {
+	/* Warm red */
+	background-color: #ff4f5e; /* Fallback */
+	background-color: rgba(255, 79, 94, 0.3);
+}
+.medium-coverage {
+	/* Lemon yellow */
+	background-color: #fff44f; /* Fallback */
+	background-color: rgba(255, 244, 79, 0.3);
+}
+.high-coverage {
+	/* Neon green */
+	background-color: #54ffbd; /* Fallback */
+	background-color: rgba(84, 255, 189, 0.3);
+}
 
 
 /* Styling for file view. TODO merge with app. */

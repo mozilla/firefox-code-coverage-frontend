@@ -1,59 +1,59 @@
-import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import React, { Component } from 'react';
+import ReactInterval from 'react-interval';
 
-import * as FetchAPI from '../fetch_data';
+import * as FetchAPI from '../utils/fetch_data';
+import { PENDING } from '../settings';
+import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
-const ChangesetInfo = ({ changeset, push }) => {
-  const { author, node, desc, showInfo } = changeset;
-  const { linkify, summary } = push;
+const ChangesetInfo = ({ changeset }) => {
+  const { author, desc, hidden, linkify, node, summary, summaryClassName } = changeset;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   // XXX: linkify bug numbers
   return (
-    <tr className="changeset">
-      <td className="changeset-author">
-        {author.substring(0, 22)}</td>
-      <td className="changeset-node-id">
-        {(linkify) ?
-          <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
-          : <span>{node.substring(0, 12)}</span>}
+    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
+      <td className="changeset-author">{author.substring(0, 22)}</td>
+      <td className="changeset-node-id">{(linkify) ?
+        <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
+        : <span>{node.substring(0, 12)}</span>}
       </td>
-      <td className="changeset-description">
-        {desc.substring(0, 40)}</td>
-      <td className="changeset-info">
-        {(summary && showInfo && summary.error) &&
-          <span>{summary.error}</span>
-        }
-        {(summary && showInfo && summary.overall_cur) &&
-          <span>{summary.overall_cur}</span>
-        }
-      </td>
+      <td className="changeset-description">{desc.substring(0, 40)}</td>
+      <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
     </tr>
   );
 };
 
-const ChangesetsViewer = ({ changesets, pushes, onClick }) => (
-  <table>
-    <tbody>
-      <tr>
-        <th>Author</th>
-        <th>Changeset</th>
-        <th>Description</th>
-        <th>Coverage summary</th>
-      </tr>
-      {changesets.map(cset => (
-        <ChangesetInfo
-          key={cset.node}
-          changeset={cset}
-          push={pushes[cset.pushId]}
-          onClick={onClick}
-        />
-      ))}
-    </tbody>
-  </table>
+const ChangesetsViewer = ({ changesets }) => (
+  (changesets.length > 0) ?
+    (<table className="changeset-viewer">
+      <tbody>
+        <tr>
+          <th>Author</th>
+          <th>Changeset</th>
+          <th>Description</th>
+          <th>Coverage summary</th>
+        </tr>
+        {Object.keys(changesets).map(node => (
+          <ChangesetInfo
+            key={node}
+            changeset={changesets[node]}
+          />
+        ))}
+      </tbody>
+    </table>) : null
 );
 
-const processJsonPushes = (pushes) => {
+const PollingStatus = ({ pollingEnabled }) => (
+  (pollingEnabled) ?
+    (<div className="polling-status"> {pollingEnabled}
+      Some changesets are still being processed and we are actively
+      polling them until we get a result.
+    </div>) : (null)
+);
+
+// Return list of changesets
+const pushesToCsets = async (pushes, hiddenDefault) => {
   const ignore = ({ desc, author }) => {
     if (
       (author.includes('ffxbld')) ||
@@ -66,166 +66,118 @@ const processJsonPushes = (pushes) => {
 
     return false;
   };
-  // In here we're flattening the data structure
-  // We're now going to have an array of changeset
-  // and each changeset is going to have the original
-  // metadata explicitely declared
-  // This improves manipulating the data structure
   const filteredCsets = [];
-  const filteredPushes = {};
-
-  // Populate filteredPushes and filteredChangesets
   Object.keys(pushes).reverse().forEach((id) => {
-    const push = pushes[id];
     // Re-order csets and filter out those we don't want
-    const csets = push.changesets.reverse().filter(c => !ignore(c));
-    const lenCsets = csets.length - 1;
+    const csets = pushes[id].changesets.reverse().filter(c => !ignore(c));
+    const lenCsets = csets.length;
 
     if (lenCsets >= 1) {
-      // The firstcset changeset expected not to be a merge one
-      // Using firstcset terminology instead of tipmost to clarify
-      // that it does not necessarily have to be the original tipmost
-      // of a push
-      const firstcset = csets[lenCsets];
-      filteredPushes[id] = {
-        date: push.date,
-        numCsets: lenCsets,
-        firstcset: firstcset.node,
-        linkify: false,
-      };
-      csets.map((cset, position) => {
+      csets.forEach((cset) => {
         const newCset = {
           pushId: id,
+          hidden: hiddenDefault,
+          linkify: false,
           ...cset,
         };
-        if (position === 0 && lenCsets > 1) {
-          newCset.showInfo = true;
-        }
         filteredCsets.push(newCset);
-        return newCset;
       });
     }
   });
-  return {
-    csets: filteredCsets,
-    pushList: filteredPushes,
-  };
-};
-
-// XXX: For now, we can only make 1 request a time to the backend
-// or we will overwhelm it: https://github.com/mozilla-releng/services/issues/632
-// Recursively fetching one summary at a time
-const getSummaries = async (pushIds, pushes) => {
-  // We're expecting the list of pushIds to be sorted from highest to lowest
-  // since we grab the pushId from the end.
-  // This is because more recent pushes are likely not to have code coverage data.
-  const pushId = pushIds.pop();
-  if (!pushId) {
-    return {};
-  }
-
-  const push = pushes[pushId];
-  const processedPushes = {};
-  processedPushes[pushId] = {
-    ...push,
-  };
-
-  try {
-    console.log(`About to fetch ${pushId} (${push.firstcset})`);
-    // XXX: fetch does not support timeouts. I would like to add a 5 second
-    // timeout rather than wait Heroku's default 30 second timeout. Specially
-    // since we're doing sequential fetches.
-    // XXX: Wrap fetch() in a Promise; add a setTimeout and call reject() if
-    // it goes off, otherwise resolve with the result of the fetch()
-    const res = await FetchAPI.getChangesetCoverage(push.firstcset);
-    if (res.status === 202) {
-      processedPushes[pushId].summary = {
-        error: 'Pending',
-      };
-    } else if (res.status === 200) {
-      const ccSum = await res.json();
-      processedPushes[pushId].summary = ccSum;
-
-      if (ccSum.overall_cur) {
-        // We have coverage data, thus, adding links to the coverage diff viewer
-        processedPushes[pushId].linkify = true;
-      }
-    } else {
-      processedPushes[pushId].summary = {
-        error: res.statusText,
-      };
-    }
-  } catch (e) {
-    console.log(e);
-    processedPushes[pushId].summary = {
-      error: 'Failed to fetch.',
-    };
-  }
-
-  try {
-    const remainingSummaries = await getSummaries(pushIds, pushes);
-    return Object.assign(processedPushes, remainingSummaries);
-  } catch (e) {
-    // Once one fails; let's just stop and return the original list
-    return pushes;
-  }
+  // Separating into two blocks makes it easier to code
+  const newCsets = await Promise.all(filteredCsets
+    .map(async cset => csetWithCcovData(cset)));
+  return newCsets;
 };
 
 export default class ChangesetsViewerContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      changesets: [],
-      pushes: {},
+      changesets: {},
+      pollingEnabled: false, // We don't start polling until we're ready
       errorMessage: '',
+      hideCsetsWithNoCoverage: true,
+      timeout: 30000, // How often we poll for csets w/o coverage status
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { repoName } = this.props;
+    const { hideCsetsWithNoCoverage } = this.state;
+    this.fetchPushes(repoName, hideCsetsWithNoCoverage);
+  }
 
-    FetchAPI.getJsonPushes(repoName)
-      .then(response =>
-        response.json(),
-      ).then(async (text) => {
-        const { csets, pushList } = processJsonPushes(text.pushes);
-
-        this.setState({
-          changesets: csets,
-          pushes: pushList,
-        });
-
-        try {
-          // Ordered from lowest to higher
-          const pushIds = Object.keys(pushList).reverse();
-          const newPushes = await getSummaries(pushIds, pushList);
-          this.setState({
-            pushes: newPushes,
-          });
-        } catch (e) {
-          console.log(e);
-        }
-      }).catch((error) => {
-        console.log(error);
-        this.setState({
-          changesets: [],
-          pushes: {},
-          errorMessage: 'We have failed to fetch pushes.',
-        });
+  async fetchPushes(repoName, hideCsetsWithNoCoverage) {
+    try {
+      // Fetch last 10 pushes
+      const text = await (await FetchAPI.getJsonPushes(repoName)).json();
+      const csets = await pushesToCsets(text.pushes, hideCsetsWithNoCoverage);
+      console.log(`We have ${csets.length} changesets.`);
+      this.setState({
+        changesets: arrayToMap(csets),
+        pollingEnabled: csets.filter(c => c.summary === PENDING).length > 0,
       });
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        changesets: {},
+        pollingEnabled: false,
+        errorMessage: 'We have failed to fetch coverage data.',
+      });
+    }
+  }
+
+  // We poll on an interval for coverage for csets without it
+  async pollPending(changesets) {
+    console.log('Determine if we need to poll csets w/o coverage data...');
+    try {
+      let newCsets = mapToArray(changesets);
+      newCsets = await Promise.all(
+        newCsets.map((c) => {
+          if (c.summary !== PENDING) {
+            return c;
+          }
+          return csetWithCcovData(c);
+        }));
+      const count = newCsets.filter(c => c.summary === PENDING).length;
+      const csetsMap = arrayToMap(newCsets);
+      if (count === 0) {
+        console.log('No more polling required.');
+        this.setState({ changesets: csetsMap, pollingEnabled: false });
+      } else {
+        this.setState({ changesets: csetsMap });
+      }
+    } catch (e) {
+      this.setState({ pollingEnabled: false });
+    }
   }
 
   render() {
-    const { errorMessage, changesets, pushes } = this.state;
+    const { changesets, pollingEnabled, errorMessage, timeout } = this.state;
     if (errorMessage) {
-      return (<div className="errorMessage">{errorMessage}</div>);
+      return (<div className="error-message">{errorMessage}</div>);
     }
+    const viewableCsets = mapToArray(changesets).filter(c => c.hidden === false);
 
     return (
-      <ChangesetsViewer
-        changesets={changesets}
-        pushes={pushes}
-      />
+      <div>
+        {pollingEnabled && (
+          <div>
+            <ReactInterval
+              timeout={timeout}
+              enabled={pollingEnabled}
+              callback={() => this.pollPending(changesets)}
+            />
+            <PollingStatus
+              pollingEnabled={pollingEnabled}
+            />
+          </div>
+        )}
+        <ChangesetsViewer
+          changesets={viewableCsets}
+        />
+      </div>
     );
   }
 }
