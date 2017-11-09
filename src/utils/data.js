@@ -18,21 +18,19 @@ const coverageSummary = (coverage) => {
     addedLines: 0,
     coveredLines: 0,
   };
-  if (coverage.diffs.length > 0) {
-    coverage.diffs.forEach((diff) => {
-      diff.changes.forEach((change) => {
-        if (change.coverage === 'Y') {
-          s.coveredLines += 1;
-        }
-        if (change.coverage !== '?') {
-          s.addedLines += 1;
-        }
-      });
-      s.percentage = (s.addedLines === 0) ?
-        undefined :
-        100 * (s.coveredLines / s.addedLines);
+  Object.keys(coverage.diffs).forEach((filePath) => {
+    Object.keys(coverage.diffs[filePath]).forEach((lineNumber) => {
+      const lineCoverage = coverage.diffs[filePath][lineNumber];
+      if (lineCoverage === 'Y') {
+        s.coveredLines += 1;
+      }
+      if (lineCoverage !== '?') {
+        s.addedLines += 1;
+      }
     });
-  }
+  });
+  s.percentage = (s.addedLines === 0) ?
+    undefined : 100 * (s.coveredLines / s.addedLines);
   return s;
 };
 
@@ -55,6 +53,31 @@ export const coverageSummaryText = (coverage) => {
   return result;
 };
 
+// We transform the data
+export const transformCoverageData = (cov) => {
+  /* We only want to transform the diffs entry in the data:
+    "diffs": [{
+        "changes": [{ "coverage": "?", "line": 413 }, ... ]
+        "name": "browser/extensions/formautofill/FormAutofillParent.jsm"
+      }]
+    to
+    "diffs": {
+      "browser/extensions/formautofill/FormAutofillParent.jsm": {
+        "413": "?",
+      }
+   */
+  const newCov = Object.assign({}, cov);
+  newCov.diffs = {};
+  cov.diffs.forEach(({ changes, name }) => {
+    const lines = {};
+    changes.forEach(({ coverage, line }) => {
+      lines[line] = coverage;
+    });
+    newCov.diffs[name] = lines;
+  });
+  return newCov;
+};
+
 export const csetWithCcovData = async (cset) => {
   if (!cset.node) {
     throw Error(`No node for cset: ${cset}`);
@@ -71,7 +94,7 @@ export const csetWithCcovData = async (cset) => {
       // This is the only case when we poll again
       newCset.summary = PENDING;
     } else if (res.status === 200) {
-      const coverageData = await res.json();
+      const coverageData = transformCoverageData(await res.json());
 
       // XXX: Document in which cases we would not have overall_cur
       if (coverageData.overall_cur) {
