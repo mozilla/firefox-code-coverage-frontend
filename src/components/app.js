@@ -5,21 +5,21 @@ import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
 import '../style.css';
 
+const REPO = 'https://github.com/armenzg/firefox-code-coverage-frontend';
+
 const AppDisclaimer = () => (
   <div className="app-disclaimer">
-    NOTE: This app is in an alpha state. There are some core issues we still
-    need to fix and until then we will list them in here.
-    <ul>
-      <li>The backend needs some refactoring for the endpoints not to timeout
-        often (<a href="https://github.com/mozilla-releng/services/issues/632">Issue 632</a>)
-      </li>
-      <li>Some changesets are not shown (Backouts, ffxbld & merges)</li>
-      <li>Links to some changesets are not guaranteed to have code coverage</li>
-    </ul>
-    <span>UI based on&nbsp;
-      <a href="https://github.com/armenzg/firefox-code-coverage-frontend">
-        Firefox code coverage frontend
-      </a></span>
+    <div>
+      <p>NOTE: This app is in beta state.</p>
+      <p>There are some core issues with regards to coverage collection. These are
+        explained in the project&apos;s&nbsp;
+        <a href={`${REPO}/blob/master/README.md#disclaimers`}>readme</a>.</p>
+    </div>
+    <div>
+      Project information: <a href={REPO}>Frontend repository</a>&nbsp;
+      <a href={`${REPO}/issues?q=is%3Aissue+is%3Aopen+label%3Abug`}>Known issues</a>
+    </div>
+
   </div>
 );
 
