@@ -4,41 +4,37 @@ import React from 'react';
 const _ = require('lodash');
 
 /* Sidebar component, show which tests will cover the given selected line */
-export const TestsSideViewer = ({ coverage, lineNumber }) => {
+export const TestsSideViewer = ({ lineNumber, testsPerLines }) => {
   let content;
 
-  if (!coverage) {
+  if (!testsPerLines) {
     content = <h3>Fetching coverage from backend...</h3>;
   } else if (!lineNumber) {
     // TODO if no line has been selected, show coverage of the file
     content = <h3>Select a line to view tests</h3>;
+  } else if (testsPerLines[lineNumber] && testsPerLines[lineNumber].length > 0) {
+    content = (
+      <div>
+        <h3>Line: {lineNumber}</h3>
+        <ul>
+          {
+            testsPerLines[lineNumber].map(test =>
+              (<Test
+                key={test.run.name}
+                name={test.run.name}
+              />),
+            )
+          }
+        </ul>
+      </div>
+    );
   } else {
-    /* Parse coverage data returned from ActiveData to get the tests for a line */
-    const testThatCover = coverage.data.filter(d => d.source.file.covered.find(line => line === lineNumber));
-    if (testThatCover.length > 0) {
-      content = (
-        <div>
-          <h3>Line: {lineNumber}</h3>
-          <ul>
-            {
-              testThatCover.map(test =>
-                (<Test
-                  key={test.run.name}
-                  name={test.run.name}
-                />),
-              )
-            }
-          </ul>
-        </div>
-      );
-    } else {
-      content = (
-        <div className="tests_viewer">
-          <h3>Line: {lineNumber}</h3>
-          <p>No test covers this line</p>
-        </div>
-      );
-    }
+    content = (
+      <div className="tests_viewer">
+        <h3>Line: {lineNumber}</h3>
+        <p>No test covers this line</p>
+      </div>
+    );
   }
   return <div className="tests_viewer">{content}</div>;
 };
