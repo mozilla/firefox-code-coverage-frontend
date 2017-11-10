@@ -1,0 +1,14 @@
+{
+  "name": "Firefox code coverage diff viewer",
+  "description": "The Firefox code coverage diff viewer allows determining code coverage changes for added lines per changeset.",
+  "repository": {
+    "url": "https://github.com/armenzg/firefox-code-coverage-frontend",
+    "license": "MPL2"
+  },
+  "keywords": [
+    "CSS",
+    "HTML",
+    "Javascript",
+    "React",
+  ]
+}
