@@ -4,21 +4,21 @@ import React from 'react';
 const _ = require('lodash');
 
 /* Sidebar component, show which tests will cover the given selected line */
-export const TestsSideViewer = ({ lineNumber, testsPerLines }) => {
+export const TestsSideViewer = ({ coverage, lineNumber }) => {
   let content;
 
-  if (!testsPerLines) {
+  if (!coverage) {
     content = <h3>Fetching coverage from backend...</h3>;
   } else if (!lineNumber) {
     // TODO if no line has been selected, show coverage of the file
     content = <h3>Select a line to view tests</h3>;
-  } else if (testsPerLines[lineNumber] && testsPerLines[lineNumber].length > 0) {
+  } else if (coverage.testsPerHitLine[lineNumber]) {
     content = (
       <div>
         <h3>Line: {lineNumber}</h3>
         <ul>
           {
-            testsPerLines[lineNumber].map(test =>
+            coverage.testsPerHitLine[lineNumber].map(test =>
               (<Test
                 key={test.run.name}
                 name={test.run.name}
@@ -46,12 +46,10 @@ export const CoveragePercentageViewer = ({ coverage }) => {
   const percentageCovered = undefined;
 
   if (coverage) {
-    const totalCovered = _.union(_.flatten(coverage.data.map(d => d.source.file.covered)));
-    const uncovered = _.union(_.flatten(coverage.data.map(d => d.source.file.uncovered)));
-    const totalLines = _.union(uncovered, totalCovered).length;
+    const totalLines = _.union(coverage.uncoveredLines, coverage.coveredLines).length;
 
-    if (totalCovered !== 0 || uncovered !== 0) {
-      this.percentageCovered = totalCovered.length / totalLines;
+    if (coverage.coveredLines.length !== 0 || coverage.uncoveredLines.length !== 0) {
+      this.percentageCovered = coverage.coveredLines.length / totalLines;
     } else {
       // this.percentageCovered is left undefined
     }

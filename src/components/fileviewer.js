@@ -15,9 +15,13 @@ export default class FileViewerContainer extends Component {
     super(props);
     this.state = {
       appError: undefined,
-      coverage: undefined,
       parsedFile: [],
-      testsPerLines: [],
+      coverage: {
+        coveredLines: [],
+        uncoveredLines: [],
+        testsPerHitLine: [],
+        testsPerMissLine: [],
+      },
       selectedLine: undefined,
     };
     this.setSelectedLine = this.setSelectedLine.bind(this);
@@ -53,8 +57,7 @@ export default class FileViewerContainer extends Component {
       format: 'list',
     })
       .then((data) => {
-        this.setState({ coverage: data });
-        this.parseTestsCoverage(data.data);
+        this.parseCoverage(data.data);
       });
   }
 
@@ -62,29 +65,43 @@ export default class FileViewerContainer extends Component {
     this.setState({ selectedLine: selectedLineNumber });
   }
 
-  /* Parse coverage data to get the tests for a line */
-  parseTestsCoverage(data) {
-    const lineMeta = [];
-
-    // initial list for each coverable line
-    if (data.length > 0) {
-      const fileCov = data[0].source.file;
-      _.union(fileCov.covered, fileCov.uncovered).forEach((line) => {
-        lineMeta[line] = [];
-      });
-    }
+  /* Parse coverage data */
+  parseCoverage(data) {
+    const covered = [];
+    const uncovered = [];
+    const testsPerHitLine = [];
+    const testsPerMissLine = [];
 
     data.forEach((d) => {
       d.source.file.covered.forEach((line) => {
-        lineMeta[line].push(d);
+        covered.push(line);
+        if (!testsPerHitLine[line]) {
+          testsPerHitLine[line] = [];
+        }
+        testsPerHitLine[line].push(d);
+      });
+      d.source.file.uncovered.forEach((line) => {
+        uncovered.push(line);
+        if (!testsPerMissLine[line]) {
+          testsPerMissLine[line] = [];
+        } else {
+          testsPerMissLine[line].push(d);
+        }
       });
     });
 
-    this.setState({ testsPerLines: lineMeta });
+    this.setState({
+      coverage: {
+        coveredLines: _.uniq(covered),
+        uncoveredLines: _.uniq(uncovered),
+        testsPerHitLine,
+        testsPerMissLine,
+      },
+    });
   }
 
   render() {
-    const { appError, coverage, parsedFile, selectedLine, testsPerLines } = this.state;
+    const { appError, parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
@@ -98,12 +115,12 @@ export default class FileViewerContainer extends Component {
         />
         <FileViewer
           parsedFile={parsedFile}
-          testsPerLines={testsPerLines}
+          coverage={coverage}
           onLineClick={this.setSelectedLine}
         />
         <TestsSideViewer
+          coverage={coverage}
           lineNumber={selectedLine}
-          testsPerLines={testsPerLines}
         />
       </div>
     );
@@ -111,7 +128,7 @@ export default class FileViewerContainer extends Component {
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, testsPerLines, onLineClick }) => (
+const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
   <div>
     <table>
       <tbody>
@@ -122,7 +139,7 @@ const FileViewer = ({ parsedFile, testsPerLines, onLineClick }) => (
               lineNumber={lineNumber + 1}
               lineText={line}
               onLineClick={onLineClick}
-              testsPerLines={testsPerLines}
+              coverage={coverage}
             />
           ))
         }
@@ -140,9 +157,13 @@ const Line = (props) => {
 
   let nTests;
   let coverage = '';
-  if (props.testsPerLines[props.lineNumber]) {
-    nTests = props.testsPerLines[props.lineNumber].length;
-    coverage = nTests > 0 ? 'hit' : 'miss';
+  if (props.coverage) {
+    if (props.coverage.testsPerHitLine[props.lineNumber]) {
+      nTests = props.coverage.testsPerHitLine[props.lineNumber].length;
+      coverage = 'hit';
+    } else if (props.coverage.testsPerMissLine[props.lineNumber]) {
+      coverage = 'miss';
+    }
   }
 
   return (
