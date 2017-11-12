@@ -80,7 +80,9 @@ export default class FileViewerContainer extends Component {
         }
         testsPerHitLine[line].push(d);
       });
+    });
 
+    data.forEach((d) => {
       d.source.file.uncovered.forEach((line) => {
         if (!testsPerHitLine[line]) {
           uncovered.push(line);
@@ -90,7 +92,7 @@ export default class FileViewerContainer extends Component {
           testsPerMissLine[line].push(d);
         }
       });
-    });
+    })
 
     this.setState({
       coverage: {

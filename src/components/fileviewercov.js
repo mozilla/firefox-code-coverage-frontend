@@ -46,7 +46,7 @@ export const CoveragePercentageViewer = ({ coverage }) => {
   const percentageCovered = undefined;
 
   if (coverage) {
-    const totalLines = _.union(coverage.uncoveredLines, coverage.coveredLines).length;
+    const totalLines = coverage.uncoveredLines.length + coverage.coveredLines.length;
 
     if (coverage.coveredLines.length !== 0 || coverage.uncoveredLines.length !== 0) {
       this.percentageCovered = coverage.coveredLines.length / totalLines;
