@@ -80,11 +80,13 @@ export default class FileViewerContainer extends Component {
         }
         testsPerHitLine[line].push(d);
       });
+
       d.source.file.uncovered.forEach((line) => {
-        uncovered.push(line);
-        if (!testsPerMissLine[line]) {
-          testsPerMissLine[line] = [];
-        } else {
+        if (!testsPerHitLine[line]) {
+          uncovered.push(line);
+          if (!testsPerMissLine[line]) {
+            testsPerMissLine[line] = [];
+          }
           testsPerMissLine[line].push(d);
         }
       });
