@@ -1,7 +1,7 @@
 /* This file contains coverage information for a particular revision of a source file */
 import React from 'react';
 
-import * as Colour from '../utils/colour';
+import * as Color from '../utils/color';
 
 const _ = require('lodash');
 
@@ -61,7 +61,7 @@ export const CoveragePercentageViewer = ({ coverage }) => {
     <div className="coverage_meta">
       <div className="coverage_meta_totals">
         {this.percentageCovered &&
-          <span className="percentage_covered" style={{ backgroundColor: `${Colour.getPercentCovColor(this.percentageCovered)}` }}>
+          <span className="percentage_covered" style={{ backgroundColor: `${Color.getPercentCovColor(this.percentageCovered)}` }}>
             { (this.percentageCovered * 100).toPrecision(4) }%
           </span>
         }
