@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
-import FileViewerContainer from './fileviewer'
+import FileViewerContainer from './fileviewer';
 import '../style.css';
 
 const AppDisclaimer = () => (
