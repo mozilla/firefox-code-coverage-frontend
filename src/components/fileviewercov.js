@@ -1,6 +1,8 @@
 /* This file contains coverage information for a particular revision of a source file */
 import React from 'react';
 
+import * as Colour from '../utils/colour';
+
 const _ = require('lodash');
 
 /* Sidebar component, show which tests will cover the given selected line */
@@ -59,8 +61,8 @@ export const CoveragePercentageViewer = ({ coverage }) => {
     <div className="coverage_meta">
       <div className="coverage_meta_totals">
         {this.percentageCovered &&
-          <span className="percentage_covered">
-            {(this.percentageCovered * 100).toPrecision(4)}%
+          <span className="percentage_covered" style={{ backgroundColor: `${Colour.getPercentCovColor(this.percentageCovered)}` }}>
+            { (this.percentageCovered * 100).toPrecision(4) }%
           </span>
         }
       </div>
