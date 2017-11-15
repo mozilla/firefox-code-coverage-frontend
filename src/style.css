@@ -232,12 +232,11 @@ div.coverage_meta_totals {
 
 span.percentage_covered {
 	border-radius: 0.25rem;
-	color: rgb(255, 255, 255);
+	color: rgb(0, 0, 0);
 	font-size: 1em;
 	padding-top: 0.6em;
 	padding-right: 0.8em;
 	padding-bottom: 0.6em;
 	padding-left: 0.8em;
 	margin: 0.05em;
-	background-color: #f071b0;
 }

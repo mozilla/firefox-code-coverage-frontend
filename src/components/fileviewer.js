@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 import * as FetchAPI from '../fetch_data';
-import { TestsSideViewer } from './fileviewercov';
+import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
 const queryString = require('query-string');
-const _ = require('lodash')
+const _ = require('lodash');
 
 /* FileViewer loads a raw file for a given revision from Mozilla's hg web.
  * It uses test coverage information from Active Data to show coverage
@@ -15,88 +15,97 @@ export default class FileViewerContainer extends Component {
     super(props);
     this.state = {
       appError: undefined,
-      coverage: undefined,
       parsedFile: [],
-      testsPerLines: [],
-      selectedLine: null,
+      coverage: {
+        coveredLines: [],
+        uncoveredLines: [],
+        testsPerHitLine: [],
+        testsPerMissLine: [],
+      },
+      selectedLine: undefined,
     };
-
-    this.setSelectedLine = this.setSelectedLine.bind(this)
-  }
-
-  componentDidMount() {
+    this.setSelectedLine = this.setSelectedLine.bind(this);
     /* get revision and path parameters from URL */
-    const parsedQuery = queryString.parse(this.props.location.search);
+    const parsedQuery = queryString.parse(props.location.search);
     if (!parsedQuery.revision || !parsedQuery.path) {
       this.setState({ appError: "Undefined URL query ('revision', 'path' fields are required)" });
     }
-    /* remove begining '/' in the path parameter */
+    /* remove beginning '/' in the path parameter */
     if (parsedQuery.path.startsWith('/')) {
       parsedQuery.path = parsedQuery.path.slice(1);
     }
-    this.revision = parsedQuery.revision
-    this.path = parsedQuery.path
+    this.revision = parsedQuery.revision;
+    this.path = parsedQuery.path;
+  }
 
+  componentDidMount() {
     /* Fetch source code from hg */
     FetchAPI.getRawFile(this.revision, this.path)
-      .then(text => this.setState({ parsedFile: text.split("\n") }))
+      .then(text => this.setState({ parsedFile: text.split('\n') }))
     ;
 
     /* Fetch coverages from ActiveData */
     FetchAPI.query({
-      "from": "coverage",
-      "where": {
-        "and": [
-          {"eq": {"source.file.name": `${this.path}`}},
-          {"eq": {"repo.changeset.id12": `${this.revision}`}}
-        ]
+      from: 'coverage',
+      where: {
+        and: [
+          { eq: { 'source.file.name': `${this.path}` } },
+          { eq: { 'repo.changeset.id12': `${this.revision}` } },
+        ],
       },
-      "limit": 1000,
-      "format": "list"
+      limit: 1000,
+      format: 'list',
     })
-    .then(data => {
-      console.log(data);
-      this.setState({coverage: data});
-      this.parseTestsCoverage(data.data);
-    });
+      .then((data) => {
+        this.parseCoverage(data.data);
+      });
   }
 
-  /* Parse data returns from ActiveData */
-  parseTestsCoverage(data) {
-    console.log(data.length);
-    var stat = [];
+  setSelectedLine(selectedLineNumber) {
+    this.setState({ selectedLine: selectedLineNumber });
+  }
 
-    // initial list for each coverable line
-    if (data.length > 0) {
-      const fileCov = data[0].source.file;
-      fileCov.covered.concat(fileCov.uncovered).forEach(line => {
-        stat[line] = [];
-      });
-    }
+  /* Parse coverage data */
+  parseCoverage(data) {
+    const covered = [];
+    const uncovered = [];
+    const testsPerHitLine = [];
+    const testsPerMissLine = [];
 
-    data.forEach(d => {
-      d.source.file.covered.forEach(line => {
-        stat[line].push(d);
+    data.forEach((d) => {
+      d.source.file.covered.forEach((line) => {
+        covered.push(line);
+        if (!testsPerHitLine[line]) {
+          testsPerHitLine[line] = [];
+        }
+        testsPerHitLine[line].push(d);
       });
     });
 
-    console.log(stat);
-    this.setState({testsPerLines: stat});
-  }
+    data.forEach((d) => {
+      d.source.file.uncovered.forEach((line) => {
+        if (!testsPerHitLine[line]) {
+          uncovered.push(line);
+          if (!testsPerMissLine[line]) {
+            testsPerMissLine[line] = [];
+          }
+          testsPerMissLine[line].push(d);
+        }
+      });
+    })
 
-  /* handle fileviewer's line onclick event */
-  setSelectedLine(lineNumber) {
-    console.log(lineNumber);
-    this.setState({selectedLine: lineNumber});
-    // if (this.state.selectedLine == lineNumber) {
-    //   this.setState({selectedLine: null})
-    // } else {
-    //   this.setState({selectedLine: lineNumber});
-    // }
+    this.setState({
+      coverage: {
+        coveredLines: _.uniq(covered),
+        uncoveredLines: _.uniq(uncovered),
+        testsPerHitLine,
+        testsPerMissLine,
+      },
+    });
   }
 
   render() {
-    const { appError, coverage, parsedFile } = this.state;
+    const { appError, parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
@@ -105,112 +114,77 @@ export default class FileViewerContainer extends Component {
           path={this.path}
           appError={appError}
         />
-        <CoverageMeta 
+        <CoveragePercentageViewer
           coverage={coverage}
         />
         <FileViewer
-          parsedFile={this.state.parsedFile}
-          testsPerLines={this.state.testsPerLines}
+          parsedFile={parsedFile}
+          coverage={coverage}
           onLineClick={this.setSelectedLine}
-          selectedLine={this.state.selectedLine}
         />
         <TestsSideViewer
-          testsPerLines={this.state.testsPerLines}
-          selectedLine={this.state.selectedLine}
+          coverage={coverage}
+          lineNumber={selectedLine}
         />
       </div>
     );
-  };
+  }
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, testsPerLines, onLineClick, selectedLine }) => {
-  return (
-    <div>
-      <table className="file_viewer">
-        <tbody>
-          {
-            parsedFile.map((line, lineNumber) => (
-              <Line
-                key={lineNumber}
-                lineNumber={lineNumber+1}
-                lineText={line}
-                onLineClick={onLineClick}
-                selectedLine={selectedLine}
-                testsPerLines={testsPerLines}
-              />
-            ))
-          }
-        </tbody>
-      </table>
-    </div>
-  );
-};
+const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
+  <div>
+    <table>
+      <tbody>
+        {
+          parsedFile.map((line, lineNumber) => (
+            <Line
+              key={lineNumber}
+              lineNumber={lineNumber + 1}
+              lineText={line}
+              onLineClick={onLineClick}
+              coverage={coverage}
+            />
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+);
 
 const Line = (props) => {
+  let lineClass = '';
   const handleOnClick = () => {
+    lineClass = 'selected';
     props.onLineClick(props.lineNumber);
-  }
+  };
 
-  let lineClass = "";
-  if (props.selectedLine === props.lineNumber ) {
-    lineClass = "selected";
-  }
-
-  let nTests, coverage = "";
-  if (props.testsPerLines[props.lineNumber]) {
-    nTests = props.testsPerLines[props.lineNumber].length
-    if (nTests > 0) {
-      coverage = "hit";
-    } else {
-      coverage = "miss";
+  let nTests;
+  let coverage = '';
+  if (props.coverage) {
+    if (props.coverage.testsPerHitLine[props.lineNumber]) {
+      nTests = props.coverage.testsPerHitLine[props.lineNumber].length;
+      coverage = 'hit';
+    } else if (props.coverage.testsPerMissLine[props.lineNumber]) {
+      coverage = 'miss';
     }
   }
 
   return (
-      <tr className={`file_line ${coverage} ${lineClass}`}>
-        <td className="file_line_number">{props.lineNumber}</td>
-        <td className="file_line_tests">
-          { coverage === "hit" ? <span className="tests">{nTests}</span> : null }
-        </td>
-        <td className="file_line_text" onClick={handleOnClick}><pre>{props.lineText}</pre></td>
-      </tr>
+    <tr className={`file_line ${coverage} ${lineClass}`}>
+      <td className="file_line_number">{props.lineNumber}</td>
+      <td className="file_line_tests">
+        { coverage === 'hit' && <span className="tests">{nTests}</span> }
+      </td>
+      <td className="file_line_text" onClick={handleOnClick}><pre>{props.lineText}</pre></td>
+    </tr>
   );
 };
-
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, appError }) => {
-  return (
-    <div>
-      {appError && <span className="error_message">{appError}</span>}
-      <h4>Revision number: {revision} <br/> Path: {path}</h4>
-    </div>
-  );
-};
-
-const CoverageMeta = ({ coverage }) => {
-  let percentageCovered = undefined;
-  
-  if (coverage) {
-    let totalCovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.covered)));
-    let uncovered = _.union(_.flatten(coverage.data.map((d) => d.source.file.uncovered)));
-    let totalLines = _.union(uncovered, totalCovered).length;
-
-    if (totalCovered !== 0 || uncovered !== 0) {
-      this.percentageCovered = totalCovered.length / totalLines;
-    } else {
-      //this.percentageCovered is left undefined
-    }
-  }
-
-  return (
-    <div className="coverage_meta">
-      <div className="coverage_meta_totals">
-        {this.percentageCovered && 
-          <span className="percentage_covered">{(this.percentageCovered * 100).toPrecision(4)}%</span>
-        }
-      </div>
-    </div>
-  );
-};
+const FileViewerMeta = ({ revision, path, appError }) => (
+  <div>
+    {appError && <span className="error_message">{appError}</span>}
+    <h4>Revision number: {revision} <br /> Path: {path}</h4>
+  </div>
+);
