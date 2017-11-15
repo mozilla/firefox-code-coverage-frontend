@@ -14,6 +14,18 @@ a {
 }
 
 /*
+ * CSS for diff viewer and file virwer
+ */
+.file-path {
+	color: white;
+	font-weight: bold;
+}
+.file-summary {
+	background-color: black;
+	padding: 0.8em;
+}
+
+/*
  *  CSS for diff viewer
  */
 /* XXX: The lines inside of pre overrun if the window is very little */
@@ -60,14 +72,6 @@ pre { margin: 0; }
 	margin: 0em 0em 1em;
 	min-width: 530px;
 	width: 100%;
-}
-.file-path {
-	color: white;
-	font-weight: bold;
-}
-.file-summary {
-	background-color: black;
-	padding: 0.8em;
 }
 .diff-line-at {
 	background-color: #959595; /* Dark grey */
@@ -154,45 +158,80 @@ pre { margin: 0; }
 }
 
 
-/* Styling for file view. TODO merge with app. */
-table.file_viewer {
-	border-spacing: 0;
-	border-collapse: collapse;
+/*
+ *  CSS for file viewer
+ */
+.file-meta-center {
+	background-color: #f5f9fa;
+	overflow: hidden;
+}
+.file-meta-status {
+	float: right;
+	border-bottom: 2px solid #3f87a6;
+	margin-top: 15px;
+	margin-right: 40px;
+}
+.file-meta-ul {
+	float: right;
+  padding: 0;
+	margin: 0;
+  width: auto;
+}
+.file-meta-li {
+	display: inline-block;
+	margin: 0 10px;
+	width: 140px;
+	font-weight: bold;
+}
+.file-meta-title {
+	font-weight: bold;
+	font-size: 2rem;
+	padding: 40px 40px 10px;
+}
+.file-meta-revision {
+	background-color: #959595; /* Dark grey */
+	font-weight: 400;
+	padding: 0.3em 0.8em;
 }
 
+.file-view {
+	display: inline-block;
+	min-width: 1000px;
+}
+.file-view-table {
+	border: 1px solid #eaeaea;
+	border-spacing: 0;
+	border-collapse: collapse;
+	display: block;
+	margin-top: 10px;
+}
 tr.file_line {
 	height: 18px;
 	border-bottom: 2px solid transparent;
 }
-
 tr.file_line:hover {
 	background-color: LightGrey;
 	/*border-bottom: 2px solid LightGrey;*/
 }
-
 tr.selected {
 	border-bottom: 2px solid Grey;
 }
-
-tr.hit {
+/*tr.hit {
 	background-color: #dfd;
 }
-
 tr.miss {
 	background-color: #ffe5e5;
-}
-
+}*/
 td.file_line_number, td.file_line_tests {
 	width: 40px;
 	border-right:1px solid #eaeaea;
 	color: Grey;
+	text-align: center;
 	/*padding: 1px;*/
 }
-
 td.file_line_text {
 	padding-left: 5px;
 }
-
 span.tests {
 	background: #21ba45;
   border-radius: 10px;
@@ -201,7 +240,7 @@ span.tests {
   text-align: center;
 	font-size: 0.9em;
 	padding: 2px;
-	margin-left: 5px;
+	/*margin-left: 5px;*/
 	min-width: 12px;
 }
 
@@ -212,14 +251,17 @@ span.tests {
 	bottom: 0;
 	right: 0;
 	width: 240px;
-	border-left: 2px solid #A0A0A0;
+	border-left: solid 6px #eaeff2;
+	border-image: linear-gradient(#fff, #eaeff2 20%, #eaeff2 80%, #fff) 10;
 	padding-left: 20px;
 }
 
+/* file view coverage percentage */
 div.coverage_meta {
-	height: 3.8em;
+	position: fixed;
+	top:20px;
+	right: 280px;
 }
-
 div.coverage_meta_totals {
 	border: 1px solid #d4d4d5;
 	border-radius: 0.20rem;
@@ -229,7 +271,6 @@ div.coverage_meta_totals {
 	padding-left: 0.3em;
 	float: right;
 }
-
 span.percentage_covered {
 	border-radius: 0.25rem;
 	color: rgb(0, 0, 0);
