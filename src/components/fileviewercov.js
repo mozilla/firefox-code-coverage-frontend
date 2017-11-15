@@ -17,11 +17,11 @@ export const TestsSideViewer = ({ coverage, lineNumber }) => {
         <h3>All test that cover this file</h3>
         <ul>
           {
-            coverage.allTests.map(test => 
+            coverage.allTests.map(test =>
               (<Test
                 key={test.run.name}
                 name={test.run.name}
-              />)
+              />),
             )
           }
         </ul>

@@ -70,12 +70,10 @@ export default class FileViewerContainer extends Component {
   parseCoverage(data) {
     const covered = [];
     const uncovered = [];
-    const allTests = [];
     const testsPerHitLine = [];
     const testsPerMissLine = [];
 
     data.forEach((d) => {
-      allTests.push(d);
       d.source.file.covered.forEach((line) => {
         covered.push(line);
         if (!testsPerHitLine[line]) {
@@ -101,7 +99,7 @@ export default class FileViewerContainer extends Component {
       coverage: {
         coveredLines: _.uniq(covered),
         uncoveredLines: _.uniq(uncovered),
-        allTests,
+        allTests: data,
         testsPerHitLine,
         testsPerMissLine,
       },
