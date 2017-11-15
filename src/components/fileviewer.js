@@ -120,6 +120,7 @@ export default class FileViewerContainer extends Component {
         <FileViewer
           parsedFile={parsedFile}
           coverage={coverage}
+          selectedLine={selectedLine}
           onLineClick={this.setSelectedLine}
         />
         <TestsSideViewer
@@ -132,9 +133,9 @@ export default class FileViewerContainer extends Component {
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
+const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   <div>
-    <table>
+    <table className="file_viewer">
       <tbody>
         {
           parsedFile.map((line, lineNumber) => (
@@ -142,8 +143,9 @@ const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
               key={lineNumber}
               lineNumber={lineNumber + 1}
               lineText={line}
-              onLineClick={onLineClick}
               coverage={coverage}
+              selectedLine={selectedLine}
+              onLineClick={onLineClick}
             />
           ))
         }
@@ -152,31 +154,33 @@ const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
   </div>
 );
 
-const Line = (props) => {
-  let lineClass = '';
+const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick  }) => {
   const handleOnClick = () => {
-    lineClass = 'selected';
-    props.onLineClick(props.lineNumber);
+    onLineClick(lineNumber);
   };
 
-  let nTests;
-  let coverage = '';
-  if (props.coverage) {
-    if (props.coverage.testsPerHitLine[props.lineNumber]) {
-      nTests = props.coverage.testsPerHitLine[props.lineNumber].length;
-      coverage = 'hit';
-    } else if (props.coverage.testsPerMissLine[props.lineNumber]) {
-      coverage = 'miss';
-    }
+  const lineClass = (lineNumber === selectedLine ) ? 'selected' : '';
+
+  let nTests, cov = '';
+  if (coverage.coveredLines.find( element => element === lineNumber )) {
+    cov = 'hit';
+    nTests = coverage.testsPerHitLine[lineNumber].length;
+  }
+  else if (coverage.uncoveredLines.find( element => element === lineNumber )) {
+    cov = 'miss';
   }
 
+
+  console.log(nTests);
+
+
   return (
-    <tr className={`file_line ${coverage} ${lineClass}`}>
-      <td className="file_line_number">{props.lineNumber}</td>
+    <tr className={`file_line ${cov} ${lineClass}`}>
+      <td className="file_line_number">{lineNumber}</td>
       <td className="file_line_tests">
-        { coverage === 'hit' && <span className="tests">{nTests}</span> }
+        { cov === 'hit' && <span className="tests">{nTests}</span> }
       </td>
-      <td className="file_line_text" onClick={handleOnClick}><pre>{props.lineText}</pre></td>
+      <td className="file_line_text" onClick={handleOnClick}><pre>{lineText}</pre></td>
     </tr>
   );
 };

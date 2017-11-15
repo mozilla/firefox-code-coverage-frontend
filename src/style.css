@@ -87,7 +87,6 @@ tr.file_line {
 
 tr.file_line:hover {
 	background-color: LightGrey;
-	/*border-bottom: 2px solid LightGrey;*/
 }
 
 tr.selected {
