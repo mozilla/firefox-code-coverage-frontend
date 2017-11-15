@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import * as FetchAPI from '../utils/fetch_data';
+import * as Color from '../utils/color';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
 const queryString = require('query-string');
@@ -23,6 +24,7 @@ export default class FileViewerContainer extends Component {
       coverage: {
         coveredLines: [],
         uncoveredLines: [],
+        allTests: [],
         testsPerHitLine: [],
         testsPerMissLine: [],
       },
@@ -109,6 +111,7 @@ export default class FileViewerContainer extends Component {
       coverage: {
         coveredLines: _.uniq(covered),
         uncoveredLines: _.uniq(uncovered),
+        allTests: data,
         testsPerHitLine,
         testsPerMissLine,
       },
@@ -182,8 +185,16 @@ const Line = (props) => {
     }
   }
 
+  // default line color
+  let color = '#ffffff';
+  if (nTests) {
+    // normalize nTest to a score between 0 and 1 where 1 is the maximum number of tests
+    const nTestNorm = nTests / props.coverage.allTests.length;
+    color = Color.getLineHitCovColor(nTestNorm);
+  }
+
   return (
-    <tr className={`file_line ${coverage} ${lineClass}`}>
+    <tr className={`file_line ${lineClass}`} style={{ backgroundColor: `${color}` }}>
       <td className="file_line_number">{props.lineNumber}</td>
       <td className="file_line_tests">
         { coverage === 'hit' && <span className="tests">{nTests}</span> }
