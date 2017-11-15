@@ -12,8 +12,21 @@ export const TestsSideViewer = ({ coverage, lineNumber }) => {
   if (!coverage) {
     content = <h3>Fetching coverage from backend...</h3>;
   } else if (!lineNumber) {
-    // TODO if no line has been selected, show coverage of the file
-    content = <h3>Select a line to view tests</h3>;
+    content = (
+      <div>
+        <h3>All test that cover this file</h3>
+        <ul>
+          {
+            coverage.allTests.map(test =>
+              (<Test
+                key={test.run.name}
+                name={test.run.name}
+              />),
+            )
+          }
+        </ul>
+      </div>
+    );
   } else if (coverage.testsPerHitLine[lineNumber]) {
     content = (
       <div>
