@@ -246,6 +246,7 @@ span.tests {
 	border-left: solid 6px #eaeff2;
 	border-image: linear-gradient(#fff, #eaeff2 20%, #eaeff2 80%, #fff) 10;
 	padding-left: 20px;
+	overflow-y: scroll;
 }
 
 /* file view coverage percentage */
