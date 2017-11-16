@@ -47,10 +47,10 @@ export default class FileViewerContainer extends Component {
   componentDidMount() {
     /* Fetch source code from hg */
     FetchAPI.getRawFile(this.revision, this.path)
-      .then(text => {
+      .then((text) => {
         const fetchStatus = this.state.fetchStatus;
         fetchStatus.sourceCode = true;
-        this.setState({ parsedFile: text.split('\n'), fetchStatus })
+        this.setState({ parsedFile: text.split('\n'), fetchStatus });
       })
     ;
 
@@ -102,7 +102,7 @@ export default class FileViewerContainer extends Component {
           testsPerMissLine[line].push(d);
         }
       });
-    })
+    });
 
     const fetchStatus = this.state.fetchStatus;
     fetchStatus.testCoverage = true;
@@ -169,51 +169,51 @@ const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   </table>
 );
 
-const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick  }) => {
+const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => {
   const handleOnClick = () => {
     onLineClick(lineNumber);
   };
 
-  const lineClass = (lineNumber === selectedLine ) ? 'selected' : 'unselected';
+  const lineClass = (lineNumber === selectedLine) ? 'selected' : 'unselected';
 
   // default line color
-  let nTests, color = '#ffffff';
+  let nTests;
+  let color = '#ffffff';
   // hit line
-  if (coverage.coveredLines.find( element => element === lineNumber )) {
+  if (coverage.coveredLines.find(element => element === lineNumber)) {
     nTests = coverage.testsPerHitLine[lineNumber].length;
     color = Color.getLineHitCovColor(nTests / coverage.allTests.length);
   }
   // miss line
-  else if (coverage.uncoveredLines.find( element => element === lineNumber )) {
-    color = "#ffe5e5";
+  else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
+    color = '#ffe5e5';
   }
 
   return (
-    <tr className={`file_line ${lineClass}`} style={{ backgroundColor: `${color}` }}>
+    <tr className={`file_line ${lineClass}`} onClick={handleOnClick} style={{ backgroundColor: `${color}` }}>
       <td className="file_line_number">{lineNumber}</td>
       <td className="file_line_tests">
         { nTests && <span className="tests">{nTests}</span> }
       </td>
-      <td className="file_line_text" onClick={handleOnClick}><pre>{lineText}</pre></td>
+      <td className="file_line_text"><pre>{lineText}</pre></td>
     </tr>
   );
 };
 
 /* This component contains metadata of the file */
 const FileViewerMeta = ({ revision, path, appError, fetchStatus }) => {
-
   const showStatus = (label, status) => {
-    const msg = status ? <span>&#x2714;</span> : "Fetching...";
-    return ( <li className="file-meta-li">{label}: {msg}</li> );
-  }
+    const msg = status ? <span>&#x2714;</span> : 'Fetching...';
+    return (<li className="file-meta-li">{label}: {msg}</li>);
+  };
 
   return (
     <div>
       <div className="file-meta-center">
         <div className="file-meta-status">
           <ul className="file-meta-ul">
-            { showStatus("Source code", fetchStatus.sourceCode) }
-            { showStatus("Coverage", fetchStatus.testCoverage) }
+            { showStatus('Source code', fetchStatus.sourceCode) }
+            { showStatus('Coverage', fetchStatus.testCoverage) }
           </ul>
         </div>
         <div className="file-meta-title">File Coverage</div>
