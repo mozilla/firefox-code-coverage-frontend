@@ -162,12 +162,12 @@ pre { margin: 0; }
  *  CSS for file viewer
  */
 .file-meta-center {
-	background-color: #f5f9fa;
+	background-color: #f5f9fa; /* Light blue */
 	overflow: hidden;
 }
 .file-meta-status {
 	float: right;
-	border-bottom: 2px solid #3f87a6;
+	border-bottom: 2px solid #3f87a6; /* Dark blue */
 	margin-top: 15px;
 	margin-right: 40px;
 }
@@ -210,18 +210,11 @@ tr.file_line {
 	border-bottom: 2px solid transparent;
 }
 tr.file_line:hover {
-	background-color: LightGrey;
-	/*border-bottom: 2px solid LightGrey;*/
+	border-bottom: 2px solid #83d0f2; /* Sky blue */
 }
 tr.selected {
-	border-bottom: 2px solid Grey;
+	border-bottom: 2px solid #3f87a6 !important; /* Dark blue */
 }
-/*tr.hit {
-	background-color: #dfd;
-}
-tr.miss {
-	background-color: #ffe5e5;
-}*/
 td.file_line_number, td.file_line_tests {
 	width: 40px;
 	border-right:1px solid #eaeaea;
@@ -238,10 +231,9 @@ span.tests {
   color: #ffffff;
 	display: inline-block;
   text-align: center;
-	font-size: 0.9em;
-	padding: 2px;
-	/*margin-left: 5px;*/
-	min-width: 12px;
+	font-size: 0.8em;
+	padding: 1.5px;
+	min-width: 13px;
 }
 
 /* file view right-siderbar */

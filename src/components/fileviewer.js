@@ -133,6 +133,7 @@ export default class FileViewerContainer extends Component {
           <FileViewer
             parsedFile={parsedFile}
             coverage={coverage}
+            selectedLine={selectedLine}
             onLineClick={this.setSelectedLine}
           />
         </div>
@@ -149,7 +150,7 @@ export default class FileViewerContainer extends Component {
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
+const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   <table className="file-view-table">
     <tbody>
       {
@@ -158,8 +159,9 @@ const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
             key={lineNumber}
             lineNumber={lineNumber + 1}
             lineText={line}
-            onLineClick={onLineClick}
             coverage={coverage}
+            selectedLine={selectedLine}
+            onLineClick={onLineClick}
           />
         ))
       }
@@ -167,39 +169,32 @@ const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
   </table>
 );
 
-const Line = (props) => {
-  let lineClass = '';
+const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick  }) => {
   const handleOnClick = () => {
-    lineClass = 'selected';
-    props.onLineClick(props.lineNumber);
+    onLineClick(lineNumber);
   };
 
-  let nTests;
-  let coverage = '';
-  if (props.coverage) {
-    if (props.coverage.testsPerHitLine[props.lineNumber]) {
-      nTests = props.coverage.testsPerHitLine[props.lineNumber].length;
-      coverage = 'hit';
-    } else if (props.coverage.testsPerMissLine[props.lineNumber]) {
-      coverage = 'miss';
-    }
-  }
+  const lineClass = (lineNumber === selectedLine ) ? 'selected' : 'unselected';
 
   // default line color
-  let color = '#ffffff';
-  if (nTests) {
-    // normalize nTest to a score between 0 and 1 where 1 is the maximum number of tests
-    const nTestNorm = nTests / props.coverage.allTests.length;
-    color = Color.getLineHitCovColor(nTestNorm);
+  let nTests, color = '#ffffff';
+  // hit line
+  if (coverage.coveredLines.find( element => element === lineNumber )) {
+    nTests = coverage.testsPerHitLine[lineNumber].length;
+    color = Color.getLineHitCovColor(nTests / coverage.allTests.length);
+  }
+  // miss line
+  else if (coverage.uncoveredLines.find( element => element === lineNumber )) {
+    color = "#ffe5e5";
   }
 
   return (
     <tr className={`file_line ${lineClass}`} style={{ backgroundColor: `${color}` }}>
-      <td className="file_line_number">{props.lineNumber}</td>
+      <td className="file_line_number">{lineNumber}</td>
       <td className="file_line_tests">
-        { coverage === 'hit' && <span className="tests">{nTests}</span> }
+        { nTests && <span className="tests">{nTests}</span> }
       </td>
-      <td className="file_line_text" onClick={handleOnClick}><pre>{props.lineText}</pre></td>
+      <td className="file_line_text" onClick={handleOnClick}><pre>{lineText}</pre></td>
     </tr>
   );
 };
