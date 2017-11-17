@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import * as FetchAPI from '../fetch_data';
+import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
-import { DiffMeta, CoverageMeta } from './diffviewermeta';
+import * as FetchAPI from '../utils/fetch_data';
 
 const parse = require('parse-diff');
 
@@ -16,60 +16,63 @@ export default class DiffViewerContainer extends Component {
     super(props);
     this.state = {
       appError: undefined,
-      coverage: undefined,
+      csetMeta: {
+        coverage: undefined,
+      },
       parsedDiff: [],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { changeset } = this.props;
+    await this.fetchCsetData(changeset);
+  }
 
-    FetchAPI.getDiff(changeset)
-      .then(response =>
-        response.text())
-      .then(text =>
-        this.setState({ parsedDiff: parse(text) }))
-      .catch((error) => {
-        console.error(error);
-        this.setState({
-          appError: 'We did not manage to parse the diff correctly.',
-        });
+  async fetchCsetData(changeset) {
+    try {
+      this.setState({ csetMeta: await csetWithCcovData({ node: changeset }) });
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        appError: 'There was an error fetching the code coverage data.',
       });
+    }
 
-    FetchAPI.getChangesetCoverage(changeset)
-      .then(response =>
-        response.text())
-      .then(text =>
-        this.setState({ coverage: JSON.parse(text) }))
-      .catch((error) => {
-        console.error(error);
-        this.setState({
-          appError: 'There was an error fetching the code coverage data.',
-        });
+    try {
+      const text = await (await FetchAPI.getDiff(changeset)).text();
+      this.setState({ parsedDiff: parse(text) });
+    } catch (error) {
+      console.error(error);
+      this.setState({
+        appError: 'We did not manage to parse the diff correctly.',
       });
+    }
   }
 
   render() {
-    const { changeset } = this.props;
-    const { appError, coverage, parsedDiff } = this.state;
+    const { appError, csetMeta, parsedDiff } = this.state;
     return (
       <DiffViewer
+        {...csetMeta}
         appError={appError}
-        changeset={changeset}
-        coverage={coverage}
         parsedDiff={parsedDiff}
       />
     );
   }
 }
 
-const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
-  <div className="page_body codecoverage-diffviewer">
-    <Link className="return-home" to="/">Return to main page</Link>
-    <DiffMeta changeset={changeset} />
-    <CoverageMeta coverage={coverage} parsedDiff={parsedDiff} />
+const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
+  <div className="codecoverage-diffviewer">
+    <div className="return-home"><Link to="/">Return to main page</Link></div>
+    {(coverage) &&
+      <CoverageMeta
+        {...coverage.parentMeta(coverage)}
+        {...coverage.diffMeta(node)}
+        coverage={coverage}
+        node={node}
+        summary={summary}
+      />}
     <span className="error_message">{appError}</span>
-    <br />
     {parsedDiff.map(diffBlock =>
       // We only push down the subset of code coverage data
       // applicable to a file
@@ -80,6 +83,30 @@ const DiffViewer = ({ appError, changeset, coverage, parsedDiff }) => (
           coverage={coverage}
         />
       ))}
+  </div>
+);
+
+const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summary }) => (
+  <div className="coverage-meta">
+    <div className="coverage-meta-row">
+      <span className="meta parent-meta-subtitle">Parent meta</span>
+      <span className="meta">
+        {`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}
+      </span>
+      <span className="meta meta-right">
+        <a href={pushlog} target="_blank">Push log</a>&nbsp;
+        <a href={gh} target="_blank">GitHub</a>&nbsp;
+        <a href={codecov} target="_blank">Codecov</a>
+      </span>
+    </div>
+    <div className="coverage-meta-row">
+      <span className="meta parent-meta-subtitle">Changeset meta</span>
+      <span className="meta">{summary}</span>
+      <span className="meta meta-right">
+        <a href={hgRev} target="_blank">Hg diff</a>&nbsp;
+        <a href={ccovBackend} target="_blank">Coverage backend</a>
+      </span>
+    </div>
   </div>
 );
 
@@ -94,9 +121,9 @@ const DiffFile = ({ coverage, diffBlock }) => {
   }
 
   return (
-    <div className="difffile">
-      <div className="filesummary">
-        <div className="filepath">{diffBlock.from}</div>
+    <div className="diff-file">
+      <div className="file-summary">
+        <div className="file-path">{diffBlock.from}</div>
       </div>
       {diffBlock.chunks.map(block => (
         <DiffBlock
@@ -124,21 +151,23 @@ const uniqueLineId = (filePath, change) => {
 
 /* A DiffBlock is *one* of the blocks changed for a specific file */
 const DiffBlock = ({ filePath, block, coverageInfo }) => (
-  <div className="diffblock">
-    <div className="difflineat">{block.content}</div>
-    <table className="diffblock">
-      <tbody>
-        {block.changes.map((change) => {
-          const uid = uniqueLineId(filePath, change);
-          return (<DiffLine
-            key={uid}
-            id={uid}
-            change={change}
-            coverageInfo={coverageInfo}
-          />);
-        })}
-      </tbody>
-    </table>
+  <div>
+    <div className="diff-line-at">{block.content}</div>
+    <div className="diff-block">
+      <table className="diff-block-table">
+        <tbody>
+          {block.changes.map((change) => {
+            const uid = uniqueLineId(filePath, change);
+            return (<DiffLine
+              key={uid}
+              id={uid}
+              change={change}
+              coverageInfo={coverageInfo}
+            />);
+          })}
+        </tbody>
+      </table>
+    </div>
   </div>
 );
 
@@ -181,10 +210,10 @@ const DiffLine = ({ change, coverageInfo, id }) => {
   }
 
   return (
-    <tr id={rowId} className={rowClass}>
-      <td className="old_line_number">{oldLineNumber}</td>
-      <td className="new_line_number">{newLineNumber}</td>
-      <td className="line_content">
+    <tr id={rowId} className={`${rowClass} diff-row`}>
+      <td className="old-line-number diff-cell">{oldLineNumber}</td>
+      <td className="new-line-number diff-cell">{newLineNumber}</td>
+      <td className="line-content diff-cell">
         <pre>{c.content}</pre>
       </td>
     </tr>

@@ -7,7 +7,7 @@ import FileViewerContainer from './fileviewer';
 import '../style.css';
 
 const AppDisclaimer = () => (
-  <div>
+  <div className="app-disclaimer">
     NOTE: This app is in an alpha state. There are some core issues we still
     need to fix and until then we will list them in here.
     <ul>
@@ -21,7 +21,6 @@ const AppDisclaimer = () => (
       <a href="https://github.com/armenzg/firefox-code-coverage-frontend">
         Firefox code coverage frontend
       </a></span>
-    <hr />
   </div>
 );
 

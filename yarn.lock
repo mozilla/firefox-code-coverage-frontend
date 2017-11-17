@@ -5382,6 +5382,12 @@ react-error-overlay@^2.0.2:
     settle-promise "1.0.0"
     source-map "0.5.6"
 
+react-interval@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-interval/-/react-interval-2.0.2.tgz#eb52690c79fde7125beaab6258e4d630d3f1f2ce"
+  dependencies:
+    prop-types "^15.6.0"
+
 react-router-dom@^4.1.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.2.2.tgz#c8a81df3adc58bba8a76782e946cbd4eae649b8d"

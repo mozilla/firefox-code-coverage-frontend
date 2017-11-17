@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import * as FetchAPI from '../fetch_data';
+import * as FetchAPI from '../utils/fetch_data';
 import * as Color from '../utils/color';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
@@ -16,6 +16,10 @@ export default class FileViewerContainer extends Component {
     super(props);
     this.state = {
       appError: undefined,
+      fetchStatus: {
+        sourceCode: false,
+        testCoverage: false,
+      },
       parsedFile: [],
       coverage: {
         coveredLines: [],
@@ -33,7 +37,7 @@ export default class FileViewerContainer extends Component {
       this.setState({ appError: "Undefined URL query ('revision', 'path' fields are required)" });
     }
     /* remove beginning '/' in the path parameter */
-    if (parsedQuery.path.startsWith('/')) {
+    else if (parsedQuery.path.startsWith('/')) {
       parsedQuery.path = parsedQuery.path.slice(1);
     }
     this.revision = parsedQuery.revision;
@@ -43,7 +47,11 @@ export default class FileViewerContainer extends Component {
   componentDidMount() {
     /* Fetch source code from hg */
     FetchAPI.getRawFile(this.revision, this.path)
-      .then(text => this.setState({ parsedFile: text.split('\n') }))
+      .then((text) => {
+        const fetchStatus = this.state.fetchStatus;
+        fetchStatus.sourceCode = true;
+        this.setState({ parsedFile: text.split('\n'), fetchStatus });
+      })
     ;
 
     /* Fetch coverages from ActiveData */
@@ -94,9 +102,12 @@ export default class FileViewerContainer extends Component {
           testsPerMissLine[line].push(d);
         }
       });
-    })
+    });
 
+    const fetchStatus = this.state.fetchStatus;
+    fetchStatus.testCoverage = true;
     this.setState({
+      fetchStatus,
       coverage: {
         coveredLines: _.uniq(covered),
         uncoveredLines: _.uniq(uncovered),
@@ -108,22 +119,26 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
-    const { appError, parsedFile, coverage, selectedLine } = this.state;
+    const { appError, fetchStatus, parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
-        <FileViewerMeta
-          revision={this.revision}
-          path={this.path}
-          appError={appError}
-        />
+        <div className="file-view">
+          <FileViewerMeta
+            revision={this.revision}
+            path={this.path}
+            appError={appError}
+            fetchStatus={fetchStatus}
+          />
+          <FileViewer
+            parsedFile={parsedFile}
+            coverage={coverage}
+            selectedLine={selectedLine}
+            onLineClick={this.setSelectedLine}
+          />
+        </div>
         <CoveragePercentageViewer
           coverage={coverage}
-        />
-        <FileViewer
-          parsedFile={parsedFile}
-          coverage={coverage}
-          onLineClick={this.setSelectedLine}
         />
         <TestsSideViewer
           coverage={coverage}
@@ -135,67 +150,78 @@ export default class FileViewerContainer extends Component {
 }
 
 /* This component renders each line of the file with its line number */
-const FileViewer = ({ parsedFile, coverage, onLineClick }) => (
-  <div>
-    <table>
-      <tbody>
-        {
-          parsedFile.map((line, lineNumber) => (
-            <Line
-              key={lineNumber}
-              lineNumber={lineNumber + 1}
-              lineText={line}
-              onLineClick={onLineClick}
-              coverage={coverage}
-            />
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
+const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
+  <table className="file-view-table">
+    <tbody>
+      {
+        parsedFile.map((line, lineNumber) => (
+          <Line
+            key={lineNumber}
+            lineNumber={lineNumber + 1}
+            lineText={line}
+            coverage={coverage}
+            selectedLine={selectedLine}
+            onLineClick={onLineClick}
+          />
+        ))
+      }
+    </tbody>
+  </table>
 );
 
-const Line = (props) => {
-  let lineClass = '';
+const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => {
   const handleOnClick = () => {
-    lineClass = 'selected';
-    props.onLineClick(props.lineNumber);
+    onLineClick(lineNumber);
   };
 
-  let nTests;
-  let coverage = '';
-  if (props.coverage) {
-    if (props.coverage.testsPerHitLine[props.lineNumber]) {
-      nTests = props.coverage.testsPerHitLine[props.lineNumber].length;
-      coverage = 'hit';
-    } else if (props.coverage.testsPerMissLine[props.lineNumber]) {
-      coverage = 'miss';
-    }
-  }
+  const lineClass = (lineNumber === selectedLine) ? 'selected' : 'unselected';
 
   // default line color
+  let nTests;
   let color = '#ffffff';
-  if (nTests) {
-    // normalize nTest to a score between 0 and 1 where 1 is the maximum number of tests
-    const nTestNorm = nTests / props.coverage.allTests.length;
-    color = Color.getLineHitCovColor(nTestNorm);
+  // hit line
+  if (coverage.coveredLines.find(element => element === lineNumber)) {
+    nTests = coverage.testsPerHitLine[lineNumber].length;
+    color = Color.getLineHitCovColor(nTests / coverage.allTests.length);
+  }
+  // miss line
+  else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
+    color = '#ffe5e5';
   }
 
   return (
-    <tr className={`file_line ${lineClass}`} style={{ backgroundColor: `${color}` }}>
-      <td className="file_line_number">{props.lineNumber}</td>
+    <tr className={`file_line ${lineClass}`} onClick={handleOnClick} style={{ backgroundColor: `${color}` }}>
+      <td className="file_line_number">{lineNumber}</td>
       <td className="file_line_tests">
-        { coverage === 'hit' && <span className="tests">{nTests}</span> }
+        { nTests && <span className="tests">{nTests}</span> }
       </td>
-      <td className="file_line_text" onClick={handleOnClick}><pre>{props.lineText}</pre></td>
+      <td className="file_line_text"><pre>{lineText}</pre></td>
     </tr>
   );
 };
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, appError }) => (
-  <div>
-    {appError && <span className="error_message">{appError}</span>}
-    <h4>Revision number: {revision} <br /> Path: {path}</h4>
-  </div>
-);
+const FileViewerMeta = ({ revision, path, appError, fetchStatus }) => {
+  const showStatus = (label, status) => {
+    const msg = status ? <span>&#x2714;</span> : 'Fetching...';
+    return (<li className="file-meta-li">{label}: {msg}</li>);
+  };
+
+  return (
+    <div>
+      <div className="file-meta-center">
+        <div className="file-meta-status">
+          <ul className="file-meta-ul">
+            { showStatus('Source code', fetchStatus.sourceCode) }
+            { showStatus('Coverage', fetchStatus.testCoverage) }
+          </ul>
+        </div>
+        <div className="file-meta-title">File Coverage</div>
+      </div>
+      {appError && <span className="error_message">{appError}</span>}
+
+      <div className="file-summary"><div className="file-path">{path}</div></div>
+      <div className="file-meta-revision">revision number: {revision}</div>
+    </div>
+  );
+};
