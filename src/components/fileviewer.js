@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import * as FetchAPI from '../utils/fetch_data';
 import * as Color from '../utils/color';
+import * as Log from '../utils/log';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
 const queryString = require('query-string');
