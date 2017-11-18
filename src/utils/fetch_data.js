@@ -9,38 +9,38 @@ const jsonHeaders = {
   Accept: 'application/json',
 };
 
-export const httpFetch = params =>
-  fetch(
-    params.url,
-    {
-      headers: params.headers || plainHeaders,
-      method: params.method || 'GET',
-      body: params.body,
-    },
-  )
-    .then((response) => {
-      if (response.status !== 200) {
-        throw Error(`Error status code${response.status}`);
-      }
-      return response.text();
-    })
-    .catch((error) => {
-      throw Error(`Problem fetching from URL${error}`);
-    })
-;
+async function httpFetch(params) {
+  try {
+    const response = await fetch(
+      params.url,
+      {
+        headers: params.headers || plainHeaders,
+        method: params.method || 'GET',
+        body: params.body,
+      },
+    );
+    if (response.status !== 200) {
+      throw Error(`Error status code${response.status}`);
+    }
+    return response.text();
+  } catch (error) {
+    throw Error(`Problem fetching from URL${error}`);
+  }
+}
 
-export const jsonPost = params =>
-  httpFetch({
-    url: params.url,
-    headers: jsonHeaders,
-    method: 'POST',
-    body: JSON.stringify(params.body),
-  })
-    .then(response => JSON.parse(response))
-    .catch((error) => {
-      throw Error(`Problem fetching JSON from URL ${params.url}\n${error}`);
-    })
-;
+async function jsonPost(params) {
+  try {
+    const response = await httpFetch({
+      url: params.url,
+      headers: jsonHeaders,
+      method: 'POST',
+      body: JSON.stringify(params.body),
+    });
+    return JSON.parse(response);
+  } catch (error) {
+    throw Error(`Problem fetching JSON from URL ${params.url}\n${error}`);
+  }
+}
 
 export const getDiff = changeset =>
   fetch(`${hgHost}/mozilla-central/raw-rev/${changeset}`, { plainHeaders });
