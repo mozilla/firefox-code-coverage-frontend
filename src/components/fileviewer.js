@@ -42,33 +42,21 @@ export default class FileViewerContainer extends Component {
     }
     this.revision = parsedQuery.revision;
     this.path = parsedQuery.path;
-
-    // ActiveData Query
-    this.query = {
-      from: 'coverage',
-      where: {
-        and: [
-          { eq: { 'source.file.name': `${this.path}` } },
-          { eq: { 'repo.changeset.id12': `${this.revision}` } },
-        ],
-      },
-      limit: 1000,
-      format: 'list',
-    };
   }
 
   async componentDidMount() {
-    await this.fetchData();
+    /* Get source code and coverage in parallel  */
+    await Promise.all([this.getSourceCode(), this.getCoverage()]);
   }
 
   setSelectedLine(selectedLineNumber) {
     this.setState({ selectedLine: selectedLineNumber });
   }
 
-  async fetchData() {
-    /* Fetch source code from hg */
+  /* Get source code from hg */
+  async getSourceCode(revision = this.revision, path = this.path) {
     try {
-      const text = await FetchAPI.getRawFile(this.revision, this.path);
+      const text = await FetchAPI.getRawFile(revision, path);
       this.setState({ parsedFile: text.split('\n'), srcFetchStatus: true });
     } catch (error) {
       console.error(error);
@@ -77,11 +65,23 @@ export default class FileViewerContainer extends Component {
         srcFetchStatus: false,
       });
     }
-    /* Fetch coverages from ActiveData */
+  }
+
+  /* Get coverages from ActiveData */
+  async getCoverage(revision = this.revision, path = this.path) {
     try {
-      const activeData = await FetchAPI.query(this.query);
-      this.parseCoverage(activeData.data);
-      this.setState({ covFetchstatus: true });
+      const activeData = await FetchAPI.query({
+        from: 'coverage',
+        where: {
+          and: [
+            { eq: { 'source.file.name': `${path}` } },
+            { eq: { 'repo.changeset.id12': `${revision}` } },
+          ],
+        },
+        limit: 1000,
+        format: 'list',
+      });
+      this.setState({ coverage: this.parseCoverage(activeData.data), covFetchstatus: true });
     } catch (error) {
       console.error(error);
       this.setState({
@@ -120,15 +120,13 @@ export default class FileViewerContainer extends Component {
       });
     });
 
-    this.setState({
-      coverage: {
-        coveredLines: _.uniq(covered),
-        uncoveredLines: _.uniq(uncovered),
-        allTests: data,
-        testsPerHitLine,
-        testsPerMissLine,
-      },
-    });
+    return {
+      coveredLines: _.uniq(covered),
+      uncoveredLines: _.uniq(uncovered),
+      allTests: data,
+      testsPerHitLine,
+      testsPerMissLine,
+    };
   }
 
   render() {
@@ -217,16 +215,16 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 /* This component contains metadata of the file */
 const FileViewerMeta = ({ revision, path, appError, srcFetchStatus, covFetchstatus }) => {
   const showStatus = (label, status) => {
-    let msg = 'Fetching...';
-    if (status === true) {
-      msg = <span>&#x2714;</span>; // heavy check mark
+    let msg;
+    if (status === undefined) {
+      msg = 'Fetching...';
+    } else if (status === true) {
+      msg = <span>&#x2714;</span>; // heavy checkmark
     } else if (status === false) {
       msg = <span>&#x2716;</span>; // heavy multiplication x
     }
     return (<li className="file-meta-li">{label}: {msg}</li>);
   };
-
-  console.log(appError);
 
   return (
     <div>
