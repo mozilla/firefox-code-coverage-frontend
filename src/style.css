@@ -193,6 +193,9 @@ pre { margin: 0; }
 	font-weight: 400;
 	padding: 0.3em 0.8em;
 }
+.error_message {
+	color: red;
+}
 
 .file-view {
 	display: inline-block;
