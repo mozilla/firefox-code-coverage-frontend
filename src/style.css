@@ -245,18 +245,70 @@ span.tests {
 	top: 0;
 	bottom: 0;
 	right: 0;
-	width: 240px;
+	width: 300px;
 	border-left: solid 6px #eaeff2;
-	border-image: linear-gradient(#fff, #eaeff2 20%, #eaeff2 80%, #fff) 10;
+	/*border-image: linear-gradient(#fff, #eaeff2 20%, #eaeff2 80%, #fff) 10;*/
 	padding-left: 20px;
-	overflow-y: scroll;
+	/*overflow-y: auto;*/
+	background-color: #f5f9fa; /* Light blue */
+}
+.tests-viewer-title {
+	display: inline-block;
+	color: white;
+	background-color: black;
+	font-weight: bold;
+	padding: 0.8em;
+	margin-top: 20px;
+	width: 250px;
+}
+.test-viewer-ul {
+	list-style-type: none;
+	padding: 0;
+	padding-top: 2px;
+	margin: 0;
+	margin-bottom: 10px;
+	border-top: 2px solid #3f87a6; /* Dark blue */
+	border-bottom: 2px solid #3f87a6;
+	/* make the test list scrollable */
+	position: fixed;
+	overflow-y: auto;
+	top: 110px;
+  bottom: 0;
+}
+.toggleable-test-title {
+	/*border-top: 1px solid #CCC;*/
+}
+.test-ptr {
+	display: inline-block;
+	transition: 0.2s;
+}
+.test-name {
+	display: inline-block;
+	padding: 0.5em;
+	text-align: center;
+	border-top: 1px solid #CCC;
+	color: #666;
+}
+.expand-test-info {
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.3s;
+}
+.test-detail-ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+.test-detail-ul span {
+	font-weight: bold;
+	margin-left: 15px;
 }
 
 /* file view coverage percentage */
 div.coverage_meta {
 	position: fixed;
 	top:20px;
-	right: 280px;
+	right: 340px;
 }
 div.coverage_meta_totals {
 	border: 1px solid #d4d4d5;
