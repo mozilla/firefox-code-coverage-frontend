@@ -17,10 +17,13 @@ export default class FileViewerContainer extends Component {
     super(props);
     this.state = {
       /* app status */
-      appError: undefined,
-      srcFetchStatus: undefined,
-      covFetchstatus: undefined,
-      selectedLine: undefined,
+      status: {
+        app: undefined,
+        fetch: {
+          source: undefined,
+          coverage: undefined,
+        },
+      },
       /* app data */
       parsedFile: [],
       coverage: {
@@ -30,12 +33,17 @@ export default class FileViewerContainer extends Component {
         testsPerHitLine: [],
         testsPerMissLine: [],
       },
+      selectedLine: undefined,
     };
     this.setSelectedLine = this.setSelectedLine.bind(this);
     /* get revision and path parameters from URL */
     const parsedQuery = queryString.parse(props.location.search);
     if (!parsedQuery.revision || !parsedQuery.path) {
-      this.setState({ appError: "Undefined URL query ('revision', 'path' fields are required)" });
+      this.setState({
+        status: {
+          app: "Undefined URL query ('revision', 'path' fields are required)",
+        },
+      });
     }
     /* remove beginning '/' in the path parameter */
     else if (parsedQuery.path.startsWith('/')) {
@@ -58,13 +66,26 @@ export default class FileViewerContainer extends Component {
   async getSourceCode(revision = this.revision, path = this.path) {
     try {
       const text = await FetchAPI.getRawFile(revision, path);
-      this.setState({ parsedFile: text.split('\n'), srcFetchStatus: true });
+      this.setState(prevState => ({
+        status: {
+          fetch: {
+            source: true,
+            coverage: prevState.status.fetch.coverage,
+          },
+        },
+        parsedFile: text.split('\n'),
+      }));
     } catch (error) {
       console.error(error);
-      this.setState({
-        appError: 'We did not manage to fetch source file from hg.mozilla',
-        srcFetchStatus: false,
-      });
+      this.setState(prevState => ({
+        status: {
+          app: 'We did not manage to fetch source file from hg.mozilla',
+          fetch: {
+            source: false,
+            coverage: prevState.status.fetch.coverage,
+          },
+        },
+      }));
     }
   }
 
@@ -82,13 +103,26 @@ export default class FileViewerContainer extends Component {
         limit: 1000,
         format: 'list',
       });
-      this.setState({ coverage: this.parseCoverage(activeData.data), covFetchstatus: true });
+      this.setState(prevState => ({
+        status: {
+          fetch: {
+            source: prevState.status.fetch.source,
+            coverage: true,
+          },
+        },
+        coverage: this.parseCoverage(activeData.data),
+      }));
     } catch (error) {
       console.error(error);
-      this.setState({
-        appError: 'We did not manage to fetch test coverage from ActiveData',
-        covFetchstatus: false,
-      });
+      this.setState(prevState => ({
+        status: {
+          app: 'We did not manage to fetch test coverage from ActiveData',
+          fetch: {
+            source: prevState.status.fetch.source,
+            coverage: false,
+          },
+        },
+      }));
     }
   }
 
@@ -131,7 +165,7 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
-    const { appError, srcFetchStatus, covFetchstatus, parsedFile, coverage, selectedLine } = this.state;
+    const { status, parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
@@ -139,9 +173,7 @@ export default class FileViewerContainer extends Component {
           <FileViewerMeta
             revision={this.revision}
             path={this.path}
-            appError={appError}
-            srcFetchStatus={srcFetchStatus}
-            covFetchstatus={covFetchstatus}
+            status={status}
           />
           <FileViewer
             parsedFile={parsedFile}
@@ -214,14 +246,14 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 };
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, appError, srcFetchStatus, covFetchstatus }) => {
-  const showStatus = (label, status) => {
+const FileViewerMeta = ({ revision, path, status }) => {
+  const showStatus = (label, fetched) => {
     let msg;
-    if (status === undefined) {
+    if (fetched === undefined) {
       msg = 'Fetching...';
-    } else if (status === true) {
+    } else if (fetched === true) {
       msg = <span>&#x2714;</span>; // heavy checkmark
-    } else if (status === false) {
+    } else if (fetched === false) {
       msg = <span>&#x2716;</span>; // heavy multiplication x
     }
     return (<li className="file-meta-li">{label}: {msg}</li>);
@@ -232,13 +264,13 @@ const FileViewerMeta = ({ revision, path, appError, srcFetchStatus, covFetchstat
       <div className="file-meta-center">
         <div className="file-meta-status">
           <ul className="file-meta-ul">
-            { showStatus('Source code', srcFetchStatus) }
-            { showStatus('Coverage', covFetchstatus) }
+            { showStatus('Source code', status.fetch.source) }
+            { showStatus('Coverage', status.fetch.coverage) }
           </ul>
         </div>
         <div className="file-meta-title">File Coverage</div>
       </div>
-      {appError && <span className="error_message">{appError}</span>}
+      {status.app && <span className="error_message">{status.app}</span>}
 
       <div className="file-summary"><div className="file-path">{path}</div></div>
       <div className="file-meta-revision">revision number: {revision}</div>
