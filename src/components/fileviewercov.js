@@ -64,15 +64,14 @@ export const TestsSideViewer = ({ coverage, lineNumber }) => {
 class Test extends Component {
   constructor(props) {
     super(props);
-    this.state = { height: '0px', ptrRotate: 0 };
+    this.state = { expand: false };
+    this.expandClass = '';
     this.handleTestOnClick = this.handleTestOnClick.bind(this);
   }
 
   handleTestOnClick() {
-    this.setState({
-      height: (this.state.height === '0px') ? '60px' : '0px',
-      ptrRotate: (this.state.ptrRotate === 0) ? 90 : 0,
-    });
+    this.expandClass = (this.state.expand) ? '' : 'expanded'
+    this.setState({ expand: !this.state.expand });
   }
 
   render() {
@@ -80,12 +79,12 @@ class Test extends Component {
     return (
       <li>
         <div className="toggleable-test-title" onClick={this.handleTestOnClick}>
-          <span className="test-ptr" style={{ transform: `rotate(${this.state.ptrRotate}deg)` }}>&#x2023;</span>
+          <span className={`test-ptr ${this.expandClass}`}>&#x2023;</span>
           <label className="test-name">
             {test.run.name.length > 40 ? `${test.run.name.slice(0, 38)}...` : test.run.name}
           </label>
         </div>
-        <div className="expand-test-info" style={{ height: this.state.height }}>
+        <div className={`expandable-test-info ${this.expandClass}`}>
           <ul className="test-detail-ul">
             <li><span>run-platform : </span>{test.run.machine.platform}</li>
             <li><span>suite-name : </span>{test.run.suite.fullname}</li>

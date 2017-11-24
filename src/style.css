@@ -279,8 +279,12 @@ span.tests {
 	/*border-top: 1px solid #CCC;*/
 }
 .test-ptr {
+	padding-left: 2px;
 	display: inline-block;
 	transition: 0.2s;
+}
+.test-ptr.expanded {
+	transform: rotate(90deg);
 }
 .test-name {
 	display: inline-block;
@@ -289,10 +293,13 @@ span.tests {
 	border-top: 1px solid #CCC;
 	color: #666;
 }
-.expand-test-info {
+.expandable-test-info {
   height: 0px;
   overflow: hidden;
   transition: height 0.3s;
+}
+.expandable-test-info.expanded {
+	height: 60px;
 }
 .test-detail-ul {
 	list-style-type: none;
