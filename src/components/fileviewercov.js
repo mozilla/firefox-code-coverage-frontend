@@ -70,7 +70,7 @@ class Test extends Component {
   }
 
   handleTestOnClick() {
-    this.expandClass = (this.state.expand) ? '' : 'expanded'
+    this.expandClass = (this.state.expand) ? '' : 'expanded';
     this.setState({ expand: !this.state.expand });
   }
 
@@ -81,14 +81,14 @@ class Test extends Component {
         <div className="toggleable-test-title" onClick={this.handleTestOnClick}>
           <span className={`test-ptr ${this.expandClass}`}>&#x2023;</span>
           <label className="test-name">
-            {test.run.name.length > 40 ? `${test.run.name.slice(0, 38)}...` : test.run.name}
+            { test.run.name.substring(test.run.name.indexOf('/') + 1) }
           </label>
         </div>
         <div className={`expandable-test-info ${this.expandClass}`}>
           <ul className="test-detail-ul">
-            <li><span>run-platform : </span>{test.run.machine.platform}</li>
-            <li><span>suite-name : </span>{test.run.suite.fullname}</li>
-            <li><span>run-chunk : </span>{test.run.chunk}</li>
+            <li><span>platform : </span>{test.run.machine.platform}</li>
+            <li><span>suite : </span>{test.run.suite.fullname}</li>
+            <li><span>chunk : </span>{test.run.chunk}</li>
           </ul>
         </div>
       </li>

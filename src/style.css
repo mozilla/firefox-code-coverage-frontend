@@ -245,7 +245,7 @@ span.tests {
 	top: 0;
 	bottom: 0;
 	right: 0;
-	width: 300px;
+	width: 280px;
 	border-left: solid 6px #eaeff2;
 	/*border-image: linear-gradient(#fff, #eaeff2 20%, #eaeff2 80%, #fff) 10;*/
 	padding-left: 20px;
@@ -259,7 +259,7 @@ span.tests {
 	font-weight: bold;
 	padding: 0.8em;
 	margin-top: 20px;
-	width: 250px;
+	width: 240px;
 }
 .test-viewer-ul {
 	list-style-type: none;
@@ -274,6 +274,7 @@ span.tests {
 	overflow-y: auto;
 	top: 110px;
   bottom: 0;
+	width: 260px;
 }
 .toggleable-test-title {
 	/*border-top: 1px solid #CCC;*/
@@ -315,7 +316,7 @@ span.tests {
 div.coverage_meta {
 	position: fixed;
 	top:20px;
-	right: 340px;
+	right: 320px;
 }
 div.coverage_meta_totals {
 	border: 1px solid #d4d4d5;
