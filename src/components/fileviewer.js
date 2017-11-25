@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import * as FetchAPI from '../utils/fetch_data';
 import * as Color from '../utils/color';
 import * as Log from '../utils/log';
+import {recursiveExtend} from '../utils/map';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
 const queryString = require('query-string');
@@ -66,26 +67,25 @@ export default class FileViewerContainer extends Component {
   async getSourceCode(revision = this.revision, path = this.path) {
     try {
       const text = await FetchAPI.getRawFile(revision, path);
-      this.setState(prevState => ({
-        status: {
-          fetch: {
-            source: true,
-            coverage: prevState.status.fetch.coverage,
-          },
+      this.setState(prevState => recursiveExtend(
+        {
+          status: {fetch: {source: true}},
+          parsedFile: text.split('\n')
+
         },
-        parsedFile: text.split('\n'),
-      }));
+        prevState
+      ));
     } catch (error) {
       console.error(error);
-      this.setState(prevState => ({
-        status: {
-          app: 'We did not manage to fetch source file from hg.mozilla',
-          fetch: {
-            source: false,
-            coverage: prevState.status.fetch.coverage,
-          },
+      this.setState(prevState => recursiveExtend(
+        {
+          status: {
+            app: 'We did not manage to fetch source file from hg.mozilla',
+            fetch: {source: false}
+          }
         },
-      }));
+        prevState,
+      ));
     }
   }
 
@@ -103,26 +103,24 @@ export default class FileViewerContainer extends Component {
         limit: 1000,
         format: 'list',
       });
-      this.setState(prevState => ({
-        status: {
-          fetch: {
-            source: prevState.status.fetch.source,
-            coverage: true,
-          },
+      this.setState(prevState => recursiveExtend(
+        {
+          status: {fetch: {coverage: true,},},
+          coverage: this.parseCoverage(activeData.data),
         },
-        coverage: this.parseCoverage(activeData.data),
-      }));
+        prevState
+      ));
     } catch (error) {
       console.error(error);
-      this.setState(prevState => ({
-        status: {
-          app: 'We did not manage to fetch test coverage from ActiveData',
-          fetch: {
-            source: prevState.status.fetch.source,
-            coverage: false,
+      this.setState(prevState => recursiveExtend(
+        {
+          status: {
+            app: 'We did not manage to fetch test coverage from ActiveData',
+            fetch: {coverage: false}
           },
         },
-      }));
+        prevState
+      ));
     }
   }
 
