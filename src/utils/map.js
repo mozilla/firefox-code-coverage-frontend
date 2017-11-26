@@ -16,11 +16,11 @@ export const recursiveExtend = (dest, ...sources) => {
     for (let k = 0; k < keys.length; k++) {
       let key = keys[k];
       let value = dest[key];
-      if (value == null) {
+      if (value === null) {
         dest[key] = source[key];
       } else if (!isMap(value)) {
         // do nothing
-      } else if (path.indexOf(value) != -1) {
+      } else if (path.indexOf(value) !== -1) {
         // do nothing
       } else {
         dest[key] = _setDefault(value, source[key], path.concat([value]));
@@ -32,7 +32,7 @@ export const recursiveExtend = (dest, ...sources) => {
   for (let source of sources){
     if (source === undefined) {
       // do nothing
-    } else if (dest == null) {
+    } else if (dest === null) {
       if (isMap(source)) {
         return _setDefault({}, source, []);
       } else {
