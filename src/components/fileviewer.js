@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 
 import * as FetchAPI from '../utils/fetch_data';
 import * as Color from '../utils/color';
-import * as Log from '../utils/log';
-import {recursiveExtend} from '../utils/map';
+// import * as Log from '../utils/log';
+import { recursiveExtend } from '../utils/map';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
 const queryString = require('query-string');
@@ -69,11 +69,10 @@ export default class FileViewerContainer extends Component {
       const text = await FetchAPI.getRawFile(revision, path);
       this.setState(prevState => recursiveExtend(
         {
-          status: {fetch: {source: true}},
-          parsedFile: text.split('\n')
-
+          status: { fetch: { source: true } },
+          parsedFile: text.split('\n'),
         },
-        prevState
+        prevState,
       ));
     } catch (error) {
       console.error(error);
@@ -81,8 +80,8 @@ export default class FileViewerContainer extends Component {
         {
           status: {
             app: 'We did not manage to fetch source file from hg.mozilla',
-            fetch: {source: false}
-          }
+            fetch: { source: false },
+          },
         },
         prevState,
       ));
@@ -105,10 +104,10 @@ export default class FileViewerContainer extends Component {
       });
       this.setState(prevState => recursiveExtend(
         {
-          status: {fetch: {coverage: true,},},
+          status: { fetch: { coverage: true } },
           coverage: this.parseCoverage(activeData.data),
         },
-        prevState
+        prevState,
       ));
     } catch (error) {
       console.error(error);
@@ -116,10 +115,10 @@ export default class FileViewerContainer extends Component {
         {
           status: {
             app: 'We did not manage to fetch test coverage from ActiveData',
-            fetch: {coverage: false}
+            fetch: { coverage: false },
           },
         },
-        prevState
+        prevState,
       ));
     }
   }

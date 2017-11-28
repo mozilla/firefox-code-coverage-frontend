@@ -1,6 +1,6 @@
 const isMap = (val) => {
-  if (val === null) { return false;}
-  return (typeof val == 'object')
+  if (val === null) { return false; }
+  return (typeof val === 'object');
 };
 
 
@@ -12,11 +12,11 @@ const isMap = (val) => {
  */
 export const recursiveExtend = (dest, ...sources) => {
   function _setDefault(dest, source, path) {
-    let keys = Object.keys(source);
+    const keys = Object.keys(source);
     for (let k = 0; k < keys.length; k++) {
-      let key = keys[k];
-      let value = dest[key];
-      if (value === null) {
+      const key = keys[k];
+      const value = dest[key];
+      if (value == null) {
         dest[key] = source[key];
       } else if (!isMap(value)) {
         // do nothing
@@ -29,16 +29,15 @@ export const recursiveExtend = (dest, ...sources) => {
     return dest;
   }
 
-  for (let source of sources){
+  for (const source of sources) {
     if (source === undefined) {
       // do nothing
-    } else if (dest === null) {
+    } else if (dest == null) {
       if (isMap(source)) {
         return _setDefault({}, source, []);
-      } else {
-        dest = source;
-        break;
       }
+      dest = source;
+      break;
     } else if (isMap(dest)) {
       return _setDefault(dest, source, []);
     } else {
@@ -47,4 +46,3 @@ export const recursiveExtend = (dest, ...sources) => {
   }
   return dest;
 };
-

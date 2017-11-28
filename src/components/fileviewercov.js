@@ -3,12 +3,10 @@ import React, { Component } from 'react';
 
 import * as Color from '../utils/color';
 
-const _ = require('lodash');
 
 /* Sidebar component, show which tests will cover the given selected line */
 export const TestsSideViewer = ({ coverage, lineNumber }) => {
   let content;
-  console.log(coverage.testsPerHitLine);
 
   if (!coverage) {
     content = <h3>Fetching coverage from backend...</h3>;
@@ -98,24 +96,22 @@ class Test extends Component {
 
 /* shows coverage percentage of a file */
 export const CoveragePercentageViewer = ({ coverage }) => {
-  const percentageCovered = undefined;
+  let percentageCovered;
 
   if (coverage) {
     const totalLines = coverage.uncoveredLines.length + coverage.coveredLines.length;
 
     if (coverage.coveredLines.length !== 0 || coverage.uncoveredLines.length !== 0) {
-      this.percentageCovered = coverage.coveredLines.length / totalLines;
-    } else {
-      // this.percentageCovered is left undefined
+      percentageCovered = coverage.coveredLines.length / totalLines;
     }
   }
 
   return (
     <div className="coverage_meta">
       <div className="coverage_meta_totals">
-        {this.percentageCovered &&
-          <span className="percentage_covered" style={{ backgroundColor: `${Color.getPercentCovColor(this.percentageCovered)}` }}>
-            { (this.percentageCovered * 100).toPrecision(4) }%
+        {percentageCovered &&
+          <span className="percentage_covered" style={{ backgroundColor: `${Color.getPercentCovColor(percentageCovered)}` }}>
+            { (percentageCovered * 100).toPrecision(4) }%
           </span>
         }
       </div>
