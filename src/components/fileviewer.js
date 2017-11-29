@@ -171,6 +171,7 @@ export default class FileViewerContainer extends Component {
             revision={this.revision}
             path={this.path}
             status={status}
+            coverage={coverage}
           />
           <FileViewer
             parsedFile={parsedFile}
@@ -179,9 +180,6 @@ export default class FileViewerContainer extends Component {
             onLineClick={this.setSelectedLine}
           />
         </div>
-        <CoveragePercentageViewer
-          coverage={coverage}
-        />
         <TestsSideViewer
           coverage={coverage}
           lineNumber={selectedLine}
@@ -243,7 +241,7 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 };
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, status }) => {
+const FileViewerMeta = ({ revision, path, status, coverage }) => {
   const showStatus = (label, fetched) => {
     let msg;
     if (fetched === undefined) {
@@ -257,15 +255,18 @@ const FileViewerMeta = ({ revision, path, status }) => {
   };
 
   return (
-    <div>
+    <div className="file-meta-viewer">
       <div className="file-meta-center">
+        <div className="file-meta-title">File Coverage</div>
+        <CoveragePercentageViewer
+          coverage={coverage}
+        />
         <div className="file-meta-status">
           <ul className="file-meta-ul">
             { showStatus('Source code', status.fetch.source) }
             { showStatus('Coverage', status.fetch.coverage) }
           </ul>
         </div>
-        <div className="file-meta-title">File Coverage</div>
       </div>
       {status.app && <span className="error_message">{status.app}</span>}
 
