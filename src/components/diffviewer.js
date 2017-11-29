@@ -25,7 +25,7 @@ export default class DiffViewerContainer extends Component {
 
   async componentDidMount() {
     const { changeset } = this.props;
-    await this.fetchCsetData(changeset);
+    await Promise.all([this.fetchCsetData(changeset), this.fetchDiff(changeset)]);
   }
 
   async fetchCsetData(changeset) {
@@ -37,9 +37,11 @@ export default class DiffViewerContainer extends Component {
         appError: 'There was an error fetching the code coverage data.',
       });
     }
+  }
 
+  async fetchDiff(changeset) {
     try {
-      const text = await (await FetchAPI.getDiff(changeset)).text();
+      const text = await (await FetchAPI.getDiff(changeset, 'mozilla-central')).text();
       this.setState({ parsedDiff: parse(text) });
     } catch (error) {
       console.error(error);

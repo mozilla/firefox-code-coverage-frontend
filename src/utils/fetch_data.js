@@ -9,44 +9,18 @@ const jsonHeaders = {
   Accept: 'application/json',
 };
 
-async function httpFetch(params) {
-  try {
-    const response = await fetch(
-      params.url,
-      {
-        headers: params.headers || plainHeaders,
-        method: params.method || 'GET',
-        body: params.body,
-      },
-    );
-    if (response.status !== 200) {
-      throw Error(`Error status code${response.status}`);
-    }
-    return response.text();
-  } catch (error) {
-    throw Error(`Problem fetching from URL${error}`);
-  }
-}
+const jsonPost = params =>
+  fetch(params.url, { headers: jsonHeaders, method: 'POST', body: JSON.stringify(params.body) });
 
-async function jsonPost(params) {
-  try {
-    const response = await httpFetch({
-      url: params.url,
-      headers: jsonHeaders,
-      method: 'POST',
-      body: JSON.stringify(params.body),
-    });
-    return JSON.parse(response);
-  } catch (error) {
-    throw Error(`Problem fetching JSON from URL ${params.url}\n${error}`);
-  }
-}
+export const getDiff = (changeset, repoPath) =>
+  fetch(`${hgHost}/${repoPath}/raw-rev/${changeset}`, { plainHeaders });
 
-export const getDiff = changeset =>
-  fetch(`${hgHost}/mozilla-central/raw-rev/${changeset}`, { plainHeaders });
+// raw-file fetcher (fileviewer)
+export const getRawFile = (revision, path, repoPath) =>
+  fetch(`${hgHost}/${repoPath}/raw-file/${revision}/${path}`, { plainHeaders });
 
-export const getJsonPushes = repoName =>
-  fetch(`${hgHost}/${repoName}/json-pushes?version=2&full=1`, { jsonHeaders });
+export const getJsonPushes = repoPath =>
+  fetch(`${hgHost}/${repoPath}/json-pushes?version=2&full=1`, { jsonHeaders });
 
 export const getChangesetCoverage = changeset =>
   fetch(`${ccovBackend}/coverage/changeset/${changeset}`, { jsonHeaders });
@@ -54,13 +28,6 @@ export const getChangesetCoverage = changeset =>
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
-// raw-file fetcher (fileviewer)
-export const getRawFile = (revision, path) => httpFetch({
-  url: `${hgHost}/integration/mozilla-inbound/raw-file/${revision}/${path}`,
-});
-
 // query active data
-export const query = body => jsonPost({
-  url: `${activeData}/query`,
-  body,
-});
+export const query = body =>
+  jsonPost({ url: `${activeData}/query`, body });

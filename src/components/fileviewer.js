@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 
-import * as FetchAPI from '../utils/fetch_data';
+import * as queryString from 'query-string';
 import * as Color from '../utils/color';
-// import * as Log from '../utils/log';
-import { recursiveExtend } from '../utils/map';
+import { fileRevisionCoverageSummary, fileRevisionWithActiveData, rawFile } from '../utils/data';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
-
-const queryString = require('query-string');
-const _ = require('lodash');
 
 /* FileViewer loads a raw file for a given revision from Mozilla's hg web.
  * It uses test coverage information from Active Data to show coverage
@@ -20,11 +16,9 @@ export default class FileViewerContainer extends Component {
       /* app status */
       status: {
         app: undefined,
-        fetch: {
-          source: undefined,
-          coverage: undefined,
-        },
       },
+      revision: undefined,
+      path: undefined,
       /* app data */
       parsedFile: [],
       coverage: {
@@ -32,145 +26,70 @@ export default class FileViewerContainer extends Component {
         uncoveredLines: [],
         allTests: [],
         testsPerHitLine: [],
-        testsPerMissLine: [],
       },
       selectedLine: undefined,
     };
     this.setSelectedLine = this.setSelectedLine.bind(this);
+  }
+
+  componentWillMount() {
     /* get revision and path parameters from URL */
-    const parsedQuery = queryString.parse(props.location.search);
-    if (!parsedQuery.revision || !parsedQuery.path) {
-      this.setState({
-        status: {
-          app: "Undefined URL query ('revision', 'path' fields are required)",
-        },
-      });
-    }
-    /* remove beginning '/' in the path parameter */
-    else if (parsedQuery.path.startsWith('/')) {
-      parsedQuery.path = parsedQuery.path.slice(1);
-    }
-    this.revision = parsedQuery.revision;
-    this.path = parsedQuery.path;
+    this.parseQueryParams();
   }
 
   async componentDidMount() {
     /* Get source code and coverage in parallel  */
-    await Promise.all([this.getSourceCode(), this.getCoverage()]);
+    await Promise.all([this.fetchSourceCode(), this.fetchCoverage()]);
   }
 
   setSelectedLine(selectedLineNumber) {
     this.setState({ selectedLine: selectedLineNumber });
   }
 
+  parseQueryParams() {
+    const parsedQuery = queryString.parse(this.props.location.search);
+    if (!parsedQuery.revision || !parsedQuery.path) {
+      this.setState({ status: { app: "Undefined URL query ('revision', 'path' fields are required)" } });
+    } else {
+      this.setState({
+        revision: parsedQuery.revision,
+        /* remove beginning '/' in the path parameter to fetch from source */
+        path: parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path });
+    }
+  }
+
   /* Get source code from hg */
-  async getSourceCode(revision = this.revision, path = this.path) {
-    try {
-      const text = await FetchAPI.getRawFile(revision, path);
-      this.setState(prevState => recursiveExtend(
-        {
-          status: { fetch: { source: true } },
-          parsedFile: text.split('\n'),
-        },
-        prevState,
-      ));
-    } catch (error) {
-      console.error(error);
-      this.setState(prevState => recursiveExtend(
-        {
-          status: {
-            app: 'We did not manage to fetch source file from hg.mozilla',
-            fetch: { source: false },
-          },
-        },
-        prevState,
-      ));
+  async fetchSourceCode(revision = this.state.revision, path = this.state.path) {
+    const source = await rawFile(revision, path, 'integration/mozilla-inbound');
+    if (source) {
+      this.setState({ parsedFile: source.split('\n') });
+    } else {
+      this.setState({ status: { app: 'We did not manage to fetch source file from hg.mozilla' } });
     }
   }
 
-  /* Get coverages from ActiveData */
-  async getCoverage(revision = this.revision, path = this.path) {
-    try {
-      const activeData = await FetchAPI.query({
-        from: 'coverage',
-        where: {
-          and: [
-            { eq: { 'source.file.name': `${path}` } },
-            { eq: { 'repo.changeset.id12': `${revision}` } },
-          ],
-        },
-        limit: 1000,
-        format: 'list',
-      });
-      this.setState(prevState => recursiveExtend(
-        {
-          status: { fetch: { coverage: true } },
-          coverage: this.parseCoverage(activeData.data),
-        },
-        prevState,
-      ));
-    } catch (error) {
-      console.error(error);
-      this.setState(prevState => recursiveExtend(
-        {
-          status: {
-            app: 'We did not manage to fetch test coverage from ActiveData',
-            fetch: { coverage: false },
-          },
-        },
-        prevState,
-      ));
+  /* Get coverage from ActiveData */
+  async fetchCoverage(revision = this.state.revision, path = this.state.path) {
+    const coverage = await fileRevisionWithActiveData(revision, path);
+    if (coverage) {
+      this.setState({ coverage: fileRevisionCoverageSummary(coverage.data) });
+    } else {
+      this.setState({ status: { app: 'We did not manage to fetch test coverage from ActiveData' } });
     }
-  }
-
-  /* Parse coverage data */
-  parseCoverage(data) {
-    const covered = [];
-    const uncovered = [];
-    const testsPerHitLine = [];
-    const testsPerMissLine = [];
-
-    data.forEach((d) => {
-      d.source.file.covered.forEach((line) => {
-        covered.push(line);
-        if (!testsPerHitLine[line]) {
-          testsPerHitLine[line] = [];
-        }
-        testsPerHitLine[line].push(d);
-      });
-    });
-
-    data.forEach((d) => {
-      d.source.file.uncovered.forEach((line) => {
-        if (!testsPerHitLine[line]) {
-          uncovered.push(line);
-          if (!testsPerMissLine[line]) {
-            testsPerMissLine[line] = [];
-          }
-          testsPerMissLine[line].push(d);
-        }
-      });
-    });
-
-    return {
-      coveredLines: _.uniq(covered),
-      uncoveredLines: _.uniq(uncovered),
-      allTests: data,
-      testsPerHitLine,
-      testsPerMissLine,
-    };
   }
 
   render() {
-    const { status, parsedFile, coverage, selectedLine } = this.state;
+    const { status, revision, path, parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
         <div className="file-view">
           <FileViewerMeta
-            revision={this.revision}
-            path={this.path}
+            revision={revision}
+            path={path}
             status={status}
+            parsedFile={parsedFile}
+            coverage={coverage}
           />
           <FileViewer
             parsedFile={parsedFile}
@@ -225,9 +144,8 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
   if (coverage.coveredLines.find(element => element === lineNumber)) {
     nTests = coverage.testsPerHitLine[lineNumber].length;
     color = Color.getLineHitCovColor(nTests / coverage.allTests.length);
-  }
   // miss line
-  else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
+  } else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
     color = '#ffe5e5';
   }
 
@@ -243,7 +161,7 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 };
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, status }) => {
+const FileViewerMeta = ({ revision, path, status, parsedFile, coverage }) => {
   const showStatus = (label, fetched) => {
     let msg;
     if (fetched === undefined) {
@@ -261,8 +179,8 @@ const FileViewerMeta = ({ revision, path, status }) => {
       <div className="file-meta-center">
         <div className="file-meta-status">
           <ul className="file-meta-ul">
-            { showStatus('Source code', status.fetch.source) }
-            { showStatus('Coverage', status.fetch.coverage) }
+            { showStatus('Source code', parsedFile.length > 0) }
+            { showStatus('Coverage', Object.keys(coverage).length > 0) }
           </ul>
         </div>
         <div className="file-meta-title">File Coverage</div>

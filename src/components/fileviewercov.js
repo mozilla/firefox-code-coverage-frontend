@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 
 import * as Color from '../utils/color';
 
-
 /* Sidebar component, show which tests will cover the given selected line */
 export const TestsSideViewer = ({ coverage, lineNumber }) => {
   let content;
