@@ -5,54 +5,44 @@ import * as Color from '../utils/color';
 
 /* Sidebar component, show which tests will cover the given selected line */
 export const TestsSideViewer = ({ coverage, lineNumber }) => {
-  let content;
+  const getTestList = (tests) => (
+    <ul className="test-viewer-ul">
+      { tests.map(test => (<Test key={test.run.key} test={test} />)) }
+    </ul>
+  );
 
+  let testTitle, testList;
   if (!coverage) {
-    content = <h3>Fetching coverage from backend...</h3>;
+    testTitle = "Fetching coverage from backend...";
   } else if (!lineNumber) {
-    content = (
-      <div>
-        <h3>All test that cover this file</h3>
-        <ul className="test-viewer-ul">
-          {
-            coverage.allTests.map(test =>
-              (<Test
-                key={test.run.key}
-                test={test}
-              />),
-            )
-          }
-        </ul>
-      </div>
-    );
-  } else if (coverage.testsPerHitLine[lineNumber]) {
-    content = (
-      <div>
-        <h3>Line: {lineNumber}</h3>
-        <ul className="test-viewer-ul">
-          {
-            coverage.testsPerHitLine[lineNumber].map(test =>
-              (<Test
-                key={test.run.key}
-                test={test}
-              />),
-            )
-          }
-        </ul>
-      </div>
-    );
+    testTitle = "All test that cover this file";
+    testList = getTestList(coverage.allTests);
   } else {
-    content = (
-      <div>
-        <h3>Line: {lineNumber}</h3>
-        <p>No test covers this line</p>
-      </div>
-    );
+    testTitle = `Line: ${lineNumber}`;
+    if (coverage.testsPerHitLine[lineNumber]) {
+      testList = getTestList(coverage.testsPerHitLine[lineNumber]);
+    } else if (coverage.uncoveredLines.includes(lineNumber)) {
+      testList = (<p>No test covers this line</p>);
+    } else {
+      testList = (<p>This line is not coverable</p>);
+    }
   }
+
+  /*
+} else if (coverage.testsPerHitLine[lineNumber]) {
+  testTitle = `Line: ${lineNumber}`;
+  testList = getTestList(coverage.testsPerHitLine[lineNumber]);
+} else {
+  testTitle = `Line: ${lineNumber}`;
+  testList = (<p>No test covers this line</p>);
+}
+  */
+
   return (
     <div className="tests_viewer">
       <div className="tests-viewer-title">Covered Tests</div>
-      {content}
+      <h3>{testTitle}</h3>
+      {testList}
     </div>
   );
 };
