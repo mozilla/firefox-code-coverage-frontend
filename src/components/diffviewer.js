@@ -25,7 +25,7 @@ export default class DiffViewerContainer extends Component {
 
   async componentDidMount() {
     const { changeset } = this.props;
-    await this.fetchCsetData(changeset);
+    await Promise.all([this.fetchCsetData(changeset), this.fetchDiff(changeset)]);
   }
 
   async fetchCsetData(changeset) {
@@ -37,9 +37,11 @@ export default class DiffViewerContainer extends Component {
         appError: 'There was an error fetching the code coverage data.',
       });
     }
+  }
 
+  async fetchDiff(changeset) {
     try {
-      const text = await (await FetchAPI.getDiff(changeset)).text();
+      const text = await (await FetchAPI.getDiff(changeset, 'mozilla-central')).text();
       this.setState({ parsedDiff: parse(text) });
     } catch (error) {
       console.error(error);
@@ -80,7 +82,8 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
         <DiffFile
           key={diffBlock.from}
           diffBlock={diffBlock}
-          coverage={coverage}
+          fileCoverageDiffs={(coverage) ?
+            coverage.diffs[diffBlock.from] : undefined}
         />
       ))}
   </div>
@@ -111,31 +114,21 @@ const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summ
 );
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ coverage, diffBlock }) => {
-  // We try to see if the file modified shows up in the code
-  // coverage data we have for this diff
-  let coverageInfo;
-  if (coverage) {
-    coverageInfo = (coverage.diffs) ?
-      coverage.diffs.find(info => info.name === diffBlock.from) : undefined;
-  }
-
-  return (
-    <div className="diff-file">
-      <div className="file-summary">
-        <div className="file-path">{diffBlock.from}</div>
-      </div>
-      {diffBlock.chunks.map(block => (
-        <DiffBlock
-          key={block.content}
-          filePath={diffBlock.from}
-          block={block}
-          coverageInfo={coverageInfo}
-        />
-      ))}
+const DiffFile = ({ fileCoverageDiffs, diffBlock }) => (
+  <div className="diff-file">
+    <div className="file-summary">
+      <div className="file-path">{diffBlock.from}</div>
     </div>
-  );
-};
+    {diffBlock.chunks.map(block => (
+      <DiffBlock
+        key={block.content}
+        filePath={diffBlock.from}
+        block={block}
+        fileDiffs={fileCoverageDiffs}
+      />
+    ))}
+  </div>
+);
 
 const uniqueLineId = (filePath, change) => {
   let lineNumber;
@@ -150,7 +143,7 @@ const uniqueLineId = (filePath, change) => {
 };
 
 /* A DiffBlock is *one* of the blocks changed for a specific file */
-const DiffBlock = ({ filePath, block, coverageInfo }) => (
+const DiffBlock = ({ filePath, block, fileDiffs }) => (
   <div>
     <div className="diff-line-at">{block.content}</div>
     <div className="diff-block">
@@ -162,7 +155,7 @@ const DiffBlock = ({ filePath, block, coverageInfo }) => (
               key={uid}
               id={uid}
               change={change}
-              coverageInfo={coverageInfo}
+              fileDiffs={fileDiffs}
             />);
           })}
         </tbody>
@@ -172,29 +165,28 @@ const DiffBlock = ({ filePath, block, coverageInfo }) => (
 );
 
 /* A DiffLine contains metadata about a line in a DiffBlock */
-const DiffLine = ({ change, coverageInfo, id }) => {
-  // Information about the line itself
-  const c = change;
-  // Added, deleted or unchanged line
-  const changeType = change.type;
-  // CSS tr and td classes
-  let rowClass = 'nolinechange';
+const DiffLine = ({ change, fileDiffs, id }) => {
+  const c = change; // Information about the line itself
+  const changeType = change.type; // Added, deleted or unchanged line
+  let rowClass = 'nolinechange'; // CSS tr and td classes
   const rowId = id;
-  // Cell contents
-  let [oldLineNumber, newLineNumber] = ['', ''];
+  let [oldLineNumber, newLineNumber] = ['', '']; // Cell contents
 
   if (changeType === 'add') {
     // Added line - <blank> | <new line number>
-    if (coverageInfo) {
-      const { coverage } = coverageInfo.changes.find(lineCovInfo =>
-        (lineCovInfo.line === c.ln));
-
-      if (coverage === 'Y') {
-        rowClass = 'hit';
-      } else if (coverage === '?') {
-        rowClass = 'nolinechange';
-      } else {
-        rowClass = 'miss'; // Let's start assuming a miss
+    if (fileDiffs) {
+      try {
+        const coverage = fileDiffs[c.ln];
+        if (coverage === 'Y') {
+          rowClass = 'hit';
+        } else if (coverage === '?') {
+          rowClass = 'nolinechange';
+        } else {
+          rowClass = 'miss';
+        }
+      } catch (e) {
+        console.log(e);
+        rowClass = 'miss';
       }
     }
     newLineNumber = c.ln;
