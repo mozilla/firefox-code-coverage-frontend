@@ -165,24 +165,6 @@ pre { margin: 0; }
 	background-color: #f5f9fa; /* Light blue */
 	overflow: hidden;
 }
-.file-meta-status {
-	float: right;
-	border-bottom: 2px solid #3f87a6; /* Dark blue */
-	margin-top: 15px;
-	margin-right: 40px;
-}
-.file-meta-ul {
-	float: right;
-  padding: 0;
-	margin: 0;
-  width: auto;
-}
-.file-meta-li {
-	display: inline-block;
-	margin: 0 10px;
-	width: 140px;
-	font-weight: bold;
-}
 .file-meta-title {
 	font-weight: bold;
 	font-size: 2rem;

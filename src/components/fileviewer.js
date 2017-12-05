@@ -28,9 +28,27 @@ export default class FileViewerContainer extends Component {
   }
 
   async componentDidMount() {
-    /* Get source code and coverage in parallel  */
     const {revision, path} = this.state;
-    await Promise.all([this.fetchSourceCode(revision, path), this.fetchCoverage(revision, path)]);
+    await this.fetchData(revision, path, 'mozilla-central');
+  }
+
+  async fetchData(revision, path, repoPath = 'integration/mozilla-inbound') {
+    console.log(revision, path, repoPath);
+    try {
+      // Get source code and coverage in parallel
+      const [file, coverage] = await Promise.all([
+        rawFile(revision, path, repoPath),
+        fileRevisionWithActiveData(revision, path, repoPath),
+      ]);
+      this.setState({
+        parsedFile: file.split('\n'),
+        coverage: fileRevisionCoverageSummary(coverage.data),
+      });
+    } catch (error) {
+      this.setState({
+        appErr: `${error.name}: ${error.message}`,
+      });
+    }
   }
 
   setSelectedLine(selectedLineNumber) {
@@ -58,28 +76,8 @@ export default class FileViewerContainer extends Component {
     }
   }
 
-  /* Get source code from hg */
-  async fetchSourceCode(revision, path) {
-    const source = await rawFile(revision, path, 'integration/mozilla-inbound');
-    if (source) {
-      this.setState({ parsedFile: source.split('\n') });
-    } else {
-      this.setState({ appErr: 'We did not manage to fetch source file from hg.mozilla' });
-    }
-  }
-
-  /* Get coverage from ActiveData */
-  async fetchCoverage(revision, path) {
-    const coverage = await fileRevisionWithActiveData(revision, path);
-    if (coverage) {
-      this.setState({ coverage: fileRevisionCoverageSummary(coverage.data) });
-    } else {
-      this.setState({ appErr: 'We did not manage to fetch test coverage from ActiveData' });
-    }
-  }
-
   render() {
-    const { appErr, revision, path, parsedFile, coverage, selectedLine } = this.state;
+    const { parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
@@ -145,28 +143,10 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 };
 
 /* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, appErr, parsedFile, coverage }) => {
-  const showStatus = (label, data) => {
-    let msg;
-    if (!data) {
-      msg = 'Fetching...';
-    } else if (data.length > 0 || Object.keys(coverage).length > 0) {
-      msg = <span>&#x2714;</span>; // heavy checkmark
-    } else {
-      msg = <span>&#x2716;</span>; // heavy multiplication x
-    }
-    return (<li className="file-meta-li">{label}: {msg}</li>);
-  };
-
+const FileViewerMeta = ({ revision, path, appErr, coverage }) => {
   return (
     <div>
       <div className="file-meta-center">
-        <div className="file-meta-status">
-          <ul className="file-meta-ul">
-            { showStatus('Source code', parsedFile) }
-            { showStatus('Coverage', coverage) }
-          </ul>
-        </div>
         <div className="file-meta-title">File Coverage</div>
       </div>
       {appErr && <span className="error_message">{appErr}</span>}

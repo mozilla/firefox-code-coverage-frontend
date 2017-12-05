@@ -4,83 +4,92 @@ import React, { Component } from 'react';
 import * as Color from '../utils/color';
 
 /* Sidebar component, show which tests will cover the given selected line */
-export const TestsSideViewer = ({ coverage, lineNumber }) => {
-  const getTestList = (tests) => (
-    <ul className="test-viewer-ul">
-      { tests.map(test => (<Test key={test.run.key} test={test} />)) }
-    </ul>
-  );
+export class TestsSideViewer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      expand: undefined,
+    };
+    this.handleTestOnExpand = this.handleTestOnExpand.bind(this);
+  }
 
-  let testTitle, testList;
-  if (!coverage) {
-    testTitle = "Fetching coverage from backend...";
-  } else if (!lineNumber) {
-    testTitle = "All test that cover this file";
-    testList = getTestList(coverage.allTests);
-  } else {
-    testTitle = `Line: ${lineNumber}`;
-    if (coverage.testsPerHitLine[lineNumber]) {
-      testList = getTestList(coverage.testsPerHitLine[lineNumber]);
-    } else if (coverage.uncoveredLines.includes(lineNumber)) {
-      testList = (<p>No test covers this line</p>);
+  componentWillReceiveProps(nextProps) {
+    // collapse expanded test when selected line is changed
+    this.setState({ expand: undefined, });
+  }
+
+  handleTestOnExpand(row) {
+    if (this.state.expand === row) {
+      this.setState({ expand: undefined });
     } else {
-      testList = (<p>This line is not coverable</p>);
+      this.setState({ expand: row });
     }
   }
 
-  /*
-} else if (coverage.testsPerHitLine[lineNumber]) {
-  testTitle = `Line: ${lineNumber}`;
-  testList = getTestList(coverage.testsPerHitLine[lineNumber]);
-} else {
-  testTitle = `Line: ${lineNumber}`;
-  testList = (<p>No test covers this line</p>);
-}
-  */
-
-  return (
-    <div className="tests_viewer">
-      <div className="tests-viewer-title">Covered Tests</div>
-      <h3>{testTitle}</h3>
-      {testList}
-    </div>
-  );
-};
-
-/* Test list item in the TestsSideViewer */
-class Test extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { expand: false };
-    this.expandClass = '';
-    this.handleTestOnClick = this.handleTestOnClick.bind(this);
-  }
-
-  handleTestOnClick() {
-    this.expandClass = (this.state.expand) ? '' : 'expanded';
-    this.setState({ expand: !this.state.expand });
-  }
+  getTestList(tests) {
+    return(
+      <ul className="test-viewer-ul">
+        { tests.map((test, row) => (
+          <Test
+            key={test.run.key}
+            row={row}
+            test={test}
+            expand={this.state.expand}
+            handleTestOnExpand={this.handleTestOnExpand}
+          />
+        ))}
+      </ul>
+    );
+  };
 
   render() {
-    const test = this.props.test;
-    return (
-      <li>
-        <div className="toggleable-test-title" onClick={this.handleTestOnClick}>
-          <span className={`test-ptr ${this.expandClass}`}>&#x2023;</span>
-          <label className="test-name">
-            { test.run.name.substring(test.run.name.indexOf('/') + 1) }
-          </label>
-        </div>
-        <div className={`expandable-test-info ${this.expandClass}`}>
-          <ul className="test-detail-ul">
-            <li><span>platform : </span>{test.run.machine.platform}</li>
-            <li><span>suite : </span>{test.run.suite.fullname}</li>
-            <li><span>chunk : </span>{test.run.chunk}</li>
-          </ul>
-        </div>
-      </li>
+    const { coverage, lineNumber } = this.props;
+    let testTitle, testList;
+    if (!coverage) {
+      testTitle = "Fetching coverage from backend...";
+    } else if (!lineNumber) {
+      testTitle = "All test that cover this file";
+      testList = this.getTestList(coverage.allTests);
+    } else {
+      testTitle = `Line: ${lineNumber}`;
+      if (coverage.testsPerHitLine[lineNumber]) {
+        testList = this.getTestList(coverage.testsPerHitLine[lineNumber]);
+      } else if (coverage.uncoveredLines.includes(lineNumber)) {
+        testList = (<p>No test covers this line</p>);
+      } else {
+        testList = (<p>This line is not coverable</p>);
+      }
+    }
+    return(
+      <div className="tests_viewer">
+        <div className="tests-viewer-title">Covered Tests</div>
+        <h3>{testTitle}</h3>
+        {testList}
+      </div>
     );
   }
+}
+
+// Test list item in the TestsSideViewer
+export const Test = ({ row, test, expand, handleTestOnExpand }) => {
+  let testClass = (row === expand) ? 'expanded' : '';
+  return (
+    <li>
+      <div className="toggleable-test-title" onClick={() => handleTestOnExpand(row)}>
+        <span className={`test-ptr ${testClass}`}>&#x2023;</span>
+        <label className="test-name">
+          { test.run.name.substring(test.run.name.indexOf('/') + 1) }
+        </label>
+      </div>
+      <div className={`expandable-test-info ${testClass}`}>
+        <ul className="test-detail-ul">
+          <li><span>platform : </span>{test.run.machine.platform}</li>
+          <li><span>suite : </span>{test.run.suite.fullname}</li>
+          <li><span>chunk : </span>{test.run.chunk}</li>
+        </ul>
+      </div>
+    </li>
+  );
 }
 
 /* shows coverage percentage of a file */
