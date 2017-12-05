@@ -15,7 +15,6 @@ const jsonPost = params =>
 export const getDiff = (changeset, repoPath) =>
   fetch(`${hgHost}/${repoPath}/raw-rev/${changeset}`, { plainHeaders });
 
-// raw-file fetcher (fileviewer)
 export const getRawFile = (revision, path, repoPath) =>
   fetch(`${hgHost}/${repoPath}/raw-file/${revision}/${path}`, { plainHeaders });
 
@@ -28,6 +27,5 @@ export const getChangesetCoverage = changeset =>
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
-// query active data
 export const query = body =>
   jsonPost({ url: `${activeData}/query`, body });

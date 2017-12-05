@@ -96,13 +96,9 @@ class Test extends Component {
 /* shows coverage percentage of a file */
 export const CoveragePercentageViewer = ({ coverage }) => {
   let percentageCovered;
-
-  if (coverage) {
-    const totalLines = coverage.uncoveredLines.length + coverage.coveredLines.length;
-
-    if (coverage.coveredLines.length !== 0 || coverage.uncoveredLines.length !== 0) {
-      percentageCovered = coverage.coveredLines.length / totalLines;
-    }
+  const totalLines = coverage.uncoveredLines.length + coverage.coveredLines.length;
+  if (coverage.coveredLines.length !== 0 || coverage.uncoveredLines.length !== 0) {
+    percentageCovered = coverage.coveredLines.length / totalLines;
   }
 
   return (
