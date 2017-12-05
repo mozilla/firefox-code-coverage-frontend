@@ -96,22 +96,29 @@ class Test extends Component {
 /* shows coverage percentage of a file */
 export const CoveragePercentageViewer = ({ coverage }) => {
   let percentageCovered;
+  let coveredLines;
+  let totalLines;
 
   if (coverage) {
-    const totalLines = coverage.uncoveredLines.length + coverage.coveredLines.length;
+    coveredLines = coverage.coveredLines.length;
+    totalLines = coveredLines + coverage.uncoveredLines.length;
 
-    if (coverage.coveredLines.length !== 0 || coverage.uncoveredLines.length !== 0) {
-      percentageCovered = coverage.coveredLines.length / totalLines;
+    if (coveredLines !== 0 || coverage.uncoveredLines.length !== 0) {
+      percentageCovered = coveredLines / totalLines;
+    } else {
+      // this.percentageCovered is left undefined
     }
   }
 
   return (
-    <div className="coverage_meta">
-      <div className="coverage_meta_totals">
-        {percentageCovered &&
-          <span className="percentage_covered" style={{ backgroundColor: `${Color.getPercentCovColor(percentageCovered)}` }}>
-            { (percentageCovered * 100).toPrecision(4) }%
+    <div className="coverage_percentage_viewer">
+      <div className="coverage_percentage">
+        {percentageCovered ?
+          <span className="coverage_percentage" style={{ backgroundColor: `${Color.getPercentCovColor(percentageCovered)}` }}>
+            { (percentageCovered * 100).toPrecision(4) }% - { coveredLines } lines covered out of { totalLines } added
           </span>
+          :
+          <span>No changes</span>
         }
       </div>
     </div>

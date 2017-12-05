@@ -98,9 +98,6 @@ export default class FileViewerContainer extends Component {
             onLineClick={this.setSelectedLine}
           />
         </div>
-        <CoveragePercentageViewer
-          coverage={coverage}
-        />
         <TestsSideViewer
           coverage={coverage}
           lineNumber={selectedLine}
@@ -175,15 +172,18 @@ const FileViewerMeta = ({ revision, path, status, parsedFile, coverage }) => {
   };
 
   return (
-    <div>
+    <div className="file-meta-viewer">
       <div className="file-meta-center">
+        <div className="file-meta-title">File Coverage</div>
+        <CoveragePercentageViewer
+          coverage={coverage}
+        />
         <div className="file-meta-status">
           <ul className="file-meta-ul">
             { showStatus('Source code', parsedFile.length > 0) }
             { showStatus('Coverage', Object.keys(coverage).length > 0) }
           </ul>
         </div>
-        <div className="file-meta-title">File Coverage</div>
       </div>
       {status.app && <span className="error_message">{status.app}</span>}
 
