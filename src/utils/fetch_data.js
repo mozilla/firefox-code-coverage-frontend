@@ -27,5 +27,5 @@ export const getChangesetCoverage = changeset =>
 export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
-export const query = body =>
+export const queryActiveData = body =>
   jsonPost({ url: `${activeData}/query`, body });

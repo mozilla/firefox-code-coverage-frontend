@@ -52,17 +52,13 @@ export const fileRevisionCoverageSummary = (coverage) => {
       }
       s.testsPerHitLine[line].push(c);
     });
-  });
-  s.coveredLines = _.uniq(s.coveredLines);
-  // get uncovered lines
-  coverage.forEach((c) => {
+    // get all lines that have possibility of not been uncovered
     c.source.file.uncovered.forEach((line) => {
-      if (!s.testsPerHitLine[line]) {
-        s.uncoveredLines.push(line);
-      }
+      s.uncoveredLines.push(line);
     });
   });
-  s.uncoveredLines = _.uniq(s.uncoveredLines);
+  s.coveredLines = _.uniq(s.coveredLines);
+  s.uncoveredLines = _.uniq(_.difference(s.uncoveredLines, s.coveredLines));
   return s;
 };
 
@@ -180,7 +176,7 @@ export const rawFile = async (revision, path, repoPath) => {
 
 export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
   try {
-    const res = await FetchAPI.query({
+    const res = await FetchAPI.queryActiveData({
       from: 'coverage',
       where: {
         and: [

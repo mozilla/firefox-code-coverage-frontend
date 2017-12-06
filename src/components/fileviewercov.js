@@ -7,21 +7,21 @@ export class TestsSideViewer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      expand: undefined,
+      expandTest: undefined,
     };
     this.handleTestOnExpand = this.handleTestOnExpand.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     // collapse expanded test when selected line is changed
-    this.setState({ expand: undefined, });
+    this.setState({ expandTest: undefined, });
   }
 
   handleTestOnExpand(row) {
-    if (this.state.expand === row) {
-      this.setState({ expand: undefined });
+    if (this.state.expandTest === row) {
+      this.setState({ expandTest: undefined });
     } else {
-      this.setState({ expand: row });
+      this.setState({ expandTest: row });
     }
   }
 
@@ -33,7 +33,7 @@ export class TestsSideViewer extends Component {
             key={test.run.key}
             row={row}
             test={test}
-            expand={this.state.expand}
+            expand={(row === this.state.expandTest) ? 'expanded':''}
             handleTestOnExpand={this.handleTestOnExpand}
           />
         ))}
@@ -53,14 +53,12 @@ export class TestsSideViewer extends Component {
       testTitle = `Line: ${lineNumber}`;
       if (coverage.testsPerHitLine[lineNumber]) {
         testList = this.getTestList(coverage.testsPerHitLine[lineNumber]);
-      } else if (coverage.uncoveredLines.includes(lineNumber)) {
-        testList = (<p>No test covers this line</p>);
       } else {
-        testList = (<p>This line is not coverable</p>);
+        testList = (<p>No test covers this line</p>);
       }
     }
     return(
-      <div className="tests_viewer">
+      <div className="tests-viewer">
         <div className="tests-viewer-title">Covered Tests</div>
         <h3>{testTitle}</h3>
         {testList}
@@ -71,16 +69,15 @@ export class TestsSideViewer extends Component {
 
 // Test list item in the TestsSideViewer
 export const Test = ({ row, test, expand, handleTestOnExpand }) => {
-  let testClass = (row === expand) ? 'expanded' : '';
   return (
     <li>
       <div className="toggleable-test-title" onClick={() => handleTestOnExpand(row)}>
-        <span className={`test-ptr ${testClass}`}>&#x2023;</span>
+        <span className={`test-ptr ${expand}`}>&#x2023;</span>
         <label className="test-name">
           { test.run.name.substring(test.run.name.indexOf('/') + 1) }
         </label>
       </div>
-      <div className={`expandable-test-info ${testClass}`}>
+      <div className={`expandable-test-info ${expand}`}>
         <ul className="test-detail-ul">
           <li><span>platform : </span>{test.run.machine.platform}</li>
           <li><span>suite : </span>{test.run.suite.fullname}</li>

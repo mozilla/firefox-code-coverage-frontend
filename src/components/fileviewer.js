@@ -12,14 +12,13 @@ export default class FileViewerContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      /* app status */
       appErr: undefined,
       revision: undefined,
       path: undefined,
-      /* app data */
+      selectedLine: undefined,
+      // app data
       parsedFile: undefined,
       coverage: undefined,
-      selectedLine: undefined,
     };
     // get revision and path parameters from URL
     this.parseQueryParams();
@@ -93,7 +92,7 @@ export default class FileViewerContainer extends Component {
   }
 }
 
-/* This component renders each line of the file with its line number */
+/* FileViewer component renders each line of the file with its line number */
 const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   <table className="file-view-table">
     <tbody>
@@ -133,25 +132,25 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
   }
 
   return (
-    <tr className={`file_line ${select} ${color}`} onClick={handleOnClick}>
-      <td className="file_line_number">{lineNumber}</td>
-      <td className="file_line_tests">
+    <tr className={`file-line ${select} ${color}`} onClick={handleOnClick}>
+      <td className="file-line-number">{lineNumber}</td>
+      <td className="file-line-tests">
         { nTests && <span className="tests">{nTests}</span> }
       </td>
-      <td className="file_line_text"><pre>{lineText}</pre></td>
+      <td className="file-line-text"><pre>{lineText}</pre></td>
     </tr>
   );
 };
 
-/* This component contains metadata of the file */
+/* FileViewerMeta component contains metadata of the file */
 const FileViewerMeta = ({ revision, path, appErr, coverage }) => {
   return (
-    <div className="file-meta-viewer">
+    <div>
       <div className="file-meta-center">
         <div className="file-meta-title">File Coverage</div>
         { (coverage) && <CoveragePercentageViewer coverage={coverage}/> }
       </div>
-      {appErr && <span className="error_message">{appErr}</span>}
+      {appErr && <span className="error-message">{appErr}</span>}
 
       <div className="file-summary"><div className="file-path">{path}</div></div>
       <div className="file-meta-revision">revision number: {revision}</div>
