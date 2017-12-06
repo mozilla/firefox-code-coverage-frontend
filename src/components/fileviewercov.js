@@ -12,9 +12,25 @@ export class TestsSideViewer extends Component {
     this.handleTestOnExpand = this.handleTestOnExpand.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps() {
     // collapse expanded test when selected line is changed
-    this.setState({ expandTest: undefined, });
+    this.setState({ expandTest: undefined });
+  }
+
+  getTestList(tests) {
+    return (
+      <ul className="test-viewer-ul">
+        { tests.map((test, row) => (
+          <Test
+            key={test.run.key}
+            row={row}
+            test={test}
+            expand={(row === this.state.expandTest) ? 'expanded' : ''}
+            handleTestOnExpand={this.handleTestOnExpand}
+          />
+        ))}
+      </ul>
+    );
   }
 
   handleTestOnExpand(row) {
@@ -25,29 +41,14 @@ export class TestsSideViewer extends Component {
     }
   }
 
-  getTestList(tests) {
-    return(
-      <ul className="test-viewer-ul">
-        { tests.map((test, row) => (
-          <Test
-            key={test.run.key}
-            row={row}
-            test={test}
-            expand={(row === this.state.expandTest) ? 'expanded':''}
-            handleTestOnExpand={this.handleTestOnExpand}
-          />
-        ))}
-      </ul>
-    );
-  };
-
   render() {
     const { coverage, lineNumber } = this.props;
-    let testTitle, testList;
+    let testTitle;
+    let testList;
     if (!coverage) {
-      testTitle = "Fetching coverage from backend...";
+      testTitle = 'Fetching coverage from backend...';
     } else if (!lineNumber) {
-      testTitle = "All test that cover this file";
+      testTitle = 'All test that cover this file';
       testList = this.getTestList(coverage.allTests);
     } else {
       testTitle = `Line: ${lineNumber}`;
@@ -57,7 +58,7 @@ export class TestsSideViewer extends Component {
         testList = (<p>No test covers this line</p>);
       }
     }
-    return(
+    return (
       <div className="tests-viewer">
         <div className="tests-viewer-title">Covered Tests</div>
         <h3>{testTitle}</h3>
@@ -68,25 +69,23 @@ export class TestsSideViewer extends Component {
 }
 
 // Test list item in the TestsSideViewer
-export const Test = ({ row, test, expand, handleTestOnExpand }) => {
-  return (
-    <li>
-      <div className="toggleable-test-title" onClick={() => handleTestOnExpand(row)}>
-        <span className={`test-ptr ${expand}`}>&#x2023;</span>
-        <label className="test-name">
-          { test.run.name.substring(test.run.name.indexOf('/') + 1) }
-        </label>
+export const Test = ({ row, test, expand, handleTestOnExpand }) => (
+  <li>
+    <div className="toggleable-test-title" onClick={() => handleTestOnExpand(row)}>
+      <span className={`test-ptr ${expand}`}>&#x2023;</span>
+      <div className="test-name">
+        { test.run.name.substring(test.run.name.indexOf('/') + 1) }
       </div>
-      <div className={`expandable-test-info ${expand}`}>
-        <ul className="test-detail-ul">
-          <li><span>platform : </span>{test.run.machine.platform}</li>
-          <li><span>suite : </span>{test.run.suite.fullname}</li>
-          <li><span>chunk : </span>{test.run.chunk}</li>
-        </ul>
-      </div>
-    </li>
-  );
-}
+    </div>
+    <div className={`expandable-test-info ${expand}`}>
+      <ul className="test-detail-ul">
+        <li><span>platform : </span>{test.run.machine.platform}</li>
+        <li><span>suite : </span>{test.run.suite.fullname}</li>
+        <li><span>chunk : </span>{test.run.chunk}</li>
+      </ul>
+    </div>
+  </li>
+);
 
 /* shows coverage percentage of a file */
 export const CoveragePercentageViewer = ({ coverage }) => {
@@ -96,7 +95,8 @@ export const CoveragePercentageViewer = ({ coverage }) => {
   if (coveredLines !== 0 || coverage.uncoveredLines.length !== 0) {
     percentageCovered = (
       <span className="coverage-percentage">
-        { (coveredLines / totalLines * 100).toPrecision(4) }% - { coveredLines } lines covered out of { totalLines } added
+        {((coveredLines / totalLines) * 100).toPrecision(4)}
+        % - {coveredLines} lines covered out of {totalLines} added
       </span>
     );
   } else {

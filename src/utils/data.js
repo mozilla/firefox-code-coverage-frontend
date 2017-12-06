@@ -170,7 +170,7 @@ export const rawFile = async (revision, path, repoPath) => {
     return res.text();
   } catch (e) {
     console.error(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
-    throw new Error("Failed to get source code from hg");
+    throw new Error('Failed to get source code from hg');
   }
 };
 
@@ -182,7 +182,7 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
         and: [
           { eq: { 'source.file.name': path } },
           { eq: { 'repo.changeset.id12': revision } },
-          { eq: { 'repo.branch.name': repoPath } }
+          { eq: { 'repo.branch.name': repoPath } },
         ],
       },
       limit: 1000,
@@ -194,6 +194,6 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
     return res.json();
   } catch (e) {
     console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
-    throw new Error("Failed to get coverage from ActiveData");
+    throw new Error('Failed to get coverage from ActiveData');
   }
 };

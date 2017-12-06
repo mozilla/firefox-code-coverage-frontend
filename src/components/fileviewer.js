@@ -26,8 +26,17 @@ export default class FileViewerContainer extends Component {
   }
 
   async componentDidMount() {
-    const {revision, path} = this.state;
+    const { revision, path } = this.state;
     await this.fetchData(revision, path, 'mozilla-central');
+  }
+
+  setSelectedLine(selectedLineNumber) {
+    // click on a selected line to deselect the line
+    if (selectedLineNumber === this.state.selectedLine) {
+      this.setState({ selectedLine: undefined });
+    } else {
+      this.setState({ selectedLine: selectedLineNumber });
+    }
   }
 
   async fetchData(revision, path, repoPath = 'integration/mozilla-inbound') {
@@ -49,25 +58,16 @@ export default class FileViewerContainer extends Component {
     }
   }
 
-  setSelectedLine(selectedLineNumber) {
-    // click on a selected line to deselect the line
-    if (selectedLineNumber === this.state.selectedLine) {
-      this.setState({ selectedLine: undefined });
-    } else {
-      this.setState({ selectedLine: selectedLineNumber });
-    }
-  }
-
   parseQueryParams() {
     const parsedQuery = queryString.parse(this.props.location.search);
     if (!parsedQuery.revision || !parsedQuery.path) {
-      this.state = {...this.state, appErr: "Undefined URL query ('revision', 'path' fields are required)"};
+      this.state = { ...this.state, appErr: "Undefined URL query ('revision', 'path' fields are required)" };
     } else {
       /* Remove beginning '/' in the path parameter to fetch from source,
        * makes both path=/path AND path=path acceptable in the URL query
        * Ex. "path=/accessible/atk/Platform.cpp" AND "path=accessible/atk/Platform.cpp"
        */
-      this.state = {...this.state,
+      this.state = { ...this.state,
         revision: parsedQuery.revision,
         path: parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path,
       };
@@ -97,10 +97,10 @@ const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   <table className="file-view-table">
     <tbody>
       {
-        parsedFile.map((lineText, lineNumber) => (
+        parsedFile.map((lineText, i) => (
           <Line
-            key={lineNumber}
-            lineNumber={lineNumber + 1}
+            key={lineText}
+            lineNumber={i + 1}
             lineText={lineText}
             coverage={coverage}
             selectedLine={selectedLine}
@@ -119,12 +119,13 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 
   const select = (lineNumber === selectedLine) ? 'selected' : null;
 
-  let nTests, color;
+  let nTests;
+  let color;
   if (coverage) {
     // hit line
     if (coverage.coveredLines.find(element => element === lineNumber)) {
       nTests = coverage.testsPerHitLine[lineNumber].length;
-      color = "hit"
+      color = 'hit';
     // miss line
     } else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
       color = 'miss';
@@ -143,17 +144,15 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 };
 
 /* FileViewerMeta component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, appErr, coverage }) => {
-  return (
-    <div>
-      <div className="file-meta-center">
-        <div className="file-meta-title">File Coverage</div>
-        { (coverage) && <CoveragePercentageViewer coverage={coverage}/> }
-      </div>
-      {appErr && <span className="error-message">{appErr}</span>}
-
-      <div className="file-summary"><div className="file-path">{path}</div></div>
-      <div className="file-meta-revision">revision number: {revision}</div>
+const FileViewerMeta = ({ revision, path, appErr, coverage }) => (
+  <div>
+    <div className="file-meta-center">
+      <div className="file-meta-title">File Coverage</div>
+      { (coverage) && <CoveragePercentageViewer coverage={coverage} /> }
     </div>
-  );
-};
+    {appErr && <span className="error-message">{appErr}</span>}
+
+    <div className="file-summary"><div className="file-path">{path}</div></div>
+    <div className="file-meta-revision">revision number: {revision}</div>
+  </div>
+);
