@@ -1,7 +1,6 @@
 /* This file contains coverage information for a particular revision of a source file */
 import React, { Component } from 'react';
 
-import * as Color from '../utils/color';
 
 /* Sidebar component, show which tests will cover the given selected line */
 export class TestsSideViewer extends Component {
@@ -94,21 +93,22 @@ export const Test = ({ row, test, expand, handleTestOnExpand }) => {
 
 /* shows coverage percentage of a file */
 export const CoveragePercentageViewer = ({ coverage }) => {
+  const coveredLines = coverage.coveredLines.length;
+  const totalLines = coveredLines + coverage.uncoveredLines.length;
   let percentageCovered;
-  const totalLines = coverage.uncoveredLines.length + coverage.coveredLines.length;
-  if (coverage.coveredLines.length !== 0 || coverage.uncoveredLines.length !== 0) {
-    percentageCovered = coverage.coveredLines.length / totalLines;
+  if (coveredLines !== 0 || coverage.uncoveredLines.length !== 0) {
+    percentageCovered = (
+      <span className="coverage-percentage">
+        { (coveredLines / totalLines * 100).toPrecision(4) }% - { coveredLines } lines covered out of { totalLines } added
+      </span>
+    );
+  } else {
+    percentageCovered = (<span>No changes</span>);
   }
 
   return (
-    <div className="coverage_meta">
-      <div className="coverage_meta_totals">
-        {percentageCovered &&
-          <span className="percentage_covered" style={{ backgroundColor: `${Color.getPercentCovColor(percentageCovered)}` }}>
-            { (percentageCovered * 100).toPrecision(4) }%
-          </span>
-        }
-      </div>
+    <div className="coverage-percentage-viewer">
+      { percentageCovered }
     </div>
   );
 };

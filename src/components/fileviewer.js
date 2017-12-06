@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import * as queryString from 'query-string';
-import * as Color from '../utils/color';
 import { fileRevisionCoverageSummary, fileRevisionWithActiveData, rawFile } from '../utils/data';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
@@ -85,8 +84,10 @@ export default class FileViewerContainer extends Component {
           <FileViewerMeta {...this.state} />
           { (parsedFile) && <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
         </div>
-        { (coverage) && <CoveragePercentageViewer coverage={coverage}/> }
-        <TestsSideViewer coverage={coverage} lineNumber={selectedLine} />
+        <TestsSideViewer
+          coverage={coverage}
+          lineNumber={selectedLine}
+        />
       </div>
     );
   }
@@ -145,9 +146,10 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 /* This component contains metadata of the file */
 const FileViewerMeta = ({ revision, path, appErr, coverage }) => {
   return (
-    <div>
+    <div className="file-meta-viewer">
       <div className="file-meta-center">
         <div className="file-meta-title">File Coverage</div>
+        { (coverage) && <CoveragePercentageViewer coverage={coverage}/> }
       </div>
       {appErr && <span className="error_message">{appErr}</span>}
 

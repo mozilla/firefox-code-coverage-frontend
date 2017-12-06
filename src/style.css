@@ -169,6 +169,7 @@ pre { margin: 0; }
 	font-weight: bold;
 	font-size: 2rem;
 	padding: 40px 40px 10px;
+	display: inline-block;
 }
 .file-meta-revision {
 	background-color: #959595; /* Dark grey */
@@ -295,27 +296,15 @@ span.tests {
 }
 
 /* file view coverage percentage */
-div.coverage_meta {
-	position: fixed;
-	top:20px;
-	right: 320px;
-}
-div.coverage_meta_totals {
-	border: 1px solid #d4d4d5;
-	border-radius: 0.20rem;
-	padding-top: 1.0em;
-	padding-right: 0.3em;
-	padding-bottom: 1.0em;
-	padding-left: 0.3em;
+.coverage-percentage-viewer {
+	background-color: #dfe7ec; /* Sky blue */
+	border-radius: 0.25rem;
+	margin: 45px 40px 0px;
+	padding: 8px 20px;
+	display: inline-block;
 	float: right;
 }
-span.percentage_covered {
-	border-radius: 0.25rem;
-	color: rgb(0, 0, 0);
-	font-size: 1em;
-	padding-top: 0.6em;
-	padding-right: 0.8em;
-	padding-bottom: 0.6em;
-	padding-left: 0.8em;
-	margin: 0.05em;
+.coverage-percentage {
+	font-size: 1.1em;
+	font-weight: bold;
 }
