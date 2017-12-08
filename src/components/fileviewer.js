@@ -30,7 +30,12 @@ export default class FileViewerContainer extends Component {
   }
 
   setSelectedLine(selectedLineNumber) {
-    this.setState({ selectedLine: selectedLineNumber });
+    // click on a selected line to deselect the line
+    if (selectedLineNumber === this.state.selectedLine) {
+      this.setState({ selectedLine: undefined });
+    } else {
+      this.setState({ selectedLine: selectedLineNumber });
+    }
   }
 
   async fetchData(revision, path, repoPath = 'integration/mozilla-inbound') {
