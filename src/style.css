@@ -134,7 +134,7 @@ pre { margin: 0; }
 }
 
 /* Changesets */
-.hidden_changeset {
+.hidden-changeset {
 	display: none
 }
 
@@ -164,7 +164,7 @@ pre { margin: 0; }
 .file-meta-center {
 	background-color: #f5f9fa; /* Light blue */
 	overflow: hidden;
-	padding-top: 10px;
+	padding-top: 40px;
 	padding-bottom: 10px;
 	padding-left: 40px;
 	padding-right: 40px;
@@ -197,7 +197,7 @@ pre { margin: 0; }
 	font-weight: 400;
 	padding: 0.3em 0.8em;
 }
-.error_message {
+.error-message {
 	color: red;
 }
 
@@ -212,24 +212,24 @@ pre { margin: 0; }
 	display: block;
 	margin-top: 10px;
 }
-tr.file_line {
+.file-line {
 	height: 18px;
 	border-bottom: 2px solid transparent;
 }
-tr.file_line:hover {
+.file-line:hover {
 	border-bottom: 2px solid #83d0f2; /* Sky blue */
 }
-tr.selected {
+.file-line.selected {
 	border-bottom: 2px solid #3f87a6 !important; /* Dark blue */
 }
-td.file_line_number, td.file_line_tests {
+td.file-line-number, td.file-line-tests {
 	width: 40px;
 	border-right:1px solid #eaeaea;
 	color: Grey;
 	text-align: center;
 	/*padding: 1px;*/
 }
-td.file_line_text {
+td.file-line-text {
 	padding-left: 5px;
 }
 span.tests {
@@ -244,7 +244,7 @@ span.tests {
 }
 
 /* file view right-siderbar */
-.tests_viewer {
+.tests-viewer {
 	position: fixed;
 	top: 0;
 	bottom: 0;
@@ -280,9 +280,6 @@ span.tests {
   bottom: 0;
 	width: 260px;
 }
-.toggleable-test-title {
-	/*border-top: 1px solid #CCC;*/
-}
 .test-ptr {
 	padding-left: 2px;
 	display: inline-block;
@@ -317,21 +314,19 @@ span.tests {
 }
 
 /* file view coverage percentage */
-div.coverage_percentage_viewer {
+.coverage-percentage-viewer {
 	display:inline-block;
-	margin: 0 40px;
-}
-div.coverage_percentage {
-	border: 1px solid #d4d4d5;
+	/*margin: 0 40px;*/
+	border: 2px solid #3f87a6; /* Dark blue */
 	border-radius: 0.20rem;
-	display: inline-block;
-	padding: 1.0em 0.3em;
-	text-align: center;
+	padding: 0.2em 0.2em;
+	/*padding: 1.0em 0.3em;*/
+	/*text-align: center;*/
 }
-span.coverage_percentage {
+.coverage-percentage {
 	border-radius: 0.25rem;
-	color: rgb(0, 0, 0);
+	/*color: rgb(0, 0, 0);*/
 	font-size: 1em;
-	padding: 0.6em 0.8em;
-	margin: 0.05em;
+	padding: 0.4em 0.8em;
+	/*margin: 0.05em;*/
 }

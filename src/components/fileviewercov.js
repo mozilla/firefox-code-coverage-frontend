@@ -4,123 +4,112 @@ import React, { Component } from 'react';
 import * as Color from '../utils/color';
 
 /* Sidebar component, show which tests will cover the given selected line */
-export const TestsSideViewer = ({ coverage, lineNumber }) => {
-  let content;
-
-  if (!coverage) {
-    content = <h3>Fetching coverage from backend...</h3>;
-  } else if (!lineNumber) {
-    content = (
-      <div>
-        <h3>All test that cover this file</h3>
-        <ul className="test-viewer-ul">
-          {
-            coverage.allTests.map(test =>
-              (<Test
-                key={test.run.key}
-                test={test}
-              />),
-            )
-          }
-        </ul>
-      </div>
-    );
-  } else if (coverage.testsPerHitLine[lineNumber]) {
-    content = (
-      <div>
-        <h3>Line: {lineNumber}</h3>
-        <ul className="test-viewer-ul">
-          {
-            coverage.testsPerHitLine[lineNumber].map(test =>
-              (<Test
-                key={test.run.key}
-                test={test}
-              />),
-            )
-          }
-        </ul>
-      </div>
-    );
-  } else {
-    content = (
-      <div>
-        <h3>Line: {lineNumber}</h3>
-        <p>No test covers this line</p>
-      </div>
-    );
-  }
-  return (
-    <div className="tests_viewer">
-      <div className="tests-viewer-title">Covered Tests</div>
-      {content}
-    </div>
-  );
-};
-
-/* Test list item in the TestsSideViewer */
-class Test extends Component {
+export class TestsSideViewer extends Component {
   constructor(props) {
     super(props);
-    this.state = { expand: false };
-    this.expandClass = '';
-    this.handleTestOnClick = this.handleTestOnClick.bind(this);
+    this.state = {
+      expandTest: undefined,
+    };
+    this.handleTestOnExpand = this.handleTestOnExpand.bind(this);
   }
 
-  handleTestOnClick() {
-    this.expandClass = (this.state.expand) ? '' : 'expanded';
-    this.setState({ expand: !this.state.expand });
+  componentWillReceiveProps() {
+    // collapse expanded test when selected line is changed
+    this.setState({ expandTest: undefined });
+  }
+
+  getTestList(tests) {
+    return (
+      <ul className="test-viewer-ul">
+        { tests.map((test, row) => (
+          <Test
+            key={test._id}
+            row={row}
+            test={test}
+            expand={(row === this.state.expandTest) ? 'expanded' : ''}
+            handleTestOnExpand={this.handleTestOnExpand}
+          />
+        ))}
+      </ul>
+    );
+  }
+
+  handleTestOnExpand(row) {
+    if (this.state.expandTest === row) {
+      this.setState({ expandTest: undefined });
+    } else {
+      this.setState({ expandTest: row });
+    }
   }
 
   render() {
-    const test = this.props.test;
+    const { coverage, lineNumber } = this.props;
+    let testTitle;
+    let testList;
+    if (!coverage) {
+      testTitle = 'Fetching coverage from backend...';
+    } else if (!lineNumber) {
+      testTitle = 'All test that cover this file';
+      testList = this.getTestList(coverage.allTests);
+    } else {
+      testTitle = `Line: ${lineNumber}`;
+      if (coverage.testsPerHitLine[lineNumber]) {
+        testList = this.getTestList(coverage.testsPerHitLine[lineNumber]);
+      } else {
+        testList = (<p>No test covers this line</p>);
+      }
+    }
     return (
-      <li>
-        <div className="toggleable-test-title" onClick={this.handleTestOnClick}>
-          <span className={`test-ptr ${this.expandClass}`}>&#x2023;</span>
-          <label className="test-name">
-            { test.run.name.substring(test.run.name.indexOf('/') + 1) }
-          </label>
-        </div>
-        <div className={`expandable-test-info ${this.expandClass}`}>
-          <ul className="test-detail-ul">
-            <li><span>platform : </span>{test.run.machine.platform}</li>
-            <li><span>suite : </span>{test.run.suite.fullname}</li>
-            <li><span>chunk : </span>{test.run.chunk}</li>
-          </ul>
-        </div>
-      </li>
+      <div className="tests-viewer">
+        <div className="tests-viewer-title">Covered Tests</div>
+        <h3>{testTitle}</h3>
+        {testList}
+      </div>
     );
   }
 }
 
+// Test list item in the TestsSideViewer
+export const Test = ({ row, test, expand, handleTestOnExpand }) => (
+  <li>
+    <div onClick={() => handleTestOnExpand(row)}>
+      <span className={`test-ptr ${expand}`}>&#x2023;</span>
+      <div className="test-name">
+        { test.run.name.substring(test.run.name.indexOf('/') + 1) }
+      </div>
+    </div>
+    <div className={`expandable-test-info ${expand}`}>
+      <ul className="test-detail-ul">
+        <li><span>platform : </span>{test.run.machine.platform}</li>
+        <li><span>suite : </span>{test.run.suite.fullname}</li>
+        <li><span>chunk : </span>{test.run.chunk}</li>
+      </ul>
+    </div>
+  </li>
+);
+
 /* shows coverage percentage of a file */
 export const CoveragePercentageViewer = ({ coverage }) => {
+  const coveredLines = coverage.coveredLines.length;
+  const totalLines = coveredLines + coverage.uncoveredLines.length;
   let percentageCovered;
-  let coveredLines;
-  let totalLines;
-
-  if (coverage) {
-    coveredLines = coverage.coveredLines.length;
-    totalLines = coveredLines + coverage.uncoveredLines.length;
-
-    if (coveredLines !== 0 || coverage.uncoveredLines.length !== 0) {
-      percentageCovered = coveredLines / totalLines;
-    } else {
-      // this.percentageCovered is left undefined
-    }
+  if (coveredLines !== 0 || coverage.uncoveredLines.length !== 0) {
+    percentageCovered = (
+      <div
+        className="coverage-percentage"
+        style={{ backgroundColor: `${Color.getPercentCovColor(coveredLines / totalLines)}` }}
+      >
+        {((coveredLines / totalLines) * 100).toPrecision(4)}
+        % - {coveredLines} lines covered out of {totalLines} added
+      </div>
+    );
+  } else {
+    percentageCovered = (<div className="coverage-percentage">No changes</div>);
   }
 
   return (
-    <div className="coverage_percentage_viewer">
-      <div className="coverage_percentage">
-        {percentageCovered ?
-          <span className="coverage_percentage" style={{ backgroundColor: `${Color.getPercentCovColor(percentageCovered)}` }}>
-            { (percentageCovered * 100).toPrecision(4) }% - { coveredLines } lines covered out of { totalLines } added
-          </span>
-          :
-          <span>No changes</span>
-        }
-      </div>
+    <div className="coverage-percentage-viewer">
+      { percentageCovered }
     </div>
   );
 };

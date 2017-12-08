@@ -169,34 +169,35 @@ export const rawFile = async (revision, path, repoPath) => {
   try {
     const res = await FetchAPI.getRawFile(revision, path, repoPath);
     if (res.status !== 200) {
-      console.log(`Error status code: ${res.status}`);
+      throw new Error();
     }
     return res.text();
   } catch (e) {
-    console.log(e);
-    console.log(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
+    console.error(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
+    throw new Error('Failed to get source code from hg');
   }
 };
 
-export const fileRevisionWithActiveData = async (revision, path) => {
+export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
   try {
-    const res = await FetchAPI.query({
+    const res = await FetchAPI.queryActiveData({
       from: 'coverage',
       where: {
         and: [
-          { eq: { 'source.file.name': `${path}` } },
-          { eq: { 'repo.changeset.id12': `${revision}` } },
+          { eq: { 'source.file.name': path } },
+          { eq: { 'repo.changeset.id12': revision } },
+          { eq: { 'repo.branch.name': repoPath } },
         ],
       },
       limit: 1000,
       format: 'list',
     });
     if (res.status !== 200) {
-      console.log(`Error status code: ${res.status}`);
+      throw new Error();
     }
     return res.json();
   } catch (e) {
-    console.log(e);
-    console.log(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
+    console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
+    throw new Error('Failed to get coverage from ActiveData');
   }
 };

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import * as queryString from 'query-string';
-import * as Color from '../utils/color';
 import { fileRevisionCoverageSummary, fileRevisionWithActiveData, rawFile } from '../utils/data';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
@@ -13,90 +12,69 @@ export default class FileViewerContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      /* app status */
-      status: {
-        app: undefined,
-      },
+      appErr: undefined,
       revision: undefined,
       path: undefined,
-      /* app data */
-      parsedFile: [],
-      coverage: {
-        coveredLines: [],
-        uncoveredLines: [],
-        allTests: [],
-        testsPerHitLine: [],
-      },
       selectedLine: undefined,
+      // app data
+      parsedFile: undefined,
+      coverage: undefined,
     };
+    this.parseQueryParams();
     this.setSelectedLine = this.setSelectedLine.bind(this);
   }
 
-  componentWillMount() {
-    /* get revision and path parameters from URL */
-    this.parseQueryParams();
-  }
-
   async componentDidMount() {
-    /* Get source code and coverage in parallel  */
-    await Promise.all([this.fetchSourceCode(), this.fetchCoverage()]);
+    const { revision, path } = this.state;
+    await this.fetchData(revision, path, 'mozilla-central');
   }
 
   setSelectedLine(selectedLineNumber) {
     this.setState({ selectedLine: selectedLineNumber });
   }
 
+  async fetchData(revision, path, repoPath = 'integration/mozilla-inbound') {
+    // Get source code from hg
+    const fileSource = async () => {
+      this.setState({ parsedFile: (await rawFile(revision, path, repoPath)).split('\n') });
+    };
+    // Get coverage from ActiveData
+    const coverageData = async () => {
+      const { data } = await fileRevisionWithActiveData(revision, path, repoPath);
+      this.setState({ coverage: fileRevisionCoverageSummary(data) });
+    };
+    // Fetch source code and coverage in parallel
+    try {
+      await Promise.all([fileSource(), coverageData()]);
+    } catch (error) {
+      this.setState({ appErr: `${error.name}: ${error.message}` });
+    }
+  }
+
   parseQueryParams() {
     const parsedQuery = queryString.parse(this.props.location.search);
     if (!parsedQuery.revision || !parsedQuery.path) {
-      this.setState({ status: { app: "Undefined URL query ('revision', 'path' fields are required)" } });
+      this.state = { ...this.state, appErr: "Undefined URL query ('revision', 'path' fields are required)" };
     } else {
-      this.setState({
+      /* Remove beginning '/' in the path parameter to fetch from source,
+      * makes both path=/path AND path=path acceptable in the URL query
+      * Ex. "path=/accessible/atk/Platform.cpp" AND "path=accessible/atk/Platform.cpp"
+      */
+      this.state = { ...this.state,
         revision: parsedQuery.revision,
-        /* remove beginning '/' in the path parameter to fetch from source */
-        path: parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path });
-    }
-  }
-
-  /* Get source code from hg */
-  async fetchSourceCode(revision = this.state.revision, path = this.state.path) {
-    const source = await rawFile(revision, path, 'integration/mozilla-inbound');
-    if (source) {
-      this.setState({ parsedFile: source.split('\n') });
-    } else {
-      this.setState({ status: { app: 'We did not manage to fetch source file from hg.mozilla' } });
-    }
-  }
-
-  /* Get coverage from ActiveData */
-  async fetchCoverage(revision = this.state.revision, path = this.state.path) {
-    const coverage = await fileRevisionWithActiveData(revision, path);
-    if (coverage) {
-      this.setState({ coverage: fileRevisionCoverageSummary(coverage.data) });
-    } else {
-      this.setState({ status: { app: 'We did not manage to fetch test coverage from ActiveData' } });
+        path: parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path,
+      };
     }
   }
 
   render() {
-    const { status, revision, path, parsedFile, coverage, selectedLine } = this.state;
+    const { parsedFile, coverage, selectedLine } = this.state;
 
     return (
       <div>
         <div className="file-view">
-          <FileViewerMeta
-            revision={revision}
-            path={path}
-            status={status}
-            parsedFile={parsedFile}
-            coverage={coverage}
-          />
-          <FileViewer
-            parsedFile={parsedFile}
-            coverage={coverage}
-            selectedLine={selectedLine}
-            onLineClick={this.setSelectedLine}
-          />
+          <FileViewerMeta {...this.state} />
+          { (parsedFile) && <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
         </div>
         <TestsSideViewer
           coverage={coverage}
@@ -107,16 +85,16 @@ export default class FileViewerContainer extends Component {
   }
 }
 
-/* This component renders each line of the file with its line number */
+// This component renders each line of the file with its line number
 const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   <table className="file-view-table">
     <tbody>
       {
-        parsedFile.map((line, lineNumber) => (
+        parsedFile.map((text, lineNumber) => (
           <Line
             key={lineNumber}
             lineNumber={lineNumber + 1}
-            lineText={line}
+            text={text}
             coverage={coverage}
             selectedLine={selectedLine}
             onLineClick={onLineClick}
@@ -127,65 +105,62 @@ const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   </table>
 );
 
-const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => {
+const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
   const handleOnClick = () => {
     onLineClick(lineNumber);
   };
 
-  const lineClass = (lineNumber === selectedLine) ? 'selected' : 'unselected';
+  const select = (lineNumber === selectedLine) ? 'selected' : '';
 
-  // default line color
   let nTests;
-  let color = '#ffffff';
-  // hit line
-  if (coverage.coveredLines.find(element => element === lineNumber)) {
-    nTests = coverage.testsPerHitLine[lineNumber].length;
-    color = Color.getLineHitCovColor(nTests / coverage.allTests.length);
-  // miss line
-  } else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
-    color = '#ffe5e5';
+  let color;
+  if (coverage) {
+    // hit line
+    if (coverage.coveredLines.find(element => element === lineNumber)) {
+      nTests = coverage.testsPerHitLine[lineNumber].length;
+      color = 'hit';
+    // miss line
+    } else if (coverage.uncoveredLines.find(element => element === lineNumber)) {
+      color = 'miss';
+    }
   }
 
   return (
-    <tr className={`file_line ${lineClass}`} onClick={handleOnClick} style={{ backgroundColor: `${color}` }}>
+    <tr className={`file-line ${select} ${color}`} onClick={handleOnClick}>
       <td className="file_line_number">{lineNumber}</td>
       <td className="file_line_tests">
         { nTests && <span className="tests">{nTests}</span> }
       </td>
-      <td className="file_line_text"><pre>{lineText}</pre></td>
+      <td className="file_line_text"><pre>{text}</pre></td>
     </tr>
   );
 };
 
-/* This component contains metadata of the file */
-const FileViewerMeta = ({ revision, path, status, parsedFile, coverage }) => {
-  const showStatus = (label, fetched) => {
+// This component contains metadata of the file
+const FileViewerMeta = ({ revision, path, appErr, parsedFile, coverage }) => {
+  const showStatus = (label, data) => {
     let msg;
-    if (fetched === undefined) {
-      msg = 'Fetching...';
-    } else if (fetched === true) {
+    if (!data) {
+      msg = <span>&#x2026;</span>; // horizontal ellipsis
+    } else {
       msg = <span>&#x2714;</span>; // heavy checkmark
-    } else if (fetched === false) {
-      msg = <span>&#x2716;</span>; // heavy multiplication x
     }
     return (<li className="file-meta-li">{label}: {msg}</li>);
   };
 
   return (
-    <div className="file-meta-viewer">
+    <div>
       <div className="file-meta-center">
         <div className="file-meta-title">File Coverage</div>
-        <CoveragePercentageViewer
-          coverage={coverage}
-        />
+        { (coverage) && <CoveragePercentageViewer coverage={coverage} /> }
         <div className="file-meta-status">
           <ul className="file-meta-ul">
-            { showStatus('Source code', parsedFile.length > 0) }
-            { showStatus('Coverage', Object.keys(coverage).length > 0) }
+            { showStatus('Source code', parsedFile) }
+            { showStatus('Coverage', coverage) }
           </ul>
         </div>
       </div>
-      {status.app && <span className="error_message">{status.app}</span>}
+      {appErr && <span className="error-message">{appErr}</span>}
 
       <div className="file-summary"><div className="file-path">{path}</div></div>
       <div className="file-meta-revision">revision number: {revision}</div>
