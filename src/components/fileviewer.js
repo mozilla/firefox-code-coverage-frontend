@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import * as FetchAPI from '../utils/fetch_data';
 import * as Color from '../utils/color';
+import * as Log from '../utils/log';
 // import * as Log from '../utils/log';
 import { recursiveExtend } from '../utils/map';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
@@ -16,15 +17,11 @@ const _ = require('lodash');
 export default class FileViewerContainer extends Component {
   constructor(props) {
     super(props);
+
+    /* app status */
+    this.status = new FileViewerStatus();
+
     this.state = {
-      /* app status */
-      status: {
-        app: undefined,
-        fetch: {
-          source: undefined,
-          coverage: undefined,
-        },
-      },
       /* app data */
       parsedFile: [],
       coverage: {
@@ -40,10 +37,8 @@ export default class FileViewerContainer extends Component {
     /* get revision and path parameters from URL */
     const parsedQuery = queryString.parse(props.location.search);
     if (!parsedQuery.revision || !parsedQuery.path) {
-      this.setState({
-        status: {
+      this.status.setState({
           app: "Undefined URL query ('revision', 'path' fields are required)",
-        },
       });
     }
     /* remove beginning '/' in the path parameter */
@@ -67,24 +62,18 @@ export default class FileViewerContainer extends Component {
   async getSourceCode(revision = this.revision, path = this.path) {
     try {
       const text = await FetchAPI.getRawFile(revision, path);
-      this.setState(prevState => recursiveExtend(
-        {
-          status: { fetch: { source: true } },
-          parsedFile: text.split('\n'),
-        },
-        prevState,
-      ));
+      this.status.setState({
+        fetch_source: true
+      });
+      this.setState({
+        parsedFile: text.split('\n')
+      });
     } catch (error) {
       console.error(error);
-      this.setState(prevState => recursiveExtend(
-        {
-          status: {
-            app: 'We did not manage to fetch source file from hg.mozilla',
-            fetch: { source: false },
-          },
-        },
-        prevState,
-      ));
+      this.status.setState({
+        app: 'We did not manage to fetch source file from hg.mozilla',
+        fetch_source: false
+      });
     }
   }
 
@@ -102,24 +91,18 @@ export default class FileViewerContainer extends Component {
         limit: 1000,
         format: 'list',
       });
-      this.setState(prevState => recursiveExtend(
-        {
-          status: { fetch: { coverage: true } },
-          coverage: this.parseCoverage(activeData.data),
-        },
-        prevState,
-      ));
+      this.status.setState({
+          fetch_coverage: true
+      });
+      this.setState({
+        coverage: this.parseCoverage(activeData.data)
+      });
     } catch (error) {
       console.error(error);
-      this.setState(prevState => recursiveExtend(
-        {
-          status: {
-            app: 'We did not manage to fetch test coverage from ActiveData',
-            fetch: { coverage: false },
-          },
-        },
-        prevState,
-      ));
+      this.setState({
+        app: 'We did not manage to fetch test coverage from ActiveData',
+        fetch_coverage: false
+      });
     }
   }
 
@@ -170,7 +153,7 @@ export default class FileViewerContainer extends Component {
           <FileViewerMeta
             revision={this.revision}
             path={this.path}
-            status={status}
+            status={this.status}
             coverage={coverage}
           />
           <FileViewer
@@ -242,18 +225,6 @@ const Line = ({ lineNumber, lineText, coverage, selectedLine, onLineClick }) => 
 
 /* This component contains metadata of the file */
 const FileViewerMeta = ({ revision, path, status, coverage }) => {
-  const showStatus = (label, fetched) => {
-    let msg;
-    if (fetched === undefined) {
-      msg = 'Fetching...';
-    } else if (fetched === true) {
-      msg = <span>&#x2714;</span>; // heavy checkmark
-    } else if (fetched === false) {
-      msg = <span>&#x2716;</span>; // heavy multiplication x
-    }
-    return (<li className="file-meta-li">{label}: {msg}</li>);
-  };
-
   return (
     <div className="file-meta-viewer">
       <div className="file-meta-center">
@@ -261,12 +232,7 @@ const FileViewerMeta = ({ revision, path, status, coverage }) => {
         <CoveragePercentageViewer
           coverage={coverage}
         />
-        <div className="file-meta-status">
-          <ul className="file-meta-ul">
-            { showStatus('Source code', status.fetch.source) }
-            { showStatus('Coverage', status.fetch.coverage) }
-          </ul>
-        </div>
+        <status/>
       </div>
       {status.app && <span className="error_message">{status.app}</span>}
 
@@ -275,3 +241,35 @@ const FileViewerMeta = ({ revision, path, status, coverage }) => {
     </div>
   );
 };
+
+class FileViewerStatus extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    Log.note("render status");
+    const showStatus = (label, fetched) => {
+      let msg;
+      if (fetched === undefined) {
+        msg = 'Fetching...';
+      } else if (fetched === true) {
+        msg = <span>&#x2714;</span>; // heavy checkmark
+      } else if (fetched === false) {
+        msg = <span>&#x2716;</span>; // heavy multiplication x
+      }
+      return (<li className="file-meta-li">{label}: {msg}</li>);
+    };
+
+    return (
+      <div className="file-meta-status">
+        <ul className="file-meta-ul">
+          {showStatus('Source code', this.state.fetch_source)}
+          {showStatus('Coverage', this.state.fetch_coverage)}
+        </ul>
+      </div>
+    );
+  }
+}
+
