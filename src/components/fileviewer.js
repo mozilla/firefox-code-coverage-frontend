@@ -132,11 +132,11 @@ const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
 
   return (
     <tr className={`file-line ${select} ${color}`} onClick={handleOnClick}>
-      <td className="file_line_number">{lineNumber}</td>
-      <td className="file_line_tests">
+      <td className="file-line-number">{lineNumber}</td>
+      <td className="file-line-tests">
         { nTests && <span className="tests">{nTests}</span> }
       </td>
-      <td className="file_line_text"><pre>{text}</pre></td>
+      <td className="file-line-text"><pre>{text}</pre></td>
     </tr>
   );
 };

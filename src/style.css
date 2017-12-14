@@ -14,7 +14,7 @@ a {
 }
 
 /*
- * CSS for diff viewer and file virwer
+ * CSS for diff viewer and file viewer
  */
 .file-path {
 	color: white;
@@ -213,7 +213,6 @@ pre { margin: 0; }
 	margin-top: 10px;
 }
 .file-line {
-	height: 18px;
 	border-bottom: 2px solid transparent;
 }
 .file-line:hover {
@@ -227,17 +226,16 @@ td.file-line-number, td.file-line-tests {
 	border-right:1px solid #eaeaea;
 	color: Grey;
 	text-align: center;
-	/*padding: 1px;*/
 }
 td.file-line-text {
 	padding-left: 5px;
 }
 span.tests {
 	background: #21ba45;
-  border-radius: 10px;
-  color: #ffffff;
+	border-radius: 10px;
+	color: #ffffff;
 	display: inline-block;
-  text-align: center;
+	text-align: center;
 	font-size: 0.8em;
 	padding: 1.5px;
 	min-width: 13px;
@@ -251,9 +249,7 @@ span.tests {
 	right: 0;
 	width: 280px;
 	border-left: solid 6px #eaeff2;
-	/*border-image: linear-gradient(#fff, #eaeff2 20%, #eaeff2 80%, #fff) 10;*/
 	padding-left: 20px;
-	/*overflow-y: auto;*/
 	background-color: #f5f9fa; /* Light blue */
 }
 .tests-viewer-title {
@@ -277,7 +273,7 @@ span.tests {
 	position: fixed;
 	overflow-y: auto;
 	top: 110px;
-  bottom: 0;
+	bottom: 0;
 	width: 260px;
 }
 .test-ptr {
@@ -296,9 +292,9 @@ span.tests {
 	color: #666;
 }
 .expandable-test-info {
-  height: 0px;
-  overflow: hidden;
-  transition: height 0.3s;
+	height: 0px;
+	overflow: hidden;
+	transition: height 0.3s;
 }
 .expandable-test-info.expanded {
 	height: 60px;
@@ -316,17 +312,12 @@ span.tests {
 /* file view coverage percentage */
 .coverage-percentage-viewer {
 	display:inline-block;
-	/*margin: 0 40px;*/
 	border: 2px solid #3f87a6; /* Dark blue */
 	border-radius: 0.20rem;
 	padding: 0.2em 0.2em;
-	/*padding: 1.0em 0.3em;*/
-	/*text-align: center;*/
 }
 .coverage-percentage {
 	border-radius: 0.25rem;
-	/*color: rgb(0, 0, 0);*/
 	font-size: 1em;
 	padding: 0.4em 0.8em;
-	/*margin: 0.05em;*/
 }
