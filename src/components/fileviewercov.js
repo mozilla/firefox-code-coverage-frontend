@@ -80,9 +80,9 @@ const Test = ({ row, test, expand, handleTestOnExpand }) => (
     </div>
     <div className={`expandable-test-info ${expand}`}>
       <ul className="test-detail-ul">
-        <li><span>platform : </span>{test.run.machine.platform}</li>
-        <li><span>suite : </span>{test.run.suite.fullname}</li>
-        <li><span>chunk : </span>{test.run.chunk}</li>
+        <li>{`platform : ${test.run.machine.platform}`}</li>
+        <li>{`suite : ${test.run.suite.fullname}`}</li>
+        <li>{`chunk : ${test.run.chunk}`}</li>
       </ul>
     </div>
   </li>
