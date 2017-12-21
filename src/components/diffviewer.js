@@ -25,7 +25,7 @@ export default class DiffViewerContainer extends Component {
 
   async componentDidMount() {
     const { changeset } = this.props;
-    await Promise.all([this.fetchSetCoverageData(changeset), this.fetchDiff(changeset)]);
+    await Promise.all([this.fetchSetCoverageData(changeset), this.fetchSetDiff(changeset)]);
   }
 
   async fetchSetCoverageData(changeset) {
@@ -39,7 +39,7 @@ export default class DiffViewerContainer extends Component {
     }
   }
 
-  async fetchDiff(changeset) {
+  async fetchSetDiff(changeset) {
     try {
       const text = await (await FetchAPI.getDiff(changeset, 'mozilla-central')).text();
       this.setState({ parsedDiff: parse(text) });
