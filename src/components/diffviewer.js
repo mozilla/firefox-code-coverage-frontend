@@ -25,10 +25,10 @@ export default class DiffViewerContainer extends Component {
 
   async componentDidMount() {
     const { changeset } = this.props;
-    await Promise.all([this.fetchCsetData(changeset), this.fetchDiff(changeset)]);
+    await Promise.all([this.fetchSetCoverageData(changeset), this.fetchDiff(changeset)]);
   }
 
-  async fetchCsetData(changeset) {
+  async fetchSetCoverageData(changeset) {
     try {
       this.setState({ csetMeta: await csetWithCcovData({ node: changeset }) });
     } catch (error) {
