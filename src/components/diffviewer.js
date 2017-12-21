@@ -41,7 +41,7 @@ export default class DiffViewerContainer extends Component {
 
   async fetchSetDiff(changeset) {
     try {
-      const text = await (await FetchAPI.getDiff(changeset, 'mozilla-central')).text();
+      const text = await (await FetchAPI.getDiff(changeset)).text();
       this.setState({ parsedDiff: parse(text) });
     } catch (error) {
       console.error(error);
