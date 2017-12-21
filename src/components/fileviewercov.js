@@ -1,7 +1,7 @@
 /* This file contains coverage information for a particular revision of a source file */
 import React, { Component } from 'react';
 
-import * as Color from '../utils/color';
+import getPercentCovColor from '../utils/color';
 
 /* Sidebar component, show which tests will cover the given selected line */
 export class TestsSideViewer extends Component {
@@ -97,7 +97,7 @@ export const CoveragePercentageViewer = ({ coverage }) => {
     percentageCovered = (
       <div
         className="coverage-percentage"
-        style={{ backgroundColor: `${Color.getPercentCovColor(coveredLines / totalLines)}` }}
+        style={{ backgroundColor: `${getPercentCovColor(coveredLines / totalLines)}` }}
       >
         {((coveredLines / totalLines) * 100).toPrecision(4)}
         % - {coveredLines} lines covered out of {totalLines} added

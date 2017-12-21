@@ -1,7 +1,7 @@
 import * as Chroma from 'chroma-js';
 
-export const getPercentCovColor = percent =>
-  Chroma.scale(['red', 'yellow', 'green']).mode('lab')(percent);
+const getPercentCovColor = percent =>
+  // warm red, lemon yellow, neon green
+  Chroma.scale(['#ff4f5e', '#fff44f', '#54ffbd']).mode('lab')(percent);
 
-export const getLineHitCovColor = percent =>
-  Chroma.scale(['dfd', 'a1fc83']).mode('lab')(percent);
+export default getPercentCovColor;
