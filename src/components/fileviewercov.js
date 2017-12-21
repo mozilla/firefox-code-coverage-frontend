@@ -23,7 +23,7 @@ export class TestsSideViewer extends Component {
       <ul className="test-viewer-ul">
         { tests.map((test, row) => (
           <Test
-            key={test._id}
+            key={test.id}
             row={row}
             test={test}
             expand={(row === this.state.expandTest) ? 'expanded' : ''}
@@ -72,7 +72,7 @@ export class TestsSideViewer extends Component {
 // Test list item in the TestsSideViewer
 const Test = ({ row, test, expand, handleTestOnExpand }) => (
   <li>
-    <div onClick={() => handleTestOnExpand(row)}>
+    <div role="button" tabIndex={0} onClick={() => handleTestOnExpand(row)}>
       <span className={`test-ptr ${expand}`}>&#x2023;</span>
       <span className="test-name">
         { test.run.name.substring(test.run.name.indexOf('/') + 1) }

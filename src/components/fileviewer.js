@@ -90,7 +90,7 @@ const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
       {
         parsedFile.map((text, lineNumber) => (
           <Line
-            key={lineNumber}
+            key={text.id}
             lineNumber={lineNumber + 1}
             text={text}
             coverage={coverage}
