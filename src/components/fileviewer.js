@@ -4,10 +4,9 @@ import * as queryString from 'query-string';
 import { fileRevisionCoverageSummary, fileRevisionWithActiveData, rawFile } from '../utils/data';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 
-/* FileViewer loads a raw file for a given revision from Mozilla's hg web.
- * It uses test coverage information from Active Data to show coverage
- * for runnable lines.
- */
+// FileViewer loads a raw file for a given revision from Mozilla's hg web.
+// It uses test coverage information from Active Data to show coverage
+// for runnable lines.
 export default class FileViewerContainer extends Component {
   constructor(props) {
     super(props);
@@ -66,10 +65,9 @@ export default class FileViewerContainer extends Component {
     if (!parsedQuery.revision || !parsedQuery.path) {
       out.appErr = "Undefined URL query ('revision', 'path' fields are required)";
     } else {
-      /* Remove beginning '/' in the path parameter to fetch from source,
-      * makes both path=/path AND path=path acceptable in the URL query
-      * Ex. "path=/accessible/atk/Platform.cpp" AND "path=accessible/atk/Platform.cpp"
-      */
+      // Remove beginning '/' in the path parameter to fetch from source,
+      // makes both path=/path AND path=path acceptable in the URL query
+      // Ex. "path=/accessible/atk/Platform.cpp" AND "path=accessible/atk/Platform.cpp"
       out.revision = parsedQuery.revision;
       out.path = parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path;
     }

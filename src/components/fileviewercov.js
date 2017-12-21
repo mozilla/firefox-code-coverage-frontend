@@ -1,9 +1,9 @@
-/* This file contains coverage information for a particular revision of a source file */
+// This file contains coverage information for a particular revision of a source file 
 import React, { Component } from 'react';
 
 import getPercentCovColor from '../utils/color';
 
-/* Sidebar component, show which tests will cover the given selected line */
+// Sidebar component, show which tests will cover the given selected line 
 export class TestsSideViewer extends Component {
   constructor(props) {
     super(props);
@@ -88,7 +88,7 @@ const Test = ({ row, test, expand, handleTestOnExpand }) => (
   </li>
 );
 
-/* shows coverage percentage of a file */
+// shows coverage percentage of a file 
 export const CoveragePercentageViewer = ({ coverage }) => {
   const coveredLines = coverage.coveredLines.length;
   const totalLines = coveredLines + coverage.uncoveredLines.length;

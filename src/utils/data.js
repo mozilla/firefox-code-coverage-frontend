@@ -35,7 +35,7 @@ const coverageSummary = (coverage) => {
   return s;
 };
 
-/* get the coverage summary for a particular revision and file */
+// get the coverage summary for a particular revision and file 
 export const fileRevisionCoverageSummary = (coverage) => {
   const s = {
     coveredLines: [],
