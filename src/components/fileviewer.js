@@ -20,7 +20,7 @@ export default class FileViewerContainer extends Component {
       parsedFile: undefined,
       coverage: undefined,
     };
-    this.parseQueryParams();
+    this.state = this.parseQueryParams();
     this.setSelectedLine = this.setSelectedLine.bind(this);
   }
 
@@ -58,18 +58,22 @@ export default class FileViewerContainer extends Component {
 
   parseQueryParams() {
     const parsedQuery = queryString.parse(this.props.location.search);
+    const out = {
+      appError: undefined,
+      revision: undefined,
+      path: undefined,
+    };
     if (!parsedQuery.revision || !parsedQuery.path) {
-      this.state = { ...this.state, appErr: "Undefined URL query ('revision', 'path' fields are required)" };
+      out.appErr = "Undefined URL query ('revision', 'path' fields are required)";
     } else {
       /* Remove beginning '/' in the path parameter to fetch from source,
       * makes both path=/path AND path=path acceptable in the URL query
       * Ex. "path=/accessible/atk/Platform.cpp" AND "path=accessible/atk/Platform.cpp"
       */
-      this.state = { ...this.state,
-        revision: parsedQuery.revision,
-        path: parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path,
-      };
+      out.revision = parsedQuery.revision;
+      out.path = parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path;
     }
+    return out;
   }
 
   render() {

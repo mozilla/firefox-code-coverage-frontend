@@ -12,7 +12,7 @@ const jsonHeaders = {
 const jsonPost = (url, body) =>
   fetch(url, { headers: jsonHeaders, method: 'POST', body: JSON.stringify(body) });
 
-export const getDiff = (changeset, repoPath='mozilla-central') =>
+export const getDiff = (changeset, repoPath = 'mozilla-central') =>
   fetch(`${hgHost}/${repoPath}/raw-rev/${changeset}`, { plainHeaders });
 
 export const getRawFile = (revision, path, repoPath) =>
