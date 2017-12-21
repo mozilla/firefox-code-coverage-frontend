@@ -203,7 +203,6 @@ pre { margin: 0; }
 
 .file-view {
 	display: inline-block;
-	min-width: 1000px;
 }
 .file-view-table {
 	border: 1px solid #eaeaea;
