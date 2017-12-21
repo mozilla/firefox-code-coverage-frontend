@@ -10,15 +10,6 @@ import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
 export default class FileViewerContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      appErr: undefined,
-      revision: undefined,
-      path: undefined,
-      selectedLine: undefined,
-      // app data
-      parsedFile: undefined,
-      coverage: undefined,
-    };
     this.state = this.parseQueryParams();
     this.setSelectedLine = this.setSelectedLine.bind(this);
   }
