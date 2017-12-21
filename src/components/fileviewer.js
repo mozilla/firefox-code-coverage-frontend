@@ -171,7 +171,9 @@ const FileViewerMeta = ({ revision, path, appErr, parsedFile, coverage }) => {
       </div>
       {appErr && <span className="error-message">{appErr}</span>}
 
-      <div className="file-summary"><div className="file-path">{path}</div></div>
+      <div className="file-summary">
+        <span className="file-path">{path}</span>
+      </div>
       <div className="file-meta-revision">revision number: {revision}</div>
     </div>
   );
