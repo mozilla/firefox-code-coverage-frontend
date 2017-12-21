@@ -70,7 +70,7 @@ export class TestsSideViewer extends Component {
 }
 
 // Test list item in the TestsSideViewer
-export const Test = ({ row, test, expand, handleTestOnExpand }) => (
+const Test = ({ row, test, expand, handleTestOnExpand }) => (
   <li>
     <div onClick={() => handleTestOnExpand(row)}>
       <span className={`test-ptr ${expand}`}>&#x2023;</span>
