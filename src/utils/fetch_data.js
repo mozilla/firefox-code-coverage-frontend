@@ -9,8 +9,8 @@ const jsonHeaders = {
   Accept: 'application/json',
 };
 
-const jsonPost = params =>
-  fetch(params.url, { headers: jsonHeaders, method: 'POST', body: JSON.stringify(params.body) });
+const jsonPost = (url, body) =>
+  fetch(url, { headers: jsonHeaders, method: 'POST', body: JSON.stringify(body) });
 
 export const getDiff = (changeset, repoPath) =>
   fetch(`${hgHost}/${repoPath}/raw-rev/${changeset}`, { plainHeaders });
@@ -28,4 +28,4 @@ export const getChangesetCoverageSummary = changeset =>
   fetch(`${ccovBackend}/coverage/changeset_summary/${changeset}`, { jsonHeaders });
 
 export const queryActiveData = body =>
-  jsonPost({ url: `${activeData}/query`, body });
+  jsonPost(`${activeData}/query`, body);
