@@ -74,9 +74,9 @@ const Test = ({ row, test, expand, handleTestOnExpand }) => (
   <li>
     <div onClick={() => handleTestOnExpand(row)}>
       <span className={`test-ptr ${expand}`}>&#x2023;</span>
-      <div className="test-name">
+      <span className="test-name">
         { test.run.name.substring(test.run.name.indexOf('/') + 1) }
-      </div>
+      </span>
     </div>
     <div className={`expandable-test-info ${expand}`}>
       <ul className="test-detail-ul">
