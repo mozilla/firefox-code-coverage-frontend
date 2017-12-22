@@ -31,7 +31,7 @@ export default class FileViewerContainer extends Component {
   async fetchData(revision, path, repoPath = 'integration/mozilla-inbound') {
     // Get source code from hg
     const fileSource = async () => {
-      this.setState({ parsedFile: (await rawFile(revision, path, repoPath)).split('\n') });
+      this.setState({ parsedFile: (await rawFile(revision, path, repoPath)) });
     };
     // Get coverage from ActiveData
     const coverageData = async () => {

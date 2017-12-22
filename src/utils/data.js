@@ -171,7 +171,7 @@ export const rawFile = async (revision, path, repoPath) => {
     if (res.status !== 200) {
       throw new Error();
     }
-    return res.text();
+    return (await res.text()).split('\n');
   } catch (e) {
     console.error(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
     throw new Error('Failed to get source code from hg');
