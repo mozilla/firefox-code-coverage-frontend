@@ -177,9 +177,9 @@ pre { margin: 0; }
 }
 .file-meta-ul {
 	float: right;
-  padding: 0;
+	padding: 0;
 	margin: 0;
-  width: auto;
+	width: auto;
 }
 .file-meta-li {
 	display: inline-block;
@@ -275,20 +275,26 @@ span.tests {
 	bottom: 0;
 	width: 260px;
 }
-.test-ptr {
+.test-switch {
+	background: none;
+	border: none;
+	outline: none;
+	padding: 0;
+	font-size: 1em;
+	border-top: 1px solid #CCC;
+}
+.test-symbol {
 	padding-left: 2px;
 	display: inline-block;
 	transition: 0.2s;
 }
-.test-ptr.expanded {
+.test-symbol.expanded {
 	transform: rotate(90deg);
 }
 .test-name {
 	display: inline-block;
 	padding: 0.5em;
 	text-align: center;
-	border-top: 1px solid #CCC;
-	color: #666;
 }
 .expandable-test-info {
 	height: 0px;
@@ -301,11 +307,8 @@ span.tests {
 .test-detail-ul {
 	list-style-type: none;
 	padding: 0;
-	margin: 0;
-}
-.test-detail-ul span {
-	font-weight: bold;
 	margin-left: 15px;
+	color: #666;
 }
 
 /* file view coverage percentage */

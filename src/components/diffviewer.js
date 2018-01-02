@@ -23,9 +23,9 @@ export default class DiffViewerContainer extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { changeset } = this.props;
-    await Promise.all([this.fetchSetCoverageData(changeset), this.fetchSetDiff(changeset)]);
+    Promise.all([this.fetchSetCoverageData(changeset), this.fetchSetDiff(changeset)]);
   }
 
   async fetchSetCoverageData(changeset) {

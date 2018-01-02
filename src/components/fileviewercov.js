@@ -1,9 +1,10 @@
-// This file contains coverage information for a particular revision of a source file 
+// This file contains coverage information for a particular revision of a source file
 import React, { Component } from 'react';
 
 import getPercentCovColor from '../utils/color';
+import { TRIANGULAR_BULLET } from '../utils/symbol';
 
-// Sidebar component, show which tests will cover the given selected line 
+// Sidebar component, show which tests will cover the given selected line
 export class TestsSideViewer extends Component {
   constructor(props) {
     super(props);
@@ -21,9 +22,9 @@ export class TestsSideViewer extends Component {
   getTestList(tests) {
     return (
       <ul className="test-viewer-ul">
-        { tests.map((test, row) => (
+        {tests.map((test, row) => (
           <Test
-            key={test.id}
+            key={test._id}
             row={row}
             test={test}
             expand={(row === this.state.expandTest) ? 'expanded' : ''}
@@ -72,12 +73,12 @@ export class TestsSideViewer extends Component {
 // Test list item in the TestsSideViewer
 const Test = ({ row, test, expand, handleTestOnExpand }) => (
   <li>
-    <div role="button" tabIndex={0} onClick={() => handleTestOnExpand(row)}>
-      <span className={`test-ptr ${expand}`}>&#x2023;</span>
+    <button className="test-switch" onClick={() => handleTestOnExpand(row)}>
+      <span className={`test-symbol ${expand}`}>{TRIANGULAR_BULLET}</span>
       <span className="test-name">
         { test.run.name.substring(test.run.name.indexOf('/') + 1) }
       </span>
-    </div>
+    </button>
     <div className={`expandable-test-info ${expand}`}>
       <ul className="test-detail-ul">
         <li>{`platform : ${test.run.machine.platform}`}</li>
@@ -88,7 +89,7 @@ const Test = ({ row, test, expand, handleTestOnExpand }) => (
   </li>
 );
 
-// shows coverage percentage of a file 
+// shows coverage percentage of a file
 export const CoveragePercentageViewer = ({ coverage }) => {
   const coveredLines = coverage.coveredLines.length;
   const totalLines = coveredLines + coverage.uncoveredLines.length;
@@ -100,7 +101,7 @@ export const CoveragePercentageViewer = ({ coverage }) => {
         style={{ backgroundColor: `${getPercentCovColor(coveredLines / totalLines)}` }}
       >
         {((coveredLines / totalLines) * 100).toPrecision(4)}
-        % - {coveredLines} lines covered out of {totalLines} added
+        % - {coveredLines} lines covered out of {totalLines} coverable lines
       </div>
     );
   } else {

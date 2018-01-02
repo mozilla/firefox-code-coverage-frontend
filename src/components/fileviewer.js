@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-
 import * as queryString from 'query-string';
+
 import { fileRevisionCoverageSummary, fileRevisionWithActiveData, rawFile } from '../utils/data';
 import { TestsSideViewer, CoveragePercentageViewer } from './fileviewercov';
+import { HORIZONTAL_ELLIPSIS, HEAVY_CHECKMARK } from '../utils/symbol';
+import hash from '../utils/hash';
 
 // FileViewer loads a raw file for a given revision from Mozilla's hg web.
 // It uses test coverage information from Active Data to show coverage
@@ -14,9 +16,9 @@ export default class FileViewerContainer extends Component {
     this.setSelectedLine = this.setSelectedLine.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { revision, path } = this.state;
-    await this.fetchData(revision, path, 'mozilla-central');
+    this.fetchData(revision, path);
   }
 
   setSelectedLine(selectedLineNumber) {
@@ -28,7 +30,7 @@ export default class FileViewerContainer extends Component {
     }
   }
 
-  async fetchData(revision, path, repoPath = 'integration/mozilla-inbound') {
+  fetchData(revision, path, repoPath = 'mozilla-central') {
     // Get source code from hg
     const fileSource = async () => {
       this.setState({ parsedFile: (await rawFile(revision, path, repoPath)) });
@@ -40,7 +42,7 @@ export default class FileViewerContainer extends Component {
     };
     // Fetch source code and coverage in parallel
     try {
-      await Promise.all([fileSource(), coverageData()]);
+      Promise.all([fileSource(), coverageData()]);
     } catch (error) {
       this.setState({ appErr: `${error.name}: ${error.message}` });
     }
@@ -87,18 +89,19 @@ export default class FileViewerContainer extends Component {
 const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   <table className="file-view-table">
     <tbody>
-      {
-        parsedFile.map((text, lineNumber) => (
+      {parsedFile.map((text, lineNumber) => {
+        const uniqueId = hash(text) + lineNumber;
+        return (
           <Line
-            key={text.id}
+            key={uniqueId}
             lineNumber={lineNumber + 1}
             text={text}
             coverage={coverage}
             selectedLine={selectedLine}
             onLineClick={onLineClick}
           />
-        ))
-      }
+        );
+      })}
     </tbody>
   </table>
 );
@@ -136,15 +139,11 @@ const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
 
 // This component contains metadata of the file
 const FileViewerMeta = ({ revision, path, appErr, parsedFile, coverage }) => {
-  const showStatus = (label, data) => {
-    let msg;
-    if (!data) {
-      msg = <span>&#x2026;</span>; // horizontal ellipsis
-    } else {
-      msg = <span>&#x2714;</span>; // heavy checkmark
-    }
-    return (<li className="file-meta-li">{label}: {msg}</li>);
-  };
+  const showStatus = (label, data) => (
+    <li className="file-meta-li">
+      {label}: {(data) ? HEAVY_CHECKMARK : HORIZONTAL_ELLIPSIS}
+    </li>
+  );
 
   return (
     <div>
