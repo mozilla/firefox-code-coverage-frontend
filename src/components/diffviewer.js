@@ -23,12 +23,12 @@ export default class DiffViewerContainer extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { changeset } = this.props;
-    await this.fetchCsetData(changeset);
+    Promise.all([this.fetchSetCoverageData(changeset), this.fetchSetDiff(changeset)]);
   }
 
-  async fetchCsetData(changeset) {
+  async fetchSetCoverageData(changeset) {
     try {
       this.setState({ csetMeta: await csetWithCcovData({ node: changeset }) });
     } catch (error) {
@@ -37,7 +37,9 @@ export default class DiffViewerContainer extends Component {
         appError: 'There was an error fetching the code coverage data.',
       });
     }
+  }
 
+  async fetchSetDiff(changeset) {
     try {
       const text = await (await FetchAPI.getDiff(changeset)).text();
       this.setState({ parsedDiff: parse(text) });

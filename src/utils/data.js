@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { PENDING, SETTINGS } from '../settings';
 import * as FetchAPI from '../utils/fetch_data';
 
@@ -31,6 +32,37 @@ const coverageSummary = (coverage) => {
   });
   s.percentage = (s.addedLines === 0) ?
     undefined : 100 * (s.coveredLines / s.addedLines);
+  return s;
+};
+
+// get the coverage summary for a particular revision and file 
+export const fileRevisionCoverageSummary = (coverage) => {
+  const s = {
+    coveredLines: [],
+    uncoveredLines: [],
+    allTests: coverage,
+    testsPerHitLine: [],
+  };
+  // get covered lines and tests that cover each line
+  coverage.forEach((c) => {
+    c.source.file.covered.forEach((line) => {
+      s.coveredLines.push(line);
+      if (!s.testsPerHitLine[line]) {
+        s.testsPerHitLine[line] = [];
+      }
+      s.testsPerHitLine[line].push(c);
+    });
+  });
+  s.coveredLines = _.uniq(s.coveredLines);
+  // get uncovered lines
+  coverage.forEach((c) => {
+    c.source.file.uncovered.forEach((line) => {
+      if (!s.testsPerHitLine[line]) {
+        s.uncoveredLines.push(line);
+      }
+    });
+  });
+  s.uncoveredLines = _.uniq(s.uncoveredLines);
   return s;
 };
 
@@ -130,5 +162,42 @@ export const csetWithCcovData = async (cset) => {
     console.log(e);
     console.log(`Failed to fetch data for ${cset.node}`);
     return cset;
+  }
+};
+
+export const rawFile = async (revision, path, repoPath) => {
+  try {
+    const res = await FetchAPI.getRawFile(revision, path, repoPath);
+    if (res.status !== 200) {
+      throw new Error();
+    }
+    return (await res.text()).split('\n');
+  } catch (e) {
+    console.error(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
+    throw new Error('Failed to get source code from hg');
+  }
+};
+
+export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
+  try {
+    const res = await FetchAPI.queryActiveData({
+      from: 'coverage',
+      where: {
+        and: [
+          { eq: { 'source.file.name': path } },
+          { eq: { 'repo.changeset.id12': revision } },
+          { eq: { 'repo.branch.name': repoPath } },
+        ],
+      },
+      limit: 1000,
+      format: 'list',
+    });
+    if (res.status !== 200) {
+      throw new Error();
+    }
+    return res.json();
+  } catch (e) {
+    console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
+    throw new Error('Failed to get coverage from ActiveData');
   }
 };

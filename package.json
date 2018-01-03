@@ -14,9 +14,12 @@
     "heroku-prebuild": "yarn install && yarn build"
   },
   "dependencies": {
+    "chroma-js": "^1.3.4",
     "form-serialize": "^0.7.2",
+    "lodash": "^4.17.4",
     "parse-diff": "^0.4.0",
     "prop-types": "^15.6.0",
+    "query-string": "^5.0.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-interval": "^2.0.2",
