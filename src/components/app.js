@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
+import FileViewerContainer from './fileviewer';
 import '../style.css';
 
 const REPO = 'https://github.com/armenzg/firefox-code-coverage-frontend';
@@ -56,6 +57,10 @@ export default class App extends Component {
               repoName={repoName}
             />
           )}
+        />
+        <Route
+          path="/file"
+          component={FileViewerContainer}
         />
       </div>
     );
