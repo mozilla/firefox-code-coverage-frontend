@@ -5,6 +5,5 @@ module.exports = {
       "react/prop-types": "off",
       "no-undef": "off",
       "no-console": "off",
-      "no-underscore-dangle": "off",
     }
 };

@@ -159,15 +159,25 @@ pre { margin: 0; }
 
 
 /*
- *  CSS for file viewer
+ *  CSS for file coverage viewer
  */
+.filecov-container {
+	height: calc(100vh - 40px);
+	display: grid;
+	grid-template-columns: minmax(600px, 1fr) 300px;
+	grid-template-rows: auto 1fr;
+	grid-gap: 0.3rem 1rem;
+	grid-template-areas:
+		"meta sidebar"
+		"file sidebar";
+}
+.file-meta {
+	grid-area: meta;
+}
 .file-meta-center {
 	background-color: #f5f9fa; /* Light blue */
 	overflow: hidden;
-	padding-top: 40px;
-	padding-bottom: 10px;
-	padding-left: 40px;
-	padding-right: 40px;
+	padding: 30px 30px 5px;
 	text-align: center;
 }
 .file-meta-status {
@@ -202,14 +212,14 @@ pre { margin: 0; }
 }
 
 .file-view {
-	display: inline-block;
+	grid-area: file;
+	border: 1px solid #eaeaea;
+	overflow: auto;
 }
 .file-view-table {
-	border: 1px solid #eaeaea;
 	border-spacing: 0;
 	border-collapse: collapse;
-	display: block;
-	margin-top: 10px;
+	width: 100%;
 }
 .file-line {
 	border-bottom: 2px solid transparent;
@@ -226,59 +236,44 @@ td.file-line-number, td.file-line-tests {
 	color: Grey;
 	text-align: center;
 }
+td.file-line-tests {
+	font-weight: bold;
+	color: #3f87a6; /* Dark blue */
+}
 td.file-line-text {
 	padding-left: 5px;
-}
-span.tests {
-	background: #21ba45;
-	border-radius: 10px;
-	color: #ffffff;
-	display: inline-block;
-	text-align: center;
-	font-size: 0.8em;
-	padding: 1.5px;
-	min-width: 13px;
 }
 
 /* file view right-siderbar */
 .tests-viewer {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	width: 280px;
+	grid-area: sidebar;
+	display: flex;
+	flex-flow: column;
+	height: 100%;
 	border-left: solid 6px #eaeff2;
-	padding-left: 20px;
+	padding-left: 15px;
 	background-color: #f5f9fa; /* Light blue */
 }
-.tests-viewer-title {
-	display: inline-block;
+.tests-viewer-header {
 	color: white;
 	background-color: black;
 	font-weight: bold;
 	padding: 0.8em;
-	margin-top: 20px;
-	width: 240px;
+	margin-top: 20px ;
 }
 .test-viewer-ul {
 	list-style-type: none;
 	padding: 0;
-	padding-top: 2px;
 	margin: 0;
-	margin-bottom: 10px;
-	border-top: 2px solid #3f87a6; /* Dark blue */
-	border-bottom: 2px solid #3f87a6;
-	/* make the test list scrollable */
-	position: fixed;
+	border-top: 3px solid #3f87a6; /* Dark blue */
+	border-bottom: 3px solid #3f87a6;
 	overflow-y: auto;
-	top: 110px;
-	bottom: 0;
-	width: 260px;
 }
 .test-switch {
 	background: none;
 	border: none;
 	outline: none;
+	color:black;
 	padding: 0;
 	font-size: 1em;
 	border-top: 1px solid #CCC;
