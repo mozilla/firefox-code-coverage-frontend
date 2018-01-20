@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import * as _ from 'lodash';
 
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
@@ -75,7 +76,7 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
         summary={summary}
       />}
     <span className="error_message">{appError}</span>
-    {parsedDiff.map(diffBlock =>
+    {sortByPercent(parsedDiff, coverage).map(diffBlock =>
       // We only push down the subset of code coverage data
       // applicable to a file
       (
@@ -88,6 +89,15 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
       ))}
   </div>
 );
+
+// Adds a new percent property to each file in parsedDiff that represents
+// the proportion of uncovered lines.
+// This directly modifies each object in the parsedDiff array.
+const sortByPercent = (parsedDiff, coverage) => {
+  parsedDiff.forEach(p => {p.percent = coverage.diffs.percent[p.from]});
+  const fs = _.orderBy(parsedDiff, ["percent"], ["desc"]);
+  return fs;
+};
 
 const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summary }) => (
   <div className="coverage-meta">

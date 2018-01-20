@@ -19,9 +19,9 @@ const coverageSummary = (coverage) => {
     addedLines: 0,
     coveredLines: 0,
   };
-  Object.keys(coverage.diffs).forEach((filePath) => {
-    Object.keys(coverage.diffs[filePath]).forEach((lineNumber) => {
-      const lineCoverage = coverage.diffs[filePath][lineNumber];
+  Object.keys(coverage.diffs.summary).forEach((filePath) => {
+    Object.keys(coverage.diffs.summary[filePath]).forEach((lineNumber) => {
+      const lineCoverage = coverage.diffs.summary[filePath][lineNumber];
       if (lineCoverage === 'Y') {
         s.coveredLines += 1;
       }
@@ -35,7 +35,7 @@ const coverageSummary = (coverage) => {
   return s;
 };
 
-// get the coverage summary for a particular revision and file 
+// get the coverage summary for a particular revision and file
 export const fileRevisionCoverageSummary = (coverage) => {
   const s = {
     coveredLines: [],
@@ -85,6 +85,29 @@ export const coverageSummaryText = (coverage) => {
   return result;
 };
 
+// Get percentage of uncovered lines in one file
+// This is too similar to coverageSummary()
+// Potentially roll them together?
+const fileCoveragePercent = (file) => {
+  const s = {
+    totalLines: 0,
+    uncoveredLines: 0,
+    percentage: 0,
+  };
+  Object.keys(file).forEach((lineNumber) => {
+      const lineCoverage = file[lineNumber];
+      if (lineCoverage === 'N') {
+        s.uncoveredLines += 1;
+      }
+      s.totalLines += 1;
+  });
+  if(s.totalLines) {
+    s.percentage = (s.totalLines === 0) ?
+      undefined : 100 * (s.uncoveredLines / s.totalLines);
+  }
+  return s.percentage;
+}
+
 // We transform the data
 export const transformCoverageData = (cov) => {
   /* We only want to transform the diffs entry in the data:
@@ -99,13 +122,17 @@ export const transformCoverageData = (cov) => {
       }
    */
   const newCov = Object.assign({}, cov);
-  newCov.diffs = {};
+  newCov.diffs = {
+    summary: {},
+    percent: {},
+  };
   cov.diffs.forEach(({ changes, name }) => {
     const lines = {};
     changes.forEach(({ coverage, line }) => {
       lines[line] = coverage;
     });
-    newCov.diffs[name] = lines;
+    newCov.diffs.summary[name] = lines;
+    newCov.diffs.percent[name] = fileCoveragePercent(newCov.diffs.summary[name]);
   });
   return newCov;
 };
