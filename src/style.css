@@ -54,6 +54,7 @@ pre { margin: 0; }
 	text-align: center;
 	padding-left: 10px;
 	padding-right: 10px;
+	font-size:0.75em;
 }
 .coverage-meta-row {
 	display: flex;
