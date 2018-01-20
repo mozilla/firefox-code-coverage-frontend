@@ -80,10 +80,10 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
       // applicable to a file
       (
         <DiffFile
-          key={diffBlock.from}
+          key={diffBlock.to}
           diffBlock={diffBlock}
           fileCoverageDiffs={(coverage) ?
-            coverage.diffs[diffBlock.from] : undefined}
+            coverage.diffs[diffBlock.to] : undefined}
         />
       ))}
   </div>
@@ -117,12 +117,12 @@ const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summ
 const DiffFile = ({ fileCoverageDiffs, diffBlock }) => (
   <div className="diff-file">
     <div className="file-summary">
-      <div className="file-path">{diffBlock.from}</div>
+      <div className="file-path">{diffBlock.to}</div>
     </div>
     {diffBlock.chunks.map(block => (
       <DiffBlock
         key={block.content}
-        filePath={diffBlock.from}
+        filePath={diffBlock.to}
         block={block}
         fileDiffs={fileCoverageDiffs}
       />
