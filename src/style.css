@@ -44,6 +44,17 @@ pre { margin: 0; }
 	min-width: 530px;
 	max-width: 600px;
 }
+.meta-footer {
+		text-align: center;
+}
+.meta-footer a{
+	color: gray;
+	border-radius: 10px;
+	display: table-cell;
+	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
+}
 .coverage-meta-row {
 	display: flex;
 	justify-content: space-between;
