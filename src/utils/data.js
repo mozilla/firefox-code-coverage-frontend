@@ -105,6 +105,21 @@ const fileCoveragePercent = (file) => {
   return s;
 }
 
+// Return number of uncovered lines
+const fileCoverageTotal = (file) => {
+  const s = {
+    totalLines: 0,
+    uncoveredLines: 0,
+  };
+  Object.keys(file).forEach((lineNumber) => {
+      const lineCoverage = file[lineNumber];
+      if (lineCoverage === 'N') {
+        s.uncoveredLines += 1;
+      }
+  });
+  return s.uncoveredLines;
+}
+
 // We transform the data
 export const transformCoverageData = (cov) => {
   /* We only want to transform the diffs entry in the data:
