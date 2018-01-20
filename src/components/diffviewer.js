@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import * as _ from 'lodash';
 
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
