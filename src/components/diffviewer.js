@@ -84,7 +84,7 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
           key={diffBlock.from}
           diffBlock={diffBlock}
           fileCoverageDiffs={(coverage) ?
-            coverage.diffs[diffBlock.from] : undefined}
+            coverage.diffs.summary[diffBlock.from] : undefined}
         />
       ))}
   </div>
@@ -95,8 +95,8 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
 // This directly modifies each object in the parsedDiff array.
 const sortByPercent = (parsedDiff, coverage) => {
   parsedDiff.forEach(p => {p.percent = coverage.diffs.percent[p.from]});
-  const fs = _.orderBy(parsedDiff, ["percent"], ["desc"]);
-  return fs;
+  const sortedDiffs = _.orderBy(parsedDiff, ({percent}) => percent || 0, ["desc"]);
+  return sortedDiffs;
 };
 
 const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summary }) => (
