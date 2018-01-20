@@ -86,6 +86,7 @@ export const coverageSummaryText = (coverage) => {
 };
 
 // Get percentage of uncovered lines in one file
+<<<<<<< HEAD
 const fileCoveragePercent = (file) => {
   const s = {
     coveredLines: Object.values(file).filter(coverage => coverage === 'Y').length,
@@ -103,14 +104,33 @@ const fileCoverageTotal = (file) => {
   const s = {
     totalLines: 0,
     uncoveredLines: 0,
+=======
+// This is too similar to coverageSummary()
+// Potentially roll them together?
+const fileCoveragePercent = (file) => {
+  const s = {
+    totalLines: 0,
+    uncoveredLines: 0,
+    percentage: 0,
+>>>>>>> Sort files by most uncovered lines
   };
   Object.keys(file).forEach((lineNumber) => {
       const lineCoverage = file[lineNumber];
       if (lineCoverage === 'N') {
         s.uncoveredLines += 1;
       }
+<<<<<<< HEAD
   });
   return s.uncoveredLines;
+=======
+      s.totalLines += 1;
+  });
+  if(s.totalLines) {
+    s.percentage = (s.totalLines === 0) ?
+      undefined : 100 * (s.uncoveredLines / s.totalLines);
+  }
+  return s.percentage;
+>>>>>>> Sort files by most uncovered lines
 }
 
 // We transform the data
@@ -137,7 +157,11 @@ export const transformCoverageData = (cov) => {
       lines[line] = coverage;
     });
     newCov.diffs.summary[name] = lines;
+<<<<<<< HEAD
     newCov.diffs.percent[name] = fileCoveragePercent(lines);
+=======
+    newCov.diffs.percent[name] = fileCoveragePercent(newCov.diffs.summary[name]);
+>>>>>>> Sort files by most uncovered lines
   });
   return newCov;
 };
