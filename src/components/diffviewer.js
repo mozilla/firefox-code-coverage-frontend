@@ -84,7 +84,7 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
           key={diffBlock.from}
           diffBlock={diffBlock}
           fileCoverageDiffs={(coverage) ?
-            coverage.diffs[diffBlock.from] : undefined}
+            coverage.diffs.summary[diffBlock.from] : undefined}
         />
       ))}
     {(parsedDiff.length > 0) &&
