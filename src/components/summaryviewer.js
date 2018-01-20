@@ -10,7 +10,7 @@ const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, linkify, node, summary, summaryClassName } = changeset;
   const bugURLRegex = /^bug\s*(\d*)/i;
   const bugURLMatch = bugURLRegex.exec(desc.substring(0,40));
-  const bugURLId = (bugURLMatch.length > 0) ? bugURLMatch[1] : '';
+  const bugURLId = bugURLMatch ? bugURLMatch[1] : '';
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
