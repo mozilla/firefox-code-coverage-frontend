@@ -1,9 +1,7 @@
 # Firefox code coverage diff viewer
-This project is code coverage changeset viewer for Firefox.
+This project is the code coverage changeset viewer for Firefox. You can view the frontend running in [here](https://firefox-code-coverage.herokuapp.com).
 
-The scope of this project is minimal as it will focus on:
-
-You can view the app in [here](https://firefox-code-coverage.herokuapp.com).
+To understand the big picture of code coverage at Mozilla read [this](https://marco-c.github.io/2017/07/28/code-coverage-architecture.html) blog post.
 
 The app will show recent changesets from mozilla-central that have code coverage (pending changesets will be automatically be fetched).
 From there you can navigate to the diff of each changeset
@@ -40,7 +38,7 @@ we track files without any coverage.
 - Broken builds/failures might prevent us from running a test, set of tests, or a few jobs, coverage could be abnormally low
 
 # Filing issues
-You can file frontend issues in [Firefox code coverage frontend](https://github.com/armenzg/firefox-code-coverage-frontend).
+You can file frontend issues in [Firefox code coverage frontend](https://github.com/mozilla/firefox-code-coverage-frontend/issues).
 For backend issues file them in [releng-services](https://github.com/mozilla-releng/services) with the
 [4.app: shipit_uplift](https://github.com/mozilla-releng/services/issues?q=is%3Aissue+is%3Aopen+label%3A%224.app%3A+shipit_code_coverage%22) label.
 
