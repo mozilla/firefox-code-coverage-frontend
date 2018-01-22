@@ -40,7 +40,7 @@ we track files without any coverage.
 # Filing issues
 You can file frontend issues in [Firefox code coverage frontend](https://github.com/mozilla/firefox-code-coverage-frontend/issues).
 For backend issues file them in [releng-services](https://github.com/mozilla-releng/services) with the
-[4.app: shipit_uplift](https://github.com/mozilla-releng/services/issues?q=is%3Aissue+is%3Aopen+label%3A%224.app%3A+shipit_code_coverage%22) label.
+[4.app: shipit_code_coverage](https://github.com/mozilla-releng/services/issues?q=is%3Aissue+is%3Aopen+label%3A%224.app%3A+shipit_code_coverage%22) label.
 
 # Requirements
 
