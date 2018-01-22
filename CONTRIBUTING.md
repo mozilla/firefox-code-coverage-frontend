@@ -45,10 +45,8 @@ git clone git@github.com:your-username/firefox-code-coverage-frontend.git
 * Make sure you pass the linting checks (`yarn lint`)
 * Push changes to your branch and [submit a pull request](https://github.com/thoughtbot/factory_bot_rails/compare/)
   * We're commited to give feedback (or contact you of delays) on the PR within a businness day
-  * If you don't hear back check on IRC to see if the reviewers
+  * If you don't hear back check on IRC to see if the reviewer(s) have noticed the request or are on vacation
 * Include steps on how to test your code
   * This helps the reviewer to quickly test your code on their machine without having to review it first
 * Make a comment on the PR indicating the user name of the reviewer
 * Very important: After addressing feedback from the reviewer (by commiting more code) make sure you add a comment on the PR as GitHub does `not` notify the reviewer of new changes
-
-
