@@ -18,9 +18,9 @@ const ChangesetInfo = ({ changeset }) => {
         : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">
-        {(bzUrl !== undefined) ?
-          <a href={bzUrl} target="_blank"><span>{desc.substring(0, 40)}</span></a>
-          : <span>{desc.substring(0, 40)}</span>}
+        {(bzUrl) ?
+          <a href={bzUrl} target="_blank">{desc.substring(0, 40)}</a>
+          : desc.substring(0, 40) }
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
     </tr>
@@ -78,7 +78,7 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
     if (lenCsets >= 1) {
       csets.forEach((cset) => {
         const bzUrlRegex = /^bug\s*(\d*)/i;
-        const bzUrlMatch = bzUrlRegex.exec(cset.desc.substring(0, 40));
+        const bzUrlMatch = bzUrlRegex.exec(cset.desc);
         const bzUrl = bzUrlMatch ? (`http://bugzilla.mozilla.org/show_bug.cgi?id=${bzUrlMatch[1]}`) : null;
         const newCset = {
           pushId: id,
