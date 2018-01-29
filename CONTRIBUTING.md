@@ -19,6 +19,15 @@ we would like to lay down some principles and steps that will make contributing 
   * A PR can have dozens of commit messages. Landing that many commits to the `master` branch makes the history of the project very polluted
   * When you rewrite the history of your commits you will have to force the push (`git push -f`) and it will overwrite remote commits
 * Please read the [following style guides](https://udacity.github.io/frontend-nanodegree-styleguide/) and follow their advice.
+* When new code lands on the official repository pull the new changes and rebase your branch
+```
+git checkout master
+// Set up the upstream remote in the 'Getting started' section
+git pull upstream master 
+git checkout your_feature_branch_name
+// This command might show code conflicts that you will have to resolve
+git rebase master
+```
 
 # Before you start
 Please make sure you have completed an introductory tutorial of React.
@@ -37,6 +46,10 @@ Introduce yourself and let us know a bit about yourself. We would love to chat w
 * Clone your repo
 ```
 git clone git@github.com:your-username/firefox-code-coverage-frontend.git
+```
+* Set up the upstream remote repo
+```
+git remote add upstream git@github.com:mozilla/firefox-code-coverage-frontend.git
 ```
 * Install the [requirements](https://github.com/mozilla/firefox-code-coverage-frontend/blob/master/README.md#requirements) and
 [set up the project](https://github.com/mozilla/firefox-code-coverage-frontend/blob/master/README.md#set-up)
