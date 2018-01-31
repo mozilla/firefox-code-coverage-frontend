@@ -96,25 +96,6 @@ const fileCoveragePercent = (file) => {
   s.percentage = (totalCoverableLines === 0) ?
     0 : 100 * (s.uncoveredLines / totalCoverableLines);
   return s.percentage;
-};
-
-// Return number of uncovered lines
-const fileCoverageTotal = (file) => {
-  const s = {
-    totalLines: 0,
-    uncoveredLines: 0,
-  };
-  Object.keys(file).forEach((lineNumber) => {
-      const lineCoverage = file[lineNumber];
-      if (lineCoverage === 'N') {
-        s.uncoveredLines += 1;
-      }
-  });
-  if(s.totalLines) {
-    s.percentage = (s.totalLines === 0) ?
-      0 : 100 * (s.uncoveredLines / s.totalLines);
-  }
-  return s;
 }
 
 // We transform the data
@@ -141,7 +122,7 @@ export const transformCoverageData = (cov) => {
       lines[line] = coverage;
     });
     newCov.diffs.summary[name] = lines;
-    newCov.diffs.percent[name] = fileCoveragePercent(newCov.diffs.summary[name]).uncoveredLines;
+    newCov.diffs.percent[name] = fileCoveragePercent(lines);
   });
   return newCov;
 };
