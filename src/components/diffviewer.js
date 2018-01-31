@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import * as _ from 'lodash';
 
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
@@ -63,6 +64,18 @@ export default class DiffViewerContainer extends Component {
   }
 }
 
+// Adds a new percent property to each file in parsedDiff that represents
+// the proportion of uncovered lines.
+// This directly modifies each object in the parsedDiff array.
+const sortByPercent = (parsedDiff, coverage) => {
+  parsedDiff.forEach((p) => {
+    const cov = p;
+    cov.percent = coverage.diffs.percent[p.from];
+  });
+  const sortedDiffs = _.orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
+  return sortedDiffs;
+};
+
 const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
@@ -75,7 +88,7 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
         summary={summary}
       />}
     <span className="error_message">{appError}</span>
-    {parsedDiff.map(diffBlock =>
+    {sortByPercent(parsedDiff, coverage).map(diffBlock =>
       // We only push down the subset of code coverage data
       // applicable to a file
       (
@@ -83,7 +96,7 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
           key={diffBlock.from}
           diffBlock={diffBlock}
           fileCoverageDiffs={(coverage) ?
-            coverage.diffs[diffBlock.from] : undefined}
+            coverage.diffs.summary[diffBlock.from] : undefined}
         />
       ))}
     {(parsedDiff.length > 0) &&
