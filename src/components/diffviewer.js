@@ -64,6 +64,18 @@ export default class DiffViewerContainer extends Component {
   }
 }
 
+// Adds a new percent property to each file in parsedDiff that represents
+// the proportion of uncovered lines.
+// This directly modifies each object in the parsedDiff array.
+const sortByPercent = (parsedDiff, coverage) => {
+  parsedDiff.forEach((p) => {
+    const cov = p;
+    cov.percent = coverage.diffs.percent[p.from];
+  });
+  const sortedDiffs = _.orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
+  return sortedDiffs;
+};
+
 const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
@@ -86,18 +98,9 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
           fileCoverageDiffs={(coverage) ?
             coverage.diffs.summary[diffBlock.from] : undefined}
         />
-      ))}
+      ))};
   </div>
 );
-
-// Adds a new percent property to each file in parsedDiff that represents
-// the proportion of uncovered lines.
-// This directly modifies each object in the parsedDiff array.
-const sortByPercent = (parsedDiff, coverage) => {
-  parsedDiff.forEach(p => {p.percent = coverage.diffs.percent[p.from]});
-  const sortedDiffs = _.orderBy(parsedDiff, ({percent}) => percent || 0, ["desc"]);
-  return sortedDiffs;
-};
 
 const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summary }) => (
   <div className="coverage-meta">
