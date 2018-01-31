@@ -96,7 +96,7 @@ const fileCoveragePercent = (file) => {
   s.percentage = (totalCoverableLines === 0) ?
     0 : 100 * (s.uncoveredLines / totalCoverableLines);
   return s.percentage;
-}
+};
 
 // We transform the data
 export const transformCoverageData = (cov) => {
