@@ -75,18 +75,17 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
         summary={summary}
       />}
     <span className="error_message">{appError}</span>
-    {parsedDiff.map(diffBlock =>
+    {parsedDiff.map((diffBlock) => {
       // We only push down the subset of code coverage data
       // applicable to a file
-      {
-        const path = (diffBlock.from === '/dev/null') ? diffBlock.to : diffBlock.from;
-        return <DiffFile
-          key={path}
-          diffBlock={diffBlock}
-          fileCoverageDiffs={(coverage) ?
-            coverage.diffs[path] : undefined}
-        />;
-      })}
+      const path = (diffBlock.from === '/dev/null') ? diffBlock.to : diffBlock.from;
+      return (<DiffFile
+        key={path}
+        diffBlock={diffBlock}
+        fileCoverageDiffs={(coverage) ?
+          coverage.diffs[path] : undefined}
+      />);
+    })}
     {(parsedDiff.length > 0) &&
       <DiffFooter
         {...coverage.parentMeta(coverage)}
@@ -126,7 +125,7 @@ const DiffFooter = ({ gh, codecov, ccovBackend }) => (
 /* A DiffLine contains all diff changes for a specific file */
 const DiffFile = ({ fileCoverageDiffs, diffBlock }) => {
   const path = (diffBlock.from === '/dev/null') ? diffBlock.to : diffBlock.from;
-  return <div className="diff-file">
+  return (<div className="diff-file">
     <div className="file-summary">
       <div className="file-path">{path}</div>
     </div>
@@ -138,7 +137,7 @@ const DiffFile = ({ fileCoverageDiffs, diffBlock }) => {
         fileDiffs={fileCoverageDiffs}
       />
     ))}
-  </div>;
+  </div>);
 };
 
 const uniqueLineId = (filePath, change) => {
