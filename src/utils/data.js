@@ -19,9 +19,9 @@ const coverageSummary = (coverage) => {
     addedLines: 0,
     coveredLines: 0,
   };
-  Object.keys(coverage.diffs.summary).forEach((filePath) => {
-    Object.keys(coverage.diffs.summary[filePath]).forEach((lineNumber) => {
-      const lineCoverage = coverage.diffs.summary[filePath][lineNumber];
+  Object.keys(coverage.diffs).forEach((filePath) => {
+    Object.keys(coverage.diffs[filePath].lines).forEach((lineNumber) => {
+      const lineCoverage = coverage.diffs[filePath].lines[lineNumber];
       if (lineCoverage === 'Y') {
         s.coveredLines += 1;
       }
@@ -112,17 +112,16 @@ export const transformCoverageData = (cov) => {
       }
    */
   const newCov = Object.assign({}, cov);
-  newCov.diffs = {
-    summary: {},
-    percent: {},
-  };
+  newCov.diffs = {};
   cov.diffs.forEach(({ changes, name }) => {
     const lines = {};
     changes.forEach(({ coverage, line }) => {
       lines[line] = coverage;
     });
-    newCov.diffs.summary[name] = lines;
-    newCov.diffs.percent[name] = fileCoveragePercent(lines);
+    newCov.diffs[name] = {
+      lines,
+      percent: fileCoveragePercent(lines),
+    };
   });
   return newCov;
 };

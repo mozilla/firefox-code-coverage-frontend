@@ -70,7 +70,7 @@ export default class DiffViewerContainer extends Component {
 const sortByPercent = (parsedDiff, coverage) => {
   parsedDiff.forEach((p) => {
     const cov = p;
-    cov.percent = coverage.diffs.percent[p.from];
+    cov.percent = (coverage.diffs[p.from]) ? coverage.diffs[p.from].percent : 0;
   });
   const sortedDiffs = _.orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
   return sortedDiffs;
@@ -95,8 +95,8 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
         <DiffFile
           key={diffBlock.from}
           diffBlock={diffBlock}
-          fileCoverageDiffs={(coverage) ?
-            coverage.diffs.summary[diffBlock.from] : undefined}
+          fileCoverageDiffs={(coverage.diffs[diffBlock.from]) ?
+            coverage.diffs[diffBlock.from].lines : undefined}
         />
       ))}
     {(parsedDiff.length > 0) &&
