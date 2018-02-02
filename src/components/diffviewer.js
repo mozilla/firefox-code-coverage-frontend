@@ -78,14 +78,15 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
     {parsedDiff.map(diffBlock =>
       // We only push down the subset of code coverage data
       // applicable to a file
-      (
-        <DiffFile
-          key={diffBlock.to}
+      {
+        const path = (diffBlock.from === '/dev/null') ? diffBlock.to : diffBlock.from;
+        return <DiffFile
+          key={path}
           diffBlock={diffBlock}
           fileCoverageDiffs={(coverage) ?
-            coverage.diffs[diffBlock.to] : undefined}
-        />
-      ))}
+            coverage.diffs[path] : undefined}
+        />;
+      })}
     {(parsedDiff.length > 0) &&
       <DiffFooter
         {...coverage.parentMeta(coverage)}
@@ -123,21 +124,22 @@ const DiffFooter = ({ gh, codecov, ccovBackend }) => (
 );
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ fileCoverageDiffs, diffBlock }) => (
-  <div className="diff-file">
+const DiffFile = ({ fileCoverageDiffs, diffBlock }) => {
+  const path = (diffBlock.from === '/dev/null') ? diffBlock.to : diffBlock.from;
+  return <div className="diff-file">
     <div className="file-summary">
-      <div className="file-path">{diffBlock.to}</div>
+      <div className="file-path">{path}</div>
     </div>
     {diffBlock.chunks.map(block => (
       <DiffBlock
         key={block.content}
-        filePath={diffBlock.to}
+        filePath={path}
         block={block}
         fileDiffs={fileCoverageDiffs}
       />
     ))}
-  </div>
-);
+  </div>;
+};
 
 const uniqueLineId = (filePath, change) => {
   let lineNumber;
