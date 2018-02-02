@@ -78,7 +78,7 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
     {parsedDiff.map((diffBlock) => {
       // We only push down the subset of code coverage data
       // applicable to a file
-      const path = (diffBlock.from === '/dev/null') ? diffBlock.to : diffBlock.from;
+      const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
       return (<DiffFile
         key={path}
         diffBlock={diffBlock}
@@ -124,7 +124,7 @@ const DiffFooter = ({ gh, codecov, ccovBackend }) => (
 
 /* A DiffLine contains all diff changes for a specific file */
 const DiffFile = ({ fileCoverageDiffs, diffBlock }) => {
-  const path = (diffBlock.from === '/dev/null') ? diffBlock.to : diffBlock.from;
+  const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
   return (<div className="diff-file">
     <div className="file-summary">
       <div className="file-path">{path}</div>
