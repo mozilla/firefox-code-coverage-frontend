@@ -64,6 +64,18 @@ export default class DiffViewerContainer extends Component {
   }
 }
 
+// Adds a new percent property to each file in parsedDiff that represents
+// the proportion of uncovered lines.
+// This directly modifies each object in the parsedDiff array.
+const sortByPercent = (parsedDiff, coverage) => {
+  parsedDiff.forEach((p) => {
+    const cov = p;
+    cov.percent = coverage.diffs.percent[p.from];
+  });
+  const sortedDiffs = _.orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
+  return sortedDiffs;
+};
+
 const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
@@ -87,39 +99,39 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
             coverage.diffs.summary[diffBlock.from] : undefined}
         />
       ))}
+    {(parsedDiff.length > 0) &&
+      <DiffFooter
+        {...coverage.parentMeta(coverage)}
+        {...coverage.diffMeta(node)}
+        coverage={coverage}
+      />}
   </div>
 );
 
-// Adds a new percent property to each file in parsedDiff that represents
-// the proportion of uncovered lines.
-// This directly modifies each object in the parsedDiff array.
-const sortByPercent = (parsedDiff, coverage) => {
-  parsedDiff.forEach(p => {p.percent = coverage.diffs.percent[p.from]});
-  const sortedDiffs = _.orderBy(parsedDiff, ({percent}) => percent || 0, ["desc"]);
-  return sortedDiffs;
-};
-
-const CoverageMeta = ({ ccovBackend, codecov, coverage, gh, hgRev, pushlog, summary }) => (
+const CoverageMeta = ({ coverage, hgRev, pushlog, summary }) => (
   <div className="coverage-meta">
     <div className="coverage-meta-row">
-      <span className="meta parent-meta-subtitle">Parent meta</span>
       <span className="meta">
         {`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}
       </span>
       <span className="meta meta-right">
-        <a href={pushlog} target="_blank">Push log</a>&nbsp;
-        <a href={gh} target="_blank">GitHub</a>&nbsp;
-        <a href={codecov} target="_blank">Codecov</a>
+        <a href={pushlog} target="_blank">Push Log</a>
       </span>
     </div>
     <div className="coverage-meta-row">
-      <span className="meta parent-meta-subtitle">Changeset meta</span>
       <span className="meta">{summary}</span>
       <span className="meta meta-right">
-        <a href={hgRev} target="_blank">Hg diff</a>&nbsp;
-        <a href={ccovBackend} target="_blank">Coverage backend</a>
+        <a href={hgRev} target="_blank">Hg Diff</a>
       </span>
     </div>
+  </div>
+);
+
+const DiffFooter = ({ gh, codecov, ccovBackend }) => (
+  <div className="meta-footer">
+    <a href={gh} target="_blank">GitHub</a>
+    <a href={codecov} target="_blank">Codecov</a>
+    <a href={ccovBackend} target="_blank">Coverage Backend</a>
   </div>
 );
 
