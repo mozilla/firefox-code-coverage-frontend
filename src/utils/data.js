@@ -35,7 +35,7 @@ const coverageSummary = (coverage) => {
   return s;
 };
 
-// get the coverage summary for a particular revision and file 
+// get the coverage summary for a particular revision and file
 export const fileRevisionCoverageSummary = (coverage) => {
   const s = {
     coveredLines: [],
@@ -136,15 +136,11 @@ export const csetWithCcovData = async (cset) => {
         newCset.hidden = false;
         newCset.coverage = {
           ...coverageData,
-          diffMeta: node => ({
-            hgRev: `${FetchAPI.hgHost}/mozilla-central/rev/${node}`,
-            ccovBackend: `${FetchAPI.ccovBackend}/coverage/changeset/${node}`,
-          }),
-          parentMeta: coverage => ({
-            pushlog: `https://hg.mozilla.org/mozilla-central/pushloghtml?changeset=${coverage.build_changeset}`,
-            codecov: `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverage.git_build_changeset}`,
-            gh: `https://github.com/mozilla/gecko-dev/commit/${coverage.git_build_changeset}`,
-          }),
+          hgRev: `${FetchAPI.hgHost}/mozilla-central/rev/${cset.node}`,
+          ccovBackend: `${FetchAPI.ccovBackend}/coverage/changeset/${cset.node}`,
+          pushlog: `${FetchAPI.hgHost}/pushloghtml?changeset=${cset.coverage.build_changeset}`,
+          codecov: `https://codecov.io/gh/marco-c/gecko-dev/commit/${cset.coverage.git_build_changeset}`,
+          gh: `https://github.com/mozilla/gecko-dev/commit/${cset.coverage.git_build_changeset}`,
         };
         const result = coverageSummaryText(coverageData);
         newCset.summary = result.text;

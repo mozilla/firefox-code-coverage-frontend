@@ -68,8 +68,6 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
     <div className="return-home"><Link to="/">Return to main page</Link></div>
     {(coverage) &&
       <CoverageMeta
-        {...coverage.parentMeta(coverage)}
-        {...coverage.diffMeta(node)}
         coverage={coverage}
         node={node}
         summary={summary}
@@ -88,37 +86,35 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
       ))}
     {(parsedDiff.length > 0) &&
       <DiffFooter
-        {...coverage.parentMeta(coverage)}
-        {...coverage.diffMeta(node)}
         coverage={coverage}
       />}
   </div>
 );
 
-const CoverageMeta = ({ coverage, hgRev, pushlog, summary }) => (
+const CoverageMeta = ({ coverage, summary }) => (
   <div className="coverage-meta">
     <div className="coverage-meta-row">
       <span className="meta">
         {`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}
       </span>
       <span className="meta meta-right">
-        <a href={pushlog} target="_blank">Push Log</a>
+        <a href={coverage.pushlog} target="_blank">Push Log</a>
       </span>
     </div>
     <div className="coverage-meta-row">
       <span className="meta">{summary}</span>
       <span className="meta meta-right">
-        <a href={hgRev} target="_blank">Hg Diff</a>
+        <a href={coverage.hgRev} target="_blank">Hg Diff</a>
       </span>
     </div>
   </div>
 );
 
-const DiffFooter = ({ gh, codecov, ccovBackend }) => (
+const DiffFooter = ({ coverage }) => (
   <div className="meta-footer">
-    <a href={gh} target="_blank">GitHub</a>
-    <a href={codecov} target="_blank">Codecov</a>
-    <a href={ccovBackend} target="_blank">Coverage Backend</a>
+    <a href={coverage.gh} target="_blank">GitHub</a>
+    <a href={coverage.codecov} target="_blank">Codecov</a>
+    <a href={coverage.ccovBackend} target="_blank">Coverage Backend</a>
   </div>
 );
 
