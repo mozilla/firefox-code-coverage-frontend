@@ -24,6 +24,17 @@ const AppDisclaimer = () => (
   </div>
 );
 
+const CoverageLegend = () => (
+  <div className="coverage-legend">
+    <span className="high-coverage coverage-color-divs" />
+    &nbsp;&nbsp;High Coverage&nbsp;&nbsp;&nbsp;
+    <span className="medium-coverage coverage-color-divs" />
+    &nbsp;&nbsp;Medium Coverage&nbsp;&nbsp;&nbsp;
+    <span className="low-coverage coverage-color-divs" />
+    &nbsp;&nbsp;Low Coverage
+  </div>
+);
+
 // Main component
 export default class App extends Component {
   constructor(props) {
@@ -43,6 +54,7 @@ export default class App extends Component {
           render={() => (
             <div className="changesets-viewer">
               <AppDisclaimer />
+              <CoverageLegend />
               <ChangesetsViewerContainer
                 repoName={repoName}
               />
