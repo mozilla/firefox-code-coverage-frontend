@@ -135,6 +135,17 @@ pre { margin: 0; }
 	vertical-align: bottom;
 }
 
+.unchanged-line {
+	background-color: #ffffff;
+}
+.deleted-line {
+	background-color: #F8C8C6;
+}
+.inserted-line {
+	background-color: #B8FA8D;
+}
+
+
 .polling-status {
 	/* Lemon yellow */
 	background-color: #fff44f; /* Fallback */

@@ -66,6 +66,14 @@ export default class DiffViewerContainer extends Component {
 const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
+    <div className="coverage-legend">
+      <span className="inserted-line coverage-color-divs" />
+      &nbsp;&nbsp;Inserted Line&nbsp;&nbsp;&nbsp;
+      <span className="deleted-line coverage-color-divs" />
+      &nbsp;&nbsp;Deleted Line&nbsp;&nbsp;&nbsp;
+      <span className="unchanged-line coverage-color-divs" />
+      &nbsp;&nbsp;Unchanged Line
+    </div>
     {(coverage) &&
       <CoverageMeta
         {...coverage.parentMeta(coverage)}
