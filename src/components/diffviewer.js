@@ -63,13 +63,12 @@ export default class DiffViewerContainer extends Component {
   }
 }
 
-const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
+const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
     {(coverage) &&
       <CoverageMeta
         coverage={coverage}
-        node={node}
         summary={summary}
       />}
     <span className="error_message">{appError}</span>
