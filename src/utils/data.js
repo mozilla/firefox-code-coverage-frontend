@@ -136,8 +136,8 @@ export const csetWithCcovData = async (cset) => {
         newCset.hidden = false;
         newCset.coverage = {
           ...coverageData,
-          hgRev: `${FetchAPI.hgHost}/mozilla-central/rev/${coverageData.node}`,
-          ccovBackend: `${FetchAPI.ccovBackend}/coverage/changeset/${coverageData.node}`,
+          hgRev: `${FetchAPI.hgHost}/mozilla-central/rev/${cset.node}`,
+          ccovBackend: `${FetchAPI.ccovBackend}/coverage/changeset/${cset.node}`,
           pushlog: `${FetchAPI.hgHost}/pushloghtml?changeset=${coverageData.build_changeset}`,
           codecov: `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverageData.git_build_changeset}`,
           gh: `https://github.com/mozilla/gecko-dev/commit/${coverageData.git_build_changeset}`,
