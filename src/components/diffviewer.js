@@ -64,6 +64,19 @@ export default class DiffViewerContainer extends Component {
   }
 }
 
+// Adds a new percent property to each file in parsedDiff that represents
+// the proportion of uncovered lines.
+// This directly modifies each object in the parsedDiff array.
+const sortByPercent = (parsedDiff, coverage) => {
+  parsedDiff.forEach((p) => {
+    const cov = p;
+    cov.percent = (coverage.diffs[p.from]) ? coverage.diffs[p.from].percent : 0;
+  });
+  const sortedDiffs = _.orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
+  return sortedDiffs;
+};
+
+
 const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
@@ -73,7 +86,7 @@ const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
         summary={summary}
       />}
     <span className="error_message">{appError}</span>
-    {parsedDiff.map((diffBlock) => {
+    {sortByPercent(parsedDiff, coverage).map((diffBlock) => {
       // We only push down the subset of code coverage data
       // applicable to a file
       const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
