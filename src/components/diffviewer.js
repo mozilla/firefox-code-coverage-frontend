@@ -72,17 +72,17 @@ const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
         summary={summary}
       />}
     <span className="error_message">{appError}</span>
-    {parsedDiff.map(diffBlock =>
+    {parsedDiff.map((diffBlock) => {
       // We only push down the subset of code coverage data
       // applicable to a file
-      (
-        <DiffFile
-          key={diffBlock.from}
-          diffBlock={diffBlock}
-          fileCoverageDiffs={(coverage) ?
-            coverage.diffs[diffBlock.from] : undefined}
-        />
-      ))}
+      const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
+      return (<DiffFile
+        key={path}
+        path={path}
+        diffBlock={diffBlock}
+        fileCoverageDiffs={(coverage) ? coverage.diffs[path] : undefined}
+      />);
+    })}
     {(parsedDiff.length > 0) &&
       <DiffFooter
         coverage={coverage}
@@ -118,15 +118,15 @@ const DiffFooter = ({ coverage }) => (
 );
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ fileCoverageDiffs, diffBlock }) => (
+const DiffFile = ({ fileCoverageDiffs, diffBlock, path }) => (
   <div className="diff-file">
     <div className="file-summary">
-      <div className="file-path">{diffBlock.from}</div>
+      <div className="file-path">{path}</div>
     </div>
     {diffBlock.chunks.map(block => (
       <DiffBlock
         key={block.content}
-        filePath={diffBlock.from}
+        filePath={path}
         block={block}
         fileDiffs={fileCoverageDiffs}
       />
