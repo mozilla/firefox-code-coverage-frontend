@@ -78,9 +78,9 @@ const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
       const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
       return (<DiffFile
         key={path}
+        path={path}
         diffBlock={diffBlock}
-        fileCoverageDiffs={(coverage) ?
-          coverage.diffs[path] : undefined}
+        fileCoverageDiffs={(coverage) ? coverage.diffs[path] : undefined}
       />);
     })}
     {(parsedDiff.length > 0) &&
@@ -118,9 +118,8 @@ const DiffFooter = ({ coverage }) => (
 );
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ fileCoverageDiffs, diffBlock }) => {
-  const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
-  return (<div className="diff-file">
+const DiffFile = ({ fileCoverageDiffs, diffBlock, path }) => (
+  <div className="diff-file">
     <div className="file-summary">
       <div className="file-path">{path}</div>
     </div>
@@ -132,8 +131,8 @@ const DiffFile = ({ fileCoverageDiffs, diffBlock }) => {
         fileDiffs={fileCoverageDiffs}
       />
     ))}
-  </div>);
-};
+  </div>
+);
 
 const uniqueLineId = (filePath, change) => {
   let lineNumber;
