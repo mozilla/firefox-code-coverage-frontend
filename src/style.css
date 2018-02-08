@@ -122,7 +122,6 @@ pre { margin: 0; }
 }
 
 .coverage-legend {
-	text-align: right;
 	margin: 0em 0em 1em;
 	padding: 1em;
 }
@@ -134,17 +133,6 @@ pre { margin: 0; }
 	height: 20px;
 	vertical-align: bottom;
 }
-
-.unchanged-line {
-	background-color: #ffffff;
-}
-.deleted-line {
-	background-color: #F8C8C6;
-}
-.inserted-line {
-	background-color: #B8FA8D;
-}
-
 
 .polling-status {
 	/* Lemon yellow */

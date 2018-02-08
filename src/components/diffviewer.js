@@ -67,11 +67,11 @@ const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
     <div className="coverage-legend">
-      <span className="inserted-line coverage-color-divs" />
-      &nbsp;&nbsp;Inserted Line&nbsp;&nbsp;&nbsp;
-      <span className="deleted-line coverage-color-divs" />
-      &nbsp;&nbsp;Deleted Line&nbsp;&nbsp;&nbsp;
-      <span className="unchanged-line coverage-color-divs" />
+      <span className="hit coverage-color-divs" />
+      &nbsp;&nbsp;Added, and Covered&nbsp;&nbsp;&nbsp;
+      <span className="miss coverage-color-divs" />
+      &nbsp;&nbsp;Added, and Uncovered&nbsp;&nbsp;&nbsp;
+      <span className="nocovchange coverage-color-divs" />
       &nbsp;&nbsp;Unchanged Line
     </div>
     {(coverage) &&
