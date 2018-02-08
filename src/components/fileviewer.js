@@ -71,11 +71,9 @@ export default class FileViewerContainer extends Component {
     const { parsedFile, coverage, selectedLine } = this.state;
 
     return (
-      <div>
-        <div className="file-view">
-          <FileViewerMeta {...this.state} />
-          { (parsedFile) && <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
-        </div>
+      <div className="filecov-container">
+        <FileViewerMeta {...this.state} />
+        { (parsedFile) && <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
         <TestsSideViewer
           coverage={coverage}
           lineNumber={selectedLine}
@@ -87,23 +85,25 @@ export default class FileViewerContainer extends Component {
 
 // This component renders each line of the file with its line number
 const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
-  <table className="file-view-table">
-    <tbody>
-      {parsedFile.map((text, lineNumber) => {
-        const uniqueId = hash(text) + lineNumber;
-        return (
-          <Line
-            key={uniqueId}
-            lineNumber={lineNumber + 1}
-            text={text}
-            coverage={coverage}
-            selectedLine={selectedLine}
-            onLineClick={onLineClick}
-          />
-        );
-      })}
-    </tbody>
-  </table>
+  <div className="file-view">
+    <table className="file-view-table">
+      <tbody>
+        {parsedFile.map((text, lineNumber) => {
+          const uniqueId = hash(text) + lineNumber;
+          return (
+            <Line
+              key={uniqueId}
+              lineNumber={lineNumber + 1}
+              text={text}
+              coverage={coverage}
+              selectedLine={selectedLine}
+              onLineClick={onLineClick}
+            />
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
 );
 
 const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
@@ -113,8 +113,8 @@ const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
 
   const select = (lineNumber === selectedLine) ? 'selected' : '';
 
-  let nTests;
-  let color;
+  let color = '';
+  let nTests = '';
   if (coverage) {
     // hit line
     if (coverage.coveredLines.find(element => element === lineNumber)) {
@@ -129,9 +129,7 @@ const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
   return (
     <tr className={`file-line ${select} ${color}`} onClick={handleOnClick}>
       <td className="file-line-number">{lineNumber}</td>
-      <td className="file-line-tests">
-        { nTests && <span className="tests">{nTests}</span> }
-      </td>
+      <td className="file-line-tests">{nTests}</td>
       <td className="file-line-text"><pre>{text}</pre></td>
     </tr>
   );
@@ -146,7 +144,7 @@ const FileViewerMeta = ({ revision, path, appErr, parsedFile, coverage }) => {
   );
 
   return (
-    <div>
+    <div className="file-meta">
       <div className="file-meta-center">
         <div className="file-meta-title">File Coverage</div>
         { (coverage) && <CoveragePercentageViewer coverage={coverage} /> }

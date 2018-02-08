@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 // This file contains coverage information for a particular revision of a source file
 import React, { Component } from 'react';
 
@@ -8,9 +10,6 @@ import { TRIANGULAR_BULLET } from '../utils/symbol';
 export class TestsSideViewer extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      expandTest: undefined,
-    };
     this.handleTestOnExpand = this.handleTestOnExpand.bind(this);
   }
 
@@ -62,7 +61,7 @@ export class TestsSideViewer extends Component {
     }
     return (
       <div className="tests-viewer">
-        <div className="tests-viewer-title">Covered Tests</div>
+        <div className="tests-viewer-header">Covered Tests</div>
         <h3>{testTitle}</h3>
         {testList}
       </div>
