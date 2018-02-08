@@ -6,7 +6,7 @@ import DiffViewerContainer from './diffviewer';
 import FileViewerContainer from './fileviewer';
 import '../style.css';
 
-const REPO = 'https://github.com/armenzg/firefox-code-coverage-frontend';
+const REPO = 'https://github.com/mozilla/firefox-code-coverage-frontend';
 
 const AppDisclaimer = () => (
   <div className="app-disclaimer">
