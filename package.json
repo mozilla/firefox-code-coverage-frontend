@@ -4,11 +4,6 @@
   "main": "index.jsx",
   "author": "Armen Zambrano G. <armenzg@mozilla.com>",
   "repository": "git@github.com:mozilla/firefox-code-coverage-frontend.git",
-  "engines": {
-    "node": ">=6.0.0",
-    "npm": ">=5.0.0",
-    "yarn": ">=1.0.0"
-  },
   "scripts": {
     "build": "neutrino build",
     "start": "neutrino start",
