@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
 import * as FetchAPI from '../utils/fetch_data';
-import { PENDING } from '../settings';
+import { PENDING, LOADING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 const ChangesetInfo = ({ changeset }) => {
@@ -44,7 +44,7 @@ const ChangesetsViewer = ({ changesets }) => (
           />
         ))}
       </tbody>
-    </table>) : null
+    </table>) : (<h3 className="loading">{LOADING}</h3>)
 );
 
 const PollingStatus = ({ pollingEnabled }) => (
