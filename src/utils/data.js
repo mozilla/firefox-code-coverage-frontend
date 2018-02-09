@@ -20,8 +20,8 @@ const coverageSummary = (coverage) => {
     coveredLines: 0,
   };
   Object.keys(coverage.diffs).forEach((filePath) => {
-    Object.keys(coverage.diffs[filePath]).forEach((lineNumber) => {
-      const lineCoverage = coverage.diffs[filePath][lineNumber];
+    Object.keys(coverage.diffs[filePath].lines).forEach((lineNumber) => {
+      const lineCoverage = coverage.diffs[filePath].lines[lineNumber];
       if (lineCoverage === 'Y') {
         s.coveredLines += 1;
       }
@@ -85,6 +85,19 @@ export const coverageSummaryText = (coverage) => {
   return result;
 };
 
+// Get percentage of uncovered lines in one file
+const fileCoveragePercent = (file) => {
+  const s = {
+    coveredLines: Object.values(file).filter(coverage => coverage === 'Y').length,
+    uncoveredLines: Object.values(file).filter(coverage => coverage === 'N').length,
+  };
+  const totalCoverableLines = s.coveredLines + s.uncoveredLines;
+
+  s.percentage = (totalCoverableLines === 0) ?
+    0 : 100 * (s.uncoveredLines / totalCoverableLines);
+  return s.percentage;
+};
+
 // We transform the data
 export const transformCoverageData = (cov) => {
   /* We only want to transform the diffs entry in the data:
@@ -105,7 +118,10 @@ export const transformCoverageData = (cov) => {
     changes.forEach(({ coverage, line }) => {
       lines[line] = coverage;
     });
-    newCov.diffs[name] = lines;
+    newCov.diffs[name] = {
+      lines,
+      percent: fileCoveragePercent(lines),
+    };
   });
   return newCov;
 };
