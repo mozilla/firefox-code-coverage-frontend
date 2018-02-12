@@ -77,7 +77,7 @@ const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
       // applicable to a file
       const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
       return (<DiffFile
-        buildRev={coverage.build_changeset}
+        buildRev={(coverage.build_changeset).substring(0,12)}
         diffBlock={diffBlock}
         fileCoverageDiffs={(coverage) ? coverage.diffs[path] : undefined}
         key={path}
