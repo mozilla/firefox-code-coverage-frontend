@@ -137,6 +137,9 @@ pre { margin: 0; }
 .error-message {
 	color:#ff0000
 }
+.loading {
+	text-align: center;
+}
 
 /* Changesets */
 .hidden-changeset {

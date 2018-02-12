@@ -15,3 +15,5 @@ export const SETTINGS = {
 };
 
 export const PENDING = 'Pending';
+
+export const LOADING = 'Loading...';
