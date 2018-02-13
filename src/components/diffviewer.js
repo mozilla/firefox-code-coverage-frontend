@@ -91,10 +91,11 @@ const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
       // applicable to a file
       const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
       return (<DiffFile
-        key={path}
-        path={path}
+        buildRev={(coverage.build_changeset).substring(0, 12)}
         diffBlock={diffBlock}
         fileCoverageDiffs={(coverage) ? coverage.diffs[path] : undefined}
+        key={path}
+        path={path}
       />);
     })}
     {(parsedDiff.length > 0) &&
@@ -132,17 +133,19 @@ const DiffFooter = ({ coverage }) => (
 );
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ fileCoverageDiffs, diffBlock, path }) => (
+const DiffFile = ({ buildRev, diffBlock, fileCoverageDiffs, path }) => (
   <div className="diff-file">
     <div className="file-summary">
-      <div className="file-path">{path}</div>
+      <div className="file-path">
+        <Link class="diff-viewer-link" to={`/file?revision=${buildRev}&path=${path}`}>{path}</Link>
+      </div>
     </div>
     {diffBlock.chunks.map(block => (
       <DiffBlock
-        key={block.content}
-        filePath={path}
         block={block}
+        filePath={path}
         fileDiffs={fileCoverageDiffs}
+        key={block.content}
       />
     ))}
   </div>
