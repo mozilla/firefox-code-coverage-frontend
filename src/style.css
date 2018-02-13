@@ -149,6 +149,9 @@ pre { margin: 0; }
 .changeset-summary {
 	text-align: center;
 }
+.bzIcon {
+	float: right;
+}
 .low-coverage {
 	/* Warm red */
 	background-color: #ff4f5e; /* Fallback */
