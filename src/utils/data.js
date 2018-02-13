@@ -20,8 +20,8 @@ const coverageSummary = (coverage) => {
     coveredLines: 0,
   };
   Object.keys(coverage.diffs).forEach((filePath) => {
-    Object.keys(coverage.diffs[filePath]).forEach((lineNumber) => {
-      const lineCoverage = coverage.diffs[filePath][lineNumber];
+    Object.keys(coverage.diffs[filePath].lines).forEach((lineNumber) => {
+      const lineCoverage = coverage.diffs[filePath].lines[lineNumber];
       if (lineCoverage === 'Y') {
         s.coveredLines += 1;
       }
@@ -35,7 +35,7 @@ const coverageSummary = (coverage) => {
   return s;
 };
 
-// get the coverage summary for a particular revision and file 
+// get the coverage summary for a particular revision and file
 export const fileRevisionCoverageSummary = (coverage) => {
   const s = {
     coveredLines: [],
@@ -85,6 +85,19 @@ export const coverageSummaryText = (coverage) => {
   return result;
 };
 
+// Get percentage of uncovered lines in one file
+const fileCoveragePercent = (file) => {
+  const s = {
+    coveredLines: Object.values(file).filter(coverage => coverage === 'Y').length,
+    uncoveredLines: Object.values(file).filter(coverage => coverage === 'N').length,
+  };
+  const totalCoverableLines = s.coveredLines + s.uncoveredLines;
+
+  s.percentage = (totalCoverableLines === 0) ?
+    0 : 100 * (s.uncoveredLines / totalCoverableLines);
+  return s.percentage;
+};
+
 // We transform the data
 export const transformCoverageData = (cov) => {
   /* We only want to transform the diffs entry in the data:
@@ -105,7 +118,10 @@ export const transformCoverageData = (cov) => {
     changes.forEach(({ coverage, line }) => {
       lines[line] = coverage;
     });
-    newCov.diffs[name] = lines;
+    newCov.diffs[name] = {
+      lines,
+      percent: fileCoveragePercent(lines),
+    };
   });
   return newCov;
 };
@@ -136,15 +152,11 @@ export const csetWithCcovData = async (cset) => {
         newCset.hidden = false;
         newCset.coverage = {
           ...coverageData,
-          diffMeta: node => ({
-            hgRev: `${FetchAPI.hgHost}/mozilla-central/rev/${node}`,
-            ccovBackend: `${FetchAPI.ccovBackend}/coverage/changeset/${node}`,
-          }),
-          parentMeta: coverage => ({
-            pushlog: `https://hg.mozilla.org/mozilla-central/pushloghtml?changeset=${coverage.build_changeset}`,
-            codecov: `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverage.git_build_changeset}`,
-            gh: `https://github.com/mozilla/gecko-dev/commit/${coverage.git_build_changeset}`,
-          }),
+          hgRev: `${FetchAPI.hgHost}/mozilla-central/rev/${cset.node}`,
+          ccovBackend: `${FetchAPI.ccovBackend}/coverage/changeset/${cset.node}`,
+          pushlog: `${FetchAPI.hgHost}/pushloghtml?changeset=${coverageData.build_changeset}`,
+          codecov: `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverageData.git_build_changeset}`,
+          gh: `https://github.com/mozilla/gecko-dev/commit/${coverageData.git_build_changeset}`,
         };
         const result = coverageSummaryText(coverageData);
         newCset.summary = result.text;

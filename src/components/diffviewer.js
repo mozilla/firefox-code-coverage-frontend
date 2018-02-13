@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import * as _ from 'lodash';
 
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
@@ -63,77 +64,88 @@ export default class DiffViewerContainer extends Component {
   }
 }
 
-const DiffViewer = ({ appError, coverage, node, parsedDiff, summary }) => (
+// Adds a new percent property to each file in parsedDiff that represents
+// the proportion of uncovered lines.
+// This directly modifies each object in the parsedDiff array.
+const sortByPercent = (parsedDiff, coverage) => {
+  parsedDiff.forEach((p) => {
+    const cov = p;
+    cov.percent = (coverage.diffs[p.from]) ? coverage.diffs[p.from].percent : 0;
+  });
+  const sortedDiffs = _.orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
+  return sortedDiffs;
+};
+
+
+const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home"><Link to="/">Return to main page</Link></div>
     {(coverage) &&
       <CoverageMeta
-        {...coverage.parentMeta(coverage)}
-        {...coverage.diffMeta(node)}
         coverage={coverage}
-        node={node}
         summary={summary}
       />}
     <span className="error_message">{appError}</span>
-    {parsedDiff.map(diffBlock =>
+    {sortByPercent(parsedDiff, coverage).map((diffBlock) => {
       // We only push down the subset of code coverage data
       // applicable to a file
-      (
-        <DiffFile
-          key={diffBlock.from}
-          diffBlock={diffBlock}
-          fileCoverageDiffs={(coverage) ?
-            coverage.diffs[diffBlock.from] : undefined}
-        />
-      ))}
+      const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
+      return (<DiffFile
+        buildRev={(coverage.build_changeset).substring(0, 12)}
+        diffBlock={diffBlock}
+        fileCoverageDiffs={(coverage) ? coverage.diffs[path] : undefined}
+        key={path}
+        path={path}
+      />);
+    })}
     {(parsedDiff.length > 0) &&
       <DiffFooter
-        {...coverage.parentMeta(coverage)}
-        {...coverage.diffMeta(node)}
         coverage={coverage}
       />}
   </div>
 );
 
-const CoverageMeta = ({ coverage, hgRev, pushlog, summary }) => (
+const CoverageMeta = ({ coverage, summary }) => (
   <div className="coverage-meta">
     <div className="coverage-meta-row">
       <span className="meta">
         {`Current coverage: ${coverage.overall_cur.substring(0, 4)}%`}
       </span>
       <span className="meta meta-right">
-        <a href={pushlog} target="_blank">Push Log</a>
+        <a href={coverage.pushlog} target="_blank">Push Log</a>
       </span>
     </div>
     <div className="coverage-meta-row">
       <span className="meta">{summary}</span>
       <span className="meta meta-right">
-        <a href={hgRev} target="_blank">Hg Diff</a>
+        <a href={coverage.hgRev} target="_blank">Hg Diff</a>
       </span>
     </div>
   </div>
 );
 
-const DiffFooter = ({ gh, codecov, ccovBackend }) => (
+const DiffFooter = ({ coverage }) => (
   <div className="meta-footer">
-    <a href={gh} target="_blank">GitHub</a>
-    <a href={codecov} target="_blank">Codecov</a>
-    <a href={ccovBackend} target="_blank">Coverage Backend</a>
+    <a href={coverage.gh} target="_blank">GitHub</a>
+    <a href={coverage.codecov} target="_blank">Codecov</a>
+    <a href={coverage.ccovBackend} target="_blank">Coverage Backend</a>
   </div>
 );
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ fileCoverageDiffs, diffBlock }) => (
+const DiffFile = ({ buildRev, diffBlock, fileCoverageDiffs, path }) => (
   <div className="diff-file">
     <div className="file-summary">
-      <div className="file-path">{diffBlock.from}</div>
+      <div className="file-path">
+        <Link class="diff-viewer-link" to={`/file?revision=${buildRev}&path=${path}`}>{path}</Link>
+      </div>
     </div>
     {diffBlock.chunks.map(block => (
       <DiffBlock
-        key={block.content}
-        filePath={diffBlock.from}
         block={block}
+        filePath={path}
         fileDiffs={fileCoverageDiffs}
+        key={block.content}
       />
     ))}
   </div>

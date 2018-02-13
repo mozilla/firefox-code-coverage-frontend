@@ -87,6 +87,10 @@ pre { margin: 0; }
 .diff-meta, .net-coverage-meta, .parent-meta {
 	margin-bottom: 10px;
 }
+.diff-viewer-link {
+	color: white;
+	font-weight: 100;
+}
 .net-lines-coverage-change {
 	display: block;
 	font-weight: bold;
@@ -136,6 +140,9 @@ pre { margin: 0; }
 }
 .error-message {
 	color:#ff0000
+}
+.loading {
+	text-align: center;
 }
 
 /* Changesets */
