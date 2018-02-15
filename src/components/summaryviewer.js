@@ -8,16 +8,16 @@ import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
-  const hgLink = changeset.coverage.diffMeta(node).hgRev;
+  const hgUrl = changeset.coverage.hgRev;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
       <td className="changeset-author">{author.substring(0, 22)}</td>
       <td className="changeset-hg">
-        <a href={changeset.coverage.diffMeta(node).hgRev} target="_blank">
-          {node.substring(0, 12)}
-        </a>
+        {(hgUrl) ?
+          <a href={hgUrl} target="_blank">{node.substring(0, 6)}</a> :
+          'No Hg coverage'}
       </td>
       <td className="changeset-description">
         {(bzUrl) ?
@@ -41,7 +41,7 @@ const ChangesetsViewer = ({ changesets }) => (
           <th>Author</th>
           <th>Changeset</th>
           <th>Description</th>
-          <th>Coverage summary</th>
+          <th>Coverage Summary</th>
           <th>Coverage Diff</th>
         </tr>
         {Object.keys(changesets).map(node => (
