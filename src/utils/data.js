@@ -63,6 +63,12 @@ export const fileRevisionCoverageSummary = (coverage) => {
     });
   });
   s.uncoveredLines = _.uniq(s.uncoveredLines);
+  // calculate line coverage stats
+  s.numCovLines = s.coveredLines.length;
+  s.numUncovLines = s.uncoveredLines.length;
+  s.numTotalLines = s.numCovLines + s.numUncovLines;
+  s.percentage = (s.numCovLines !== 0 ||
+     s.numUncovLines !== 0) ? ((s.numCovLines / s.numTotalLines) * 100) : undefined;
   return s;
 };
 
