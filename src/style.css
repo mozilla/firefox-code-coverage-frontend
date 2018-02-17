@@ -150,6 +150,11 @@ pre { margin: 0; }
 	display: none
 }
 
+.changeset:hover td {
+	cursor: pointer;
+	background-color: #cce6ff;
+}
+
 .changeset-summary {
 	text-align: center;
 }

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
@@ -7,16 +6,19 @@ import { PENDING, LOADING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 const ChangesetInfo = ({ changeset }) => {
-  const { author, desc, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
+  const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
   const hgUrl = changeset.coverage.hgRev;
+  const handleClick = () => {
+    window.location = `/#/changeset/${node}`;
+  };
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
-    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
+    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} onClick={handleClick}>
       <td className="changeset-author">{author.substring(0, 22)}</td>
       <td className="changeset-hg">
         {(hgUrl) ?
-          <a href={hgUrl} target="_blank">{node.substring(0, 6)}</a> :
+          <a href={hgUrl} target="_blank">{node.substring(0, 12)}</a> :
           'No Hg coverage'}
       </td>
       <td className="changeset-description">
@@ -25,10 +27,6 @@ const ChangesetInfo = ({ changeset }) => {
           : desc.substring(0, 40) }
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
-      <td className="changeset-node-id">{(linkify) ?
-        <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
-        : <span>{node.substring(0, 12)}</span>}
-      </td>
     </tr>
   );
 };
@@ -42,7 +40,6 @@ const ChangesetsViewer = ({ changesets }) => (
           <th>Changeset</th>
           <th>Description</th>
           <th>Coverage Summary</th>
-          <th>Coverage Diff</th>
         </tr>
         {Object.keys(changesets).map(node => (
           <ChangesetInfo
