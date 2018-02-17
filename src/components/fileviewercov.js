@@ -91,17 +91,15 @@ const Test = ({ row, test, expand, handleTestOnExpand }) => (
 
 // shows coverage percentage of a file
 export const CoveragePercentageViewer = ({ coverage }) => {
-  const coveredLines = coverage.coveredLines.length;
-  const totalLines = coveredLines + coverage.uncoveredLines.length;
   let percentageCovered;
-  if (coveredLines !== 0 || coverage.uncoveredLines.length !== 0) {
+  if (coverage.percentage) {
     percentageCovered = (
       <div
         className="coverage-percentage"
-        style={{ backgroundColor: `${getPercentCovColor(coveredLines / totalLines)}` }}
+        style={{ backgroundColor: `${getPercentCovColor(coverage.percentage)}` }}
       >
-        {((coveredLines / totalLines) * 100).toPrecision(4)}
-        % - {coveredLines} lines covered out of {totalLines} coverable lines
+        {coverage.percentage.toPrecision(4)}
+        % - {coverage.numCovLines} lines covered out of {coverage.numTotalLines} coverable lines
       </div>
     );
   } else {
