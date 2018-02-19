@@ -145,12 +145,13 @@ pre { margin: 0; }
 .hidden-changeset {
 	display: none
 }
-
+.changeset-description {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
 .changeset-summary {
 	text-align: center;
-}
-.bzIcon {
-	float: right;
 }
 .low-coverage {
 	/* Warm red */
