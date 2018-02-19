@@ -2061,6 +2061,16 @@ component-emitter@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.2.1.tgz#137918d6d78283f7df7a6b7c5a63e140e69425e6"
 
+component-matches-selector@^0.1.6:
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/component-matches-selector/-/component-matches-selector-0.1.6.tgz#7b630e04e7e0c3b0019f31749fd70af5ed8b972e"
+  dependencies:
+    component-query "*"
+
+component-query@*:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/component-query/-/component-query-0.0.3.tgz#07f49dab7071fa9606725df53e607f468acdaacf"
+
 compressible@~2.0.11:
   version "2.0.12"
   resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.12.tgz#c59a5c99db76767e9876500e271ef63b3493bd66"
@@ -2588,6 +2598,10 @@ del@^3.0.0:
 delayed-stream@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
+
+delegate@^3.0.1:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
 
 delegates@^1.0.0:
   version "1.0.0"
@@ -7714,6 +7728,13 @@ svgo@^1.0.0:
     stable "~0.1.6"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
+
+table-link@^1.2.9:
+  version "1.2.9"
+  resolved "https://registry.yarnpkg.com/table-link/-/table-link-1.2.9.tgz#63ac27cb59b8265a17cade3d3e36ea731d44d1bc"
+  dependencies:
+    component-matches-selector "^0.1.6"
+    delegate "^3.0.1"
 
 table@^4.0.1:
   version "4.0.2"

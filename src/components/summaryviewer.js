@@ -5,21 +5,21 @@ import * as FetchAPI from '../utils/fetch_data';
 import { PENDING, LOADING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
+const TableLink = require('table-link');
+
 const ChangesetInfo = ({ changeset }) => {
+  TableLink.init();
   const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
   const hgUrl = changeset.coverage.hgRev;
-  const handleClick = () => {
-    window.location = `/#/changeset/${node}`;
-  };
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
-    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} onClick={handleClick}>
+    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} data-href={`/#/changeset/${node}`} data-target="blank">
       <td className="changeset-author">{author.substring(0, 22)}</td>
       <td className="changeset-hg">
         {(hgUrl) ?
-          <a href={hgUrl} target="_blank">{node.substring(0, 12)}</a> :
-          'No Hg coverage'}
+          <a href={hgUrl} target="_blank">{node.substring(0, 12)}</a>
+          : <span>{node.substring(0, 12)}</span> }
       </td>
       <td className="changeset-description">
         {(bzUrl) ?
