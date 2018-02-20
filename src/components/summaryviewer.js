@@ -6,6 +6,8 @@ import * as FetchAPI from '../utils/fetch_data';
 import { PENDING, LOADING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
+import bzIcon from '../static/bugzilla.png';
+
 const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
   // XXX: For author remove the email address
@@ -18,9 +20,10 @@ const ChangesetInfo = ({ changeset }) => {
         : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">
+        {desc.substring(0, 40).padEnd(40)}
         {(bzUrl) ?
-          <a href={bzUrl} target="_blank">{desc.substring(0, 40)}</a>
-          : desc.substring(0, 40) }
+          <a href={bzUrl} target="_blank"><img className="bzIcon" src={bzIcon} alt="bugzilla icon" /></a>
+          : undefined}
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
     </tr>
