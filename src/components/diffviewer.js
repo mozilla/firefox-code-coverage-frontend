@@ -197,7 +197,7 @@ const DiffLine = ({ change, fileDiffs, id }) => {
     // Added line - <blank> | <new line number>
     if (fileDiffs) {
       try {
-        const coverage = fileDiffs[c.ln];
+        const coverage = fileDiffs.lines[c.ln];
         if (coverage === 'Y') {
           rowClass = 'hit';
         } else if (coverage === '?') {
