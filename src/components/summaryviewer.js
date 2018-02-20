@@ -7,14 +7,15 @@ import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 const TableLink = require('table-link');
 
+TableLink.init();
+
 const ChangesetInfo = ({ changeset }) => {
-  TableLink.init();
   const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
   const hgUrl = changeset.coverage.hgRev;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
-    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} data-href={`/#/changeset/${node}`} data-target="blank">
+    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} data-href={`/#/changeset/${node}`} data-target="self">
       <td className="changeset-author">{author.substring(0, 22)}</td>
       <td className="changeset-hg">
         {(hgUrl) ?
