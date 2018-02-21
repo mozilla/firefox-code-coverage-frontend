@@ -9,12 +9,12 @@ import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 import bzIcon from '../static/bugzilla.png';
 
 const ChangesetInfo = ({ changeset }) => {
-  const { author, desc, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
+  const { author, desc, email, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
-      <td className="changeset-author">{author.substring(0, 22)}</td>
+      <td className="changeset-author"><span>{author}</span><a href={`mailto: ${email}`}>{`<${email}>`}</a></td>
       <td className="changeset-node-id">{(linkify) ?
         <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
         : <span>{node.substring(0, 12)}</span>}
@@ -83,13 +83,24 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
         const bzUrlRegex = /^bug\s*(\d*)/i;
         const bzUrlMatch = bzUrlRegex.exec(cset.desc);
         const bzUrl = bzUrlMatch ? (`http://bugzilla.mozilla.org/show_bug.cgi?id=${bzUrlMatch[1]}`) : null;
+
+        const authorRegex = /([^<]*)/i;
+        const authorMatch = authorRegex.exec(cset.author);
+        const author = authorMatch ? authorMatch[1] : null;
+
+        const emailRegex = /[<]([^>]*)[>]/i;
+        const emailMatch = emailRegex.exec(cset.author);
+        const email = emailMatch ? emailMatch[1] : null;
+
         const newCset = {
           pushId: id,
           hidden: hiddenDefault,
           bzUrl,
           linkify: false,
+          email,
           ...cset,
         };
+        newCset.author=author;
         filteredCsets.push(newCset);
       });
     }
