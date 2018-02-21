@@ -125,7 +125,7 @@ export default class ChangesetsViewerContainer extends Component {
         console.log(`We have ${value.length} changesets.`);
         this.setState({
           changesets: arrayToMap(changesets),
-          pollingEnabled: changesets.filter(c => c.summary === PENDING).length > 0,
+          pollingEnabled: value.filter(c => c.summary === PENDING).length > 0,
         });
       }
     });
