@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
+import * as localForage from 'localforage';
 
 import * as FetchAPI from '../utils/fetch_data';
 import { PENDING, LOADING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
+
+const CACHETIME = 86400; // 24 hours to seconds
+const MSTOS = 1000; // ms to s conversion
 
 const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
@@ -17,7 +21,6 @@ const ChangesetInfo = ({ changeset }) => {
       e.stopPropagation();
     }
   };
-  // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} onClick={e => handleClick(e)}>
@@ -123,7 +126,26 @@ export default class ChangesetsViewerContainer extends Component {
   async componentDidMount() {
     const { repoName } = this.props;
     const { hideCsetsWithNoCoverage } = this.state;
-    this.fetchPushes(repoName, hideCsetsWithNoCoverage);
+
+    const currTime = (new Date()).getTime() / MSTOS;
+    localForage.getItem('cachedTime').then((cachedTime) => {
+      if (cachedTime && (currTime - cachedTime) < CACHETIME) {
+        console.log('Retrieving cached changesets.');
+        localForage.getItem('changesets').then((result) => {
+          if (!result) {
+            this.fetchPushes(repoName, hideCsetsWithNoCoverage);
+          } else {
+            console.log(`Retrieved cached changesets. We have ${result.length} changesets.`);
+            this.setState({
+              changesets: arrayToMap(result),
+              pollingEnabled: result.filter(c => c.summary === PENDING).length > 0,
+            });
+          }
+        });
+      } else {
+        this.fetchPushes(repoName, hideCsetsWithNoCoverage);
+      }
+    });
   }
 
   async fetchPushes(repoName, hideCsetsWithNoCoverage) {
@@ -136,6 +158,8 @@ export default class ChangesetsViewerContainer extends Component {
         changesets: arrayToMap(csets),
         pollingEnabled: csets.filter(c => c.summary === PENDING).length > 0,
       });
+      localForage.setItem('changesets', csets);
+      localForage.setItem('cachedTime', (new Date()).getTime() / MSTOS);
     } catch (error) {
       console.log(error);
       this.setState({
