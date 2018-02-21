@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
+import * as localForage from 'localforage';
 
 import * as FetchAPI from '../utils/fetch_data';
 import { PENDING, LOADING } from '../settings';
@@ -115,7 +116,19 @@ export default class ChangesetsViewerContainer extends Component {
   async componentDidMount() {
     const { repoName } = this.props;
     const { hideCsetsWithNoCoverage } = this.state;
-    this.fetchPushes(repoName, hideCsetsWithNoCoverage);
+    localForage.getItem('changesets').then((err, value) => {
+      if (err) {
+        console.log('error');
+        this.fetchPushes(repoName, hideCsetsWithNoCoverage);
+      } else {
+        console.log('Retrieved from localForage');
+        console.log(`We have ${value.length} changesets.`);
+        this.setState({
+          changesets: arrayToMap(changesets),
+          pollingEnabled: changesets.filter(c => c.summary === PENDING).length > 0,
+        });
+      }
+    });
   }
 
   async fetchPushes(repoName, hideCsetsWithNoCoverage) {
@@ -128,6 +141,8 @@ export default class ChangesetsViewerContainer extends Component {
         changesets: arrayToMap(csets),
         pollingEnabled: csets.filter(c => c.summary === PENDING).length > 0,
       });
+      localForage.setItem('changesets', csets).then((result) => { console.log(result); });
+      localForage.getItem('changesets').then((result) => { console.log('got result'); console.log(result); });
     } catch (error) {
       console.log(error);
       this.setState({
