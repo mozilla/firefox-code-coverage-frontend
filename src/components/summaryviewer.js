@@ -124,7 +124,7 @@ export default class ChangesetsViewerContainer extends Component {
         console.log('Retrieved from localForage');
         console.log(`We have ${value.length} changesets.`);
         this.setState({
-          changesets: arrayToMap(changesets),
+          changesets: arrayToMap(value),
           pollingEnabled: value.filter(c => c.summary === PENDING).length > 0,
         });
       }
