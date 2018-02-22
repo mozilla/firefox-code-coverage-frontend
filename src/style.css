@@ -150,10 +150,16 @@ tr.changeset td{
 	flex-direction: row;
 	justify-content: flex-start;
 }
+.changeset-eIcon-align {
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
 .eIcon {
 	height: 16px;
 	width: 16px;
 	margin-right: 5px;
+	vertical-align: middle;
 }
 .error-message {
 	color:#ff0000

@@ -17,10 +17,12 @@ const ChangesetInfo = ({ changeset }) => {
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
       <td className="changeset-author">
-        <a href={`mailto: ${author.email}`}>
-          <img className="eIcon" src={eIcon} alt="email icon" />
-        </a>
-        {author.author.substring(0, 60)}
+        {(author.email) ?
+          <a href={`mailto: ${author.email}`}>
+            <img className="eIcon" src={eIcon} alt="email icon" />
+          </a> : undefined
+        }
+        <span className="changset-eIcon-algin">{author.author.substring(0, 60)}</span>
       </td>
       <td className="changeset-node-id">{(linkify) ?
         <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
@@ -95,7 +97,7 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
         const authorMatch = authorRegex.exec(cset.author);
         const author = authorMatch ? authorMatch[1] : null;
 
-        const emailRegex = /[<]([^>]*@[^>])[>]/i;
+        const emailRegex = /[<]([^>]*@[^>]*)[>]/i;
         const emailMatch = emailRegex.exec(cset.author);
         const email = emailMatch ? emailMatch[1] : null;
 
