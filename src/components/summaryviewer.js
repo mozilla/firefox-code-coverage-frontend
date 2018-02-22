@@ -116,17 +116,25 @@ export default class ChangesetsViewerContainer extends Component {
   async componentDidMount() {
     const { repoName } = this.props;
     const { hideCsetsWithNoCoverage } = this.state;
-    localForage.getItem('changesets').then((err, value) => {
-      if (err) {
-        console.log('error');
-        this.fetchPushes(repoName, hideCsetsWithNoCoverage);
-      } else {
-        console.log('Retrieved from localForage');
-        console.log(`We have ${value.length} changesets.`);
-        this.setState({
-          changesets: arrayToMap(value),
-          pollingEnabled: value.filter(c => c.summary === PENDING).length > 0,
+
+    const currTime = (new Date()).getTime();
+    localForage.getItem('cachedTime').then((cachedTime) => {
+      // Retrieve cached changesets if they were stored within the last 15 minutes
+      if (cachedTime && (currTime - cachedTime) < 9e5) {
+        console.log('Retrieving cached changesets.');
+        localForage.getItem('changesets').then((result) => {
+          if (!result) {
+            this.fetchPushes(repoName, hideCsetsWithNoCoverage);
+          } else {
+            console.log(`Retrieved cached changesets. We have ${result.length} changesets.`);
+            this.setState({
+              changesets: arrayToMap(result),
+              pollingEnabled: result.filter(c => c.summary === PENDING).length > 0,
+            });
+          }
         });
+      } else {
+        this.fetchPushes(repoName, hideCsetsWithNoCoverage);
       }
     });
   }
@@ -141,8 +149,8 @@ export default class ChangesetsViewerContainer extends Component {
         changesets: arrayToMap(csets),
         pollingEnabled: csets.filter(c => c.summary === PENDING).length > 0,
       });
-      localForage.setItem('changesets', csets).then((result) => { console.log(result); });
-      localForage.getItem('changesets').then((result) => { console.log('got result'); console.log(result); });
+      localForage.setItem('changesets', csets);
+      localForage.setItem('cachedTime', (new Date()).getTime());
     } catch (error) {
       console.log(error);
       this.setState({
