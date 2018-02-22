@@ -7,14 +7,21 @@ import { PENDING, LOADING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
+import eIcon from '../static/noun_205162_cc.png';
+
 
 const ChangesetInfo = ({ changeset }) => {
-  const { author, desc, email, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
+  const { author, desc, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
-      <td className="changeset-author"><span>{author}</span><a href={`mailto: ${email}`}>{`<${email}>`}</a></td>
+      <td className="changeset-author">
+        <a href={`mailto: ${author.email}`}>
+          <img className="eIcon" src={eIcon} alt="email icon" />
+        </a>
+        {author.author.substring(0, 60)}
+      </td>
       <td className="changeset-node-id">{(linkify) ?
         <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
         : <span>{node.substring(0, 12)}</span>}
@@ -80,7 +87,6 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
 
     if (lenCsets >= 1) {
       csets.forEach((cset) => {
-        console.log(cset.author);
         const bzUrlRegex = /^bug\s*(\d*)/i;
         const bzUrlMatch = bzUrlRegex.exec(cset.desc);
         const bzUrl = bzUrlMatch ? (`http://bugzilla.mozilla.org/show_bug.cgi?id=${bzUrlMatch[1]}`) : null;
@@ -89,7 +95,7 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
         const authorMatch = authorRegex.exec(cset.author);
         const author = authorMatch ? authorMatch[1] : null;
 
-        const emailRegex = /[<]([^>]*)[>]/i;
+        const emailRegex = /[<]([^>]*@[^>])[>]/i;
         const emailMatch = emailRegex.exec(cset.author);
         const email = emailMatch ? emailMatch[1] : null;
 
@@ -98,10 +104,12 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
           hidden: hiddenDefault,
           bzUrl,
           linkify: false,
-          email,
           ...cset,
         };
-        newCset.author=author;
+        newCset.author = {
+          author,
+          email
+        };
         filteredCsets.push(newCset);
       });
     }

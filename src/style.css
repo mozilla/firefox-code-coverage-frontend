@@ -120,6 +120,9 @@ pre { margin: 0; }
 	margin: 0em 0em 1em;
 	padding: 1em;
 }
+.bzIcon {
+	margin-right: 5px;
+}
 .polling-status {
 	/* Lemon yellow */
 	background-color: #fff44f; /* Fallback */
@@ -141,6 +144,16 @@ tr.changeset td{
 .changeset-viewer {
 	border-spacing: 0px;
 	margin: auto;
+}
+.changeset-author {
+	display:flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+.eIcon {
+	height: 16px;
+	width: 16px;
+	margin-right: 5px;
 }
 .error-message {
 	color:#ff0000
