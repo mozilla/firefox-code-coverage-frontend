@@ -149,6 +149,10 @@ pre { margin: 0; }
 .hidden-changeset {
 	display: none
 }
+.changeset:hover td {
+	cursor: pointer;
+	background-color: #cce6ff;
+}
 .changeset-description {
 	display: flex;
 	flex-direction: row;

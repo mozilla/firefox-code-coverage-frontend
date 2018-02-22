@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
@@ -9,15 +8,24 @@ import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 import bzIcon from '../static/bugzilla.png';
 
 const ChangesetInfo = ({ changeset }) => {
-  const { author, desc, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
+  const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
+  const hgUrl = changeset.coverage.hgRev;
+  const handleClick = (e) => {
+    if (e.target.tagName.toLowerCase() === 'td') {
+      window.open(`/#/changeset/${node}`, '_blank');
+    } else {
+      e.stopPropagation();
+    }
+  };
   // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
-    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
+    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} onClick={e => handleClick(e)}>
       <td className="changeset-author">{author.substring(0, 22)}</td>
-      <td className="changeset-node-id">{(linkify) ?
-        <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
-        : <span>{node.substring(0, 12)}</span>}
+      <td className="changeset-hg">
+        {(hgUrl) ?
+          <a href={hgUrl} target="_blank">{node.substring(0, 12)}</a>
+          : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">
         {desc.substring(0, 40).padEnd(40)}
