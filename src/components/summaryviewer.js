@@ -6,13 +6,15 @@ import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 import getChangesets from '../utils/hg';
 
 import bzIcon from '../static/bugzilla.png';
+import eIcon from '../static/noun_205162_cc.png';
+import dummyIcon from '../static/dummyIcon16x16.png';
 
 const { INTERNAL_ERROR, LOADING, PENDING } = settings.STRINGS;
 const { REPO } = settings;
 
 const ChangesetInfo = ({ changeset }) => {
   const {
-    author, desc, hidden, bzUrl, node, summary, summaryClassName,
+    authorInfo, desc, hidden, bzUrl, node, summary, summaryClassName,
   } = changeset;
   const hgUrl = changeset.coverage.hgRev;
   const handleClick = (e) => {
@@ -25,17 +27,24 @@ const ChangesetInfo = ({ changeset }) => {
   // XXX: For desc display only the first line
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} onClick={e => handleClick(e)}>
-      <td className="changeset-author">{author.substring(0, 22)}</td>
+      <td className="changeset-author">
+        {(authorInfo.email) ?
+          <a href={`mailto: ${authorInfo.email}`}>
+            <img className="eIcon" src={eIcon} alt="email icon" />
+          </a> : <img className="icon-substitute" src={dummyIcon} alt="placeholder icon" />
+        }
+        <span className="changeset-eIcon-align">{authorInfo.name.substring(0, 60)}</span>
+      </td>
       <td className="changeset-hg">
         {(hgUrl) ?
           <a href={hgUrl} target="_blank">{node.substring(0, 12)}</a>
           : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">
-        {desc.substring(0, 40).padEnd(40)}
         {(bzUrl) ?
           <a href={bzUrl} target="_blank"><img className="bzIcon" src={bzIcon} alt="bugzilla icon" /></a>
-          : undefined}
+          : <img className="icon-substitute" src={dummyIcon} alt="placeholder icon" /> }
+        {desc.substring(0, 40).padEnd(40)}
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
     </tr>
@@ -51,10 +60,10 @@ const ChangesetsViewer = ({ changesets }) => (
         <th>Description</th>
         <th>Coverage summary</th>
       </tr>
-      {Object.keys(changesets).map(node => (
+      {changesets.map(cset => (
         <ChangesetInfo
-          key={node}
-          changeset={changesets[node]}
+          key={cset.node}
+          changeset={cset}
         />
       ))}
     </tbody>
