@@ -7,14 +7,15 @@ import { PENDING, LOADING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
+import eIcon from '../static/noun_205162_cc.png';
+import dummyIcon from '../static/dummyIcon16x16.png';
+
 
 const CACHETIME = 86400; // 24 hours to seconds
 const MSTOS = 1000; // ms to s conversion
 
 const ChangesetInfo = ({ changeset }) => {
-  const {
-    author, desc, hidden, bzUrl, node, summary, summaryClassName,
-  } = changeset;
+  const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
   const hgUrl = changeset.coverage.hgRev;
   const handleClick = (e) => {
     if (e.target.tagName.toLowerCase() === 'td') {
@@ -26,17 +27,24 @@ const ChangesetInfo = ({ changeset }) => {
   // XXX: For desc display only the first line
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} onClick={e => handleClick(e)}>
-      <td className="changeset-author">{author.substring(0, 22)}</td>
+      <td className="changeset-author">
+        {(author.email) ?
+          <a href={`mailto: ${author.email}`}>
+            <img className="eIcon" src={eIcon} alt="email icon" />
+          </a> : <a><img className="icon-substitute" src={dummyIcon} alt="placeholder icon" /></a>
+        }
+        <span className="changeset-eIcon-align">{author.name.substring(0, 60)}</span>
+      </td>
       <td className="changeset-hg">
         {(hgUrl) ?
           <a href={hgUrl} target="_blank">{node.substring(0, 12)}</a>
           : <span>{node.substring(0, 12)}</span>}
       </td>
       <td className="changeset-description">
-        {desc.substring(0, 40).padEnd(40)}
         {(bzUrl) ?
           <a href={bzUrl} target="_blank"><img className="bzIcon" src={bzIcon} alt="bugzilla icon" /></a>
-          : undefined}
+          : <a><img className="icon-substitute" src={dummyIcon} alt="placeholder icon" /></a> }
+        {desc.substring(0, 40).padEnd(40)}
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
     </tr>
@@ -96,12 +104,25 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
         const bzUrlRegex = /^bug\s*(\d*)/i;
         const bzUrlMatch = bzUrlRegex.exec(cset.desc);
         const bzUrl = bzUrlMatch ? (`http://bugzilla.mozilla.org/show_bug.cgi?id=${bzUrlMatch[1]}`) : null;
+
+        const authorRegex = /([^<]*)/i;
+        const authorMatch = authorRegex.exec(cset.author);
+        const author = authorMatch ? authorMatch[1] : null;
+
+        const emailRegex = /[<]([^>]*@[^>]*)[>]/i;
+        const emailMatch = emailRegex.exec(cset.author);
+        const email = emailMatch ? emailMatch[1] : null;
+
         const newCset = {
           pushId: id,
           hidden: hiddenDefault,
           bzUrl,
           linkify: false,
           ...cset,
+        };
+        newCset.author = {
+          name: author,
+          email,
         };
         filteredCsets.push(newCset);
       });
