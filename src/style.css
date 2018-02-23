@@ -140,14 +140,28 @@ pre { margin: 0; }
 tr.changeset td{
 	padding-right: 5px;
 }
-.changeset-description {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-}
 .changeset-viewer {
 	border-spacing: 0px;
 	margin: auto;
+}
+.error-message {
+	color:#ff0000
+}
+.loading {
+	text-align: center;
+}
+
+/* Changesets */
+.hidden-changeset {
+	display: none
+}
+.changeset:hover td {
+	cursor: pointer;
+	background-color: #cce6ff;
+}
+.changeset-description {
+	display: flex;
+	justify-content: flex-start;
 }
 .changeset-author {
 	display:flex;
@@ -171,22 +185,6 @@ tr.changeset td{
 	width: 16px;
 	margin-right: 5px;
 	vertical-align: middle;
-}
-.error-message {
-	color:#ff0000
-}
-.loading {
-	text-align: center;
-}
-
-/* Changesets */
-.changeset:hover td {
-	cursor: pointer;
-	background-color: #cce6ff;
-}
-.changeset-description {
-	display: flex;
-	justify-content: space-between;
 }
 .changeset-summary {
 	text-align: center;
