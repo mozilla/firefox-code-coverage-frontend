@@ -162,6 +162,7 @@ tr.changeset td{
 	vertical-align: middle;
 }
 .icon-substitute {
+	opacity: 0;
 	height: 16px;
 	width: 16px;
 	margin-right: 5px;

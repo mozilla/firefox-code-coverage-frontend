@@ -8,6 +8,7 @@ import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
 import eIcon from '../static/noun_205162_cc.png';
+import dummyIcon from '../static/dummyIcon16x16.png';
 
 
 const ChangesetInfo = ({ changeset }) => {
@@ -20,7 +21,7 @@ const ChangesetInfo = ({ changeset }) => {
         {(author.email) ?
           <a href={`mailto: ${author.email}`}>
             <img className="eIcon" src={eIcon} alt="email icon" />
-          </a> : <div className="icon-substitute" />
+          </a> : <a><img className="icon-substitute" src={dummyIcon} alt="placeholder icon" /></a>
         }
         <span className="changeset-eIcon-align">{author.name.substring(0, 60)}</span>
       </td>
@@ -31,7 +32,7 @@ const ChangesetInfo = ({ changeset }) => {
       <td className="changeset-description">
         {(bzUrl) ?
           <a href={bzUrl} target="_blank"><img className="bzIcon" src={bzIcon} alt="bugzilla icon" /></a>
-          : <div className="icon-substitute" />}
+          : <a><img className="icon-substitute" src={dummyIcon} alt="placeholder icon" /></a> }
         {desc.substring(0, 40).padEnd(40)}
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
