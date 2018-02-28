@@ -161,6 +161,12 @@ tr.changeset td{
 	margin-right: 5px;
 	vertical-align: middle;
 }
+.icon-substitute {
+	height: 16px;
+	width: 16px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
 .error-message {
 	color:#ff0000
 }

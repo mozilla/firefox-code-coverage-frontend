@@ -20,9 +20,9 @@ const ChangesetInfo = ({ changeset }) => {
         {(author.email) ?
           <a href={`mailto: ${author.email}`}>
             <img className="eIcon" src={eIcon} alt="email icon" />
-          </a> : undefined
+          </a> : <div className="icon-substitute" />
         }
-        <span className="changset-eIcon-algin">{author.author.substring(0, 60)}</span>
+        <span className="changeset-eIcon-align">{author.name.substring(0, 60)}</span>
       </td>
       <td className="changeset-node-id">{(linkify) ?
         <Link to={`/changeset/${node}`}>{node.substring(0, 12)}</Link>
@@ -31,7 +31,7 @@ const ChangesetInfo = ({ changeset }) => {
       <td className="changeset-description">
         {(bzUrl) ?
           <a href={bzUrl} target="_blank"><img className="bzIcon" src={bzIcon} alt="bugzilla icon" /></a>
-          : undefined}
+          : <div className="icon-substitute" />}
         {desc.substring(0, 40).padEnd(40)}
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
@@ -109,8 +109,8 @@ const pushesToCsets = async (pushes, hiddenDefault) => {
           ...cset,
         };
         newCset.author = {
-          author,
-          email
+          name: author,
+          email,
         };
         filteredCsets.push(newCset);
       });
