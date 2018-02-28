@@ -9,9 +9,11 @@ import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
 
+const CACHETIME = 86400; // 24 hours to seconds
+const MSTOS = 1000; // ms to s conversion
+
 const ChangesetInfo = ({ changeset }) => {
   const { author, desc, hidden, bzUrl, linkify, node, summary, summaryClassName } = changeset;
-  // XXX: For author remove the email address
   // XXX: For desc display only the first line
   return (
     <tr className={(hidden) ? 'hidden-changeset' : 'changeset'}>
@@ -117,10 +119,10 @@ export default class ChangesetsViewerContainer extends Component {
     const { repoName } = this.props;
     const { hideCsetsWithNoCoverage } = this.state;
 
-    const currTime = (new Date()).getTime();
+    const currTime = (new Date()).getTime() / MSTOS;
     localForage.getItem('cachedTime').then((cachedTime) => {
       // Retrieve cached changesets if they were stored within the last 15 minutes
-      if (cachedTime && (currTime - cachedTime) < 9e5) {
+      if (cachedTime && (currTime - cachedTime) < CACHETIME) {
         console.log('Retrieving cached changesets.');
         localForage.getItem('changesets').then((result) => {
           if (!result) {
@@ -150,7 +152,7 @@ export default class ChangesetsViewerContainer extends Component {
         pollingEnabled: csets.filter(c => c.summary === PENDING).length > 0,
       });
       localForage.setItem('changesets', csets);
-      localForage.setItem('cachedTime', (new Date()).getTime());
+      localForage.setItem('cachedTime', (new Date()).getTime() / MSTOS);
     } catch (error) {
       console.log(error);
       this.setState({
