@@ -44,11 +44,19 @@ export default class DiffViewerContainer extends Component {
     try {
       const text = await (await FetchAPI.getDiff(changeset)).text();
       this.setState({ parsedDiff: parse(text) });
-    } catch (error) {
-      console.error(error);
-      this.setState({
-        appError: 'We did not manage to parse the diff correctly.',
-      });
+    } catch (e) {
+      if ((e instanceof TypeError) && (e.message === 'Failed to fetch')) {
+        this.setState({
+          appError: 'We\'ve had a network issue. Please try again.',
+        });
+      } else {
+        this.setState({
+          appError: 'We did not manage to parse the diff correctly.',
+        });
+        // Since we're not checking for e.message we should raise it
+        // so it shows up on sentry.io
+        throw e;
+      }
     }
   }
 
