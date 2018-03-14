@@ -46,12 +46,12 @@ export default class App extends Component {
     const { repoName } = this.state;
     return (
       <div className="app">
-        <GitHubRibbon />
         <Route
           exact
           path="/"
           render={() => (
             <div className="changesets-viewer">
+              <GitHubRibbon />
               <AppDisclaimer />
               <ChangesetsViewerContainer
                 repoName={repoName}
