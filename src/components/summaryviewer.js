@@ -3,7 +3,7 @@ import ReactInterval from 'react-interval';
 import * as localForage from 'localforage';
 
 import * as FetchAPI from '../utils/fetch_data';
-import { PENDING, LOADING } from '../settings';
+import { HASH_HISTORY, LOADING, PENDING } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
@@ -16,7 +16,11 @@ const ChangesetInfo = ({ changeset }) => {
   const hgUrl = changeset.coverage.hgRev;
   const handleClick = (e) => {
     if (e.target.tagName.toLowerCase() === 'td') {
-      window.open(`/#/changeset/${node}`, '_blank');
+      if (process.env.ROUTING === HASH_HISTORY) {
+        window.open(`/#/changeset/${node}`, '_blank');
+      } else {
+        window.open(`changeset/${node}`, '_blank');
+      }
     } else {
       e.stopPropagation();
     }
