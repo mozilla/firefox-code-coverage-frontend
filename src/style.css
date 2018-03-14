@@ -342,3 +342,11 @@ span.tests {
 	font-size: 1em;
 	padding: 0.4em 0.8em;
 }
+
+/* placing GitHub Ribbon on top right corner*/
+.github-ribbon{
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: 0;
+}

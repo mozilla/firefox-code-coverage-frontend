@@ -7,6 +7,15 @@ import FileViewerContainer from './fileviewer';
 import '../style.css';
 
 const REPO = 'https://github.com/mozilla/firefox-code-coverage-frontend';
+const GITHUB_RIBBON = 'https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png';
+
+const GitHubRibbon = () => (
+  <div className="github-ribbon">
+    <a href={`${REPO}`}>
+      <img src={`${GITHUB_RIBBON}`} alt="Fork me on GitHub" title="Fork me on GitHub" />
+    </a>
+  </div>
+);
 
 const AppDisclaimer = () => (
   <div className="app-disclaimer">
@@ -37,6 +46,7 @@ export default class App extends Component {
     const { repoName } = this.state;
     return (
       <div className="app">
+        <GitHubRibbon />
         <Route
           exact
           path="/"
