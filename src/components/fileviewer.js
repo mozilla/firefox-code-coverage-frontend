@@ -37,7 +37,7 @@ export default class FileViewerContainer extends Component {
     };
     // Get coverage from ActiveData
     const coverageData = async () => {
-      const { data } = await fileRevisionWithActiveData(revision, path, repoPath);
+      const { data } = await fileRevisionWithActiveData(revision.substring(0, 12), path, repoPath);
       this.setState({ coverage: fileRevisionCoverageSummary(data) });
     };
     // Fetch source code and coverage in parallel
