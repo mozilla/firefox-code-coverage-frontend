@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { uniq } from 'lodash';
 import { PENDING, SETTINGS } from '../settings';
 import * as FetchAPI from '../utils/fetch_data';
 
@@ -53,7 +53,7 @@ export const fileRevisionCoverageSummary = (coverage) => {
       s.testsPerHitLine[line].push(c);
     });
   });
-  s.coveredLines = _.uniq(s.coveredLines);
+  s.coveredLines = uniq(s.coveredLines);
   // get uncovered lines
   coverage.forEach((c) => {
     c.source.file.uncovered.forEach((line) => {
@@ -62,7 +62,7 @@ export const fileRevisionCoverageSummary = (coverage) => {
       }
     });
   });
-  s.uncoveredLines = _.uniq(s.uncoveredLines);
+  s.uncoveredLines = uniq(s.uncoveredLines);
   // calculate line coverage stats
   s.numCovLines = s.coveredLines.length;
   s.numUncovLines = s.uncoveredLines.length;
