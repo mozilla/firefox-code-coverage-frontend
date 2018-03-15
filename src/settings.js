@@ -14,6 +14,6 @@ export const SETTINGS = {
   },
 };
 
-export const PENDING = 'Pending';
-
+export const HASH_HISTORY = 'hashHistory';
 export const LOADING = 'Loading...';
+export const PENDING = 'Pending';

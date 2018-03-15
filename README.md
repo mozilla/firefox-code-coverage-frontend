@@ -54,3 +54,5 @@ Checkout the code and run:
 yarn install
 yarn start
 ```
+# Extra
+You can run the project with `hashHistory` by starting the project with `ROUTING=hashHistory`.
