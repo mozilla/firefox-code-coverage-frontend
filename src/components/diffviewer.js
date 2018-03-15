@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import * as _ from 'lodash';
+import { orderBy } from 'lodash';
 
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
@@ -80,7 +80,7 @@ const sortByPercent = (parsedDiff, coverage) => {
     const cov = p;
     cov.percent = (coverage.diffs[p.from]) ? coverage.diffs[p.from].percent : 0;
   });
-  const sortedDiffs = _.orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
+  const sortedDiffs = orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
   return sortedDiffs;
 };
 
