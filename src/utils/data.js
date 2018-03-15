@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { PENDING, SETTINGS } from '../settings';
+import { MIN_REVISION_LENGTH, PENDING, SETTINGS } from '../settings';
 import * as FetchAPI from '../utils/fetch_data';
 
 export const arrayToMap = (csets) => {
@@ -198,12 +198,15 @@ export const rawFile = async (revision, path, repoPath) => {
 
 export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
   try {
+    if (revision.length < MIN_REVISION_LENGTH) {
+      throw new Error(`Revision number must be at least ${MIN_REVISION_LENGTH} digits long`);
+    }
     const res = await FetchAPI.queryActiveData({
       from: 'coverage',
       where: {
         and: [
           { eq: { 'source.file.name': path } },
-          { eq: { 'repo.changeset.id12': revision } },
+          { prefix: { 'repo.changeset.id': revision } },
           { eq: { 'repo.branch.name': repoPath } },
         ],
       },
