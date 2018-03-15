@@ -199,7 +199,7 @@ export const rawFile = async (revision, path, repoPath) => {
 export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
   try {
     if (revision.length < MIN_REVISION_LENGTH) {
-      throw new Error(`Revision number must be at least ${MIN_REVISION_LENGTH} digits long`);
+      throw new RangeError('Revision number too short');
     }
     const res = await FetchAPI.queryActiveData({
       from: 'coverage',
@@ -218,7 +218,10 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
     }
     return res.json();
   } catch (e) {
-    console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
-    throw new Error('Failed to get coverage from ActiveData');
+    if ((e instanceof RangeError) && (e.message === 'Revision number too short')) {
+      throw e;
+    } else {
+      throw new Error('Failed to get coverage from ActiveData');
+    }
   }
 };
