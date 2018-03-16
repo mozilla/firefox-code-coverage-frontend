@@ -218,10 +218,7 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
     }
     return res.json();
   } catch (e) {
-    if ((e instanceof RangeError) && (e.message === 'Revision number too short')) {
+      console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
       throw e;
-    } else {
-      throw new Error('Failed to get coverage from ActiveData');
-    }
   }
 };

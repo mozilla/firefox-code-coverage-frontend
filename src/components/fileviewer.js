@@ -49,6 +49,7 @@ export default class FileViewerContainer extends Component {
           } else {
             this.setState({ appErr: `${error.name}: ${error.message}` });
           }
+          throw e;
         });
     } catch (error) {
       this.setState({ appErr: `${error.name}: ${error.message}` });
