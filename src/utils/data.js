@@ -218,7 +218,7 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
     }
     return res.json();
   } catch (e) {
-      console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
-      throw e;
+    console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
+    throw e;
   }
 };
