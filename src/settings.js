@@ -17,3 +17,5 @@ export const SETTINGS = {
 export const PENDING = 'Pending';
 
 export const LOADING = 'Loading...';
+
+export const MIN_REVISION_LENGTH = 5;

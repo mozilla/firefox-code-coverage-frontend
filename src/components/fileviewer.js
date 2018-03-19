@@ -42,7 +42,15 @@ export default class FileViewerContainer extends Component {
     };
     // Fetch source code and coverage in parallel
     try {
-      Promise.all([fileSource(), coverageData()]);
+      Promise.all([fileSource(), coverageData()])
+        .catch((e) => {
+          if ((e instanceof RangeError) && (e.message === 'Revision number too short')) {
+            this.setState({ appErr: 'Revision number is too short. Unable to fetch tests.' });
+          } else {
+            this.setState({ appErr: `${error.name}: ${error.message}` });
+          }
+          throw e;
+        });
     } catch (error) {
       this.setState({ appErr: `${error.name}: ${error.message}` });
     }
@@ -68,13 +76,14 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
-    const { parsedFile, coverage, selectedLine } = this.state;
+    const { parsedFile, coverage, selectedLine, appErr } = this.state;
 
     return (
       <div>
         <div className="file-view">
           <FileViewerMeta {...this.state} />
-          { (parsedFile) && <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
+          { !appErr && (parsedFile) &&
+            <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
         </div>
         <TestsSideViewer
           coverage={coverage}
