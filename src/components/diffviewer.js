@@ -5,6 +5,7 @@ import { orderBy } from 'lodash';
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
 import * as FetchAPI from '../utils/fetch_data';
+import { PENDING } from '../settings';
 
 const parse = require('parse-diff');
 
@@ -31,7 +32,13 @@ export default class DiffViewerContainer extends Component {
 
   async fetchSetCoverageData(changeset) {
     try {
-      this.setState({ csetMeta: await csetWithCcovData({ node: changeset }) });
+      const csetMeta = await csetWithCcovData({ node: changeset });
+      if (csetMeta.summary === PENDING) {
+        this.setState({
+          appError: 'The coverage data is still pending. Try again later.',
+        });
+      }
+      this.setState({ csetMeta });
     } catch (error) {
       console.error(error);
       this.setState({
@@ -85,31 +92,37 @@ const sortByPercent = (parsedDiff, coverage) => {
 };
 
 
-const DiffViewer = ({ appError, coverage, parsedDiff, summary }) => (
+const DiffViewer = ({
+  appError, coverage, parsedDiff, summary,
+}) => (
   <div className="codecoverage-diffviewer">
-    <div className="return-home"><Link to="/">Return to main page</Link></div>
-    {(coverage) &&
-      <CoverageMeta
-        coverage={coverage}
-        summary={summary}
-      />}
+    <div className="return-home">
+      <Link to="/" href="/">Return to main page</Link>
+    </div>
     <span className="error_message">{appError}</span>
-    {sortByPercent(parsedDiff, coverage).map((diffBlock) => {
-      // We only push down the subset of code coverage data
-      // applicable to a file
-      const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
-      return (<DiffFile
-        buildRev={(coverage.build_changeset).substring(0, 12)}
-        diffBlock={diffBlock}
-        fileCoverageDiffs={(coverage) ? coverage.diffs[path] : undefined}
-        key={path}
-        path={path}
-      />);
-    })}
-    {(parsedDiff.length > 0) &&
-      <DiffFooter
-        coverage={coverage}
-      />}
+    {(coverage && summary !== PENDING) && (
+      <div>
+        <CoverageMeta
+          coverage={coverage}
+          summary={summary}
+        />,
+        {sortByPercent(parsedDiff, coverage).map((diffBlock) => {
+          // We only push down the subset of code coverage data
+          // applicable to a file
+          const path = (diffBlock.to === '/dev/null') ? diffBlock.from : diffBlock.to;
+          return (<DiffFile
+            buildRev={(coverage.build_changeset).substring(0, 12)}
+            diffBlock={diffBlock}
+            fileCoverageDiffs={(coverage) ? coverage.diffs[path] : undefined}
+            key={path}
+            path={path}
+          />);
+        })},
+        <CoverageFooter
+          coverage={coverage}
+        />
+      </div>
+    )}
   </div>
 );
 
@@ -132,7 +145,7 @@ const CoverageMeta = ({ coverage, summary }) => (
   </div>
 );
 
-const DiffFooter = ({ coverage }) => (
+const CoverageFooter = ({ coverage }) => (
   <div className="meta-footer">
     <a href={coverage.gh} target="_blank">GitHub</a>
     <a href={coverage.codecov} target="_blank">Codecov</a>
@@ -141,11 +154,19 @@ const DiffFooter = ({ coverage }) => (
 );
 
 /* A DiffLine contains all diff changes for a specific file */
-const DiffFile = ({ buildRev, diffBlock, fileCoverageDiffs, path }) => (
+const DiffFile = ({
+  buildRev, diffBlock, fileCoverageDiffs, path,
+}) => (
   <div className="diff-file">
     <div className="file-summary">
       <div className="file-path">
-        <Link class="diff-viewer-link" to={`/file?revision=${buildRev}&path=${path}`}>{path}</Link>
+        <Link
+          class="diff-viewer-link"
+          to={`/file?revision=${buildRev}&path=${path}`}
+          href={`/file?revision=${buildRev}&path=${path}`}
+        >
+          {path}
+        </Link>
       </div>
     </div>
     {diffBlock.chunks.map(block => (
