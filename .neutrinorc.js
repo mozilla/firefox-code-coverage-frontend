@@ -5,11 +5,7 @@ module.exports = {
       {
         eslint: {
           rules: {
-            "comma-dangle": "off",
-            "indent": "off",
             "no-console": "off",
-            "no-undef": "off",
-            "no-underscore-dangle": "off",
             "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
             "react/prop-types": "off",
           }

@@ -47,7 +47,7 @@ export default class FileViewerContainer extends Component {
           if ((e instanceof RangeError) && (e.message === 'Revision number too short')) {
             this.setState({ appErr: 'Revision number is too short. Unable to fetch tests.' });
           } else {
-            this.setState({ appErr: `${error.name}: ${error.message}` });
+            this.setState({ appErr: `${e.name}: ${e.message}` });
           }
           throw e;
         });
@@ -76,7 +76,9 @@ export default class FileViewerContainer extends Component {
   }
 
   render() {
-    const { parsedFile, coverage, selectedLine, appErr } = this.state;
+    const {
+      parsedFile, coverage, selectedLine, appErr,
+    } = this.state;
 
     return (
       <div>
@@ -95,7 +97,9 @@ export default class FileViewerContainer extends Component {
 }
 
 // This component renders each line of the file with its line number
-const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
+const FileViewer = ({
+  parsedFile, coverage, selectedLine, onLineClick,
+}) => (
   <table className="file-view-table">
     <tbody>
       {parsedFile.map((text, lineNumber) => {
@@ -115,7 +119,9 @@ const FileViewer = ({ parsedFile, coverage, selectedLine, onLineClick }) => (
   </table>
 );
 
-const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
+const Line = ({
+  lineNumber, text, coverage, selectedLine, onLineClick,
+}) => {
   const handleOnClick = () => {
     onLineClick(lineNumber);
   };
@@ -147,7 +153,9 @@ const Line = ({ lineNumber, text, coverage, selectedLine, onLineClick }) => {
 };
 
 // This component contains metadata of the file
-const FileViewerMeta = ({ revision, path, appErr, parsedFile, coverage }) => {
+const FileViewerMeta = ({
+  revision, path, appErr, parsedFile, coverage,
+}) => {
   const showStatus = (label, data) => (
     <li className="file-meta-li">
       {label}: {(data) ? HEAVY_CHECKMARK : HORIZONTAL_ELLIPSIS}

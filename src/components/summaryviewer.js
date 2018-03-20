@@ -12,7 +12,9 @@ const CACHETIME = 86400; // 24 hours to seconds
 const MSTOS = 1000; // ms to s conversion
 
 const ChangesetInfo = ({ changeset }) => {
-  const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
+  const {
+    author, desc, hidden, bzUrl, node, summary, summaryClassName,
+  } = changeset;
   const hgUrl = changeset.coverage.hgRev;
   const handleClick = (e) => {
     if (e.target.tagName.toLowerCase() === 'td') {
@@ -42,8 +44,8 @@ const ChangesetInfo = ({ changeset }) => {
 };
 
 const ChangesetsViewer = ({ changesets }) => (
-  (changesets.length > 0) ?
-    (<table className="changeset-viewer">
+  (changesets.length > 0) ? (
+    <table className="changeset-viewer">
       <tbody>
         <tr>
           <th>Author</th>
@@ -62,8 +64,8 @@ const ChangesetsViewer = ({ changesets }) => (
 );
 
 const PollingStatus = ({ pollingEnabled }) => (
-  (pollingEnabled) ?
-    (<div className="polling-status"> {pollingEnabled}
+  (pollingEnabled) ? (
+    <div className="polling-status"> {pollingEnabled}
       Some changesets are still being processed and we are actively
       polling them until we get a result.
     </div>) : (null)
@@ -175,13 +177,12 @@ export default class ChangesetsViewerContainer extends Component {
     console.log('Determine if we need to poll csets w/o coverage data...');
     try {
       let newCsets = mapToArray(changesets);
-      newCsets = await Promise.all(
-        newCsets.map((c) => {
-          if (c.summary !== PENDING) {
-            return c;
-          }
-          return csetWithCcovData(c);
-        }));
+      newCsets = await Promise.all(newCsets.map((c) => {
+        if (c.summary !== PENDING) {
+          return c;
+        }
+        return csetWithCcovData(c);
+      }));
       const count = newCsets.filter(c => c.summary === PENDING).length;
       const csetsMap = arrayToMap(newCsets);
       if (count === 0) {
@@ -196,7 +197,10 @@ export default class ChangesetsViewerContainer extends Component {
   }
 
   render() {
-    const { changesets, pollingEnabled, errorMessage, timeout } = this.state;
+    const {
+      changesets, pollingEnabled, errorMessage, timeout,
+    } = this.state;
+
     if (errorMessage) {
       return (<div className="error-message">{errorMessage}</div>);
     }
