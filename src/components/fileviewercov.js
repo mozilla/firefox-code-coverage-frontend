@@ -24,6 +24,7 @@ export class TestsSideViewer extends Component {
       <ul className="test-viewer-ul">
         {tests.map((test, row) => (
           <Test
+            // eslint-disable-next-line no-underscore-dangle
             key={test._id}
             row={row}
             test={test}
@@ -71,7 +72,9 @@ export class TestsSideViewer extends Component {
 }
 
 // Test list item in the TestsSideViewer
-const Test = ({ row, test, expand, handleTestOnExpand }) => (
+const Test = ({
+  row, test, expand, handleTestOnExpand,
+}) => (
   <li>
     <button className="test-switch" onClick={() => handleTestOnExpand(row)}>
       <span className={`test-symbol ${expand}`}>{TRIANGULAR_BULLET}</span>
