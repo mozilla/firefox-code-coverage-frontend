@@ -23,6 +23,7 @@ module.exports = {
         }
       }
     ],
+    ['@neutrinojs/mocha', {exit: true}],
     (neutrino) => {
       neutrino.config.when(process.env.NODE_ENV === 'production', config => {
         config.devtool('source-map');
