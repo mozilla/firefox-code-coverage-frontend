@@ -3,6 +3,7 @@ module.exports = {
     [
       '@neutrinojs/airbnb',
       {
+        include: ['test'],
         eslint: {
           rules: {
             "no-console": "off",
@@ -23,6 +24,7 @@ module.exports = {
         }
       }
     ],
+    '@neutrinojs/mocha',
     (neutrino) => {
       neutrino.config.when(process.env.NODE_ENV === 'production', config => {
         config.devtool('source-map');
