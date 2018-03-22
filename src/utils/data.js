@@ -1,5 +1,6 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
+import { getRawFile, HG_HOST } from '../utils/hg';
 import * as FetchAPI from '../utils/fetch_data';
 
 export const arrayToMap = (csets) => {
@@ -73,8 +74,7 @@ export const fileRevisionCoverageSummary = (coverage) => {
 };
 
 export const coverageSummaryText = (coverage) => {
-  const { coverageThresholds } = settings.COVERAGE_THRESHOLDS;
-  const { low, medium, high } = coverageThresholds;
+  const { low, medium, high } = settings.COVERAGE_THRESHOLDS;
   const s = coverageSummary(coverage);
   const result = { className: 'no-change', text: 'No changes' };
   if (typeof s.percentage !== 'undefined') {
@@ -158,9 +158,9 @@ export const csetWithCcovData = async (cset) => {
         newCset.hidden = false;
         newCset.coverage = {
           ...coverageData,
-          hgRev: `${FetchAPI.hgHost}/mozilla-central/rev/${cset.node}`,
+          hgRev: `${HG_HOST}/mozilla-central/rev/${cset.node}`,
           ccovBackend: `${FetchAPI.ccovBackend}/coverage/changeset/${cset.node}`,
-          pushlog: `${FetchAPI.hgHost}/pushloghtml?changeset=${coverageData.build_changeset}`,
+          pushlog: `${HG_HOST}/pushloghtml?changeset=${coverageData.build_changeset}`,
           codecov: `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverageData.git_build_changeset}`,
           gh: `https://github.com/mozilla/gecko-dev/commit/${coverageData.git_build_changeset}`,
         };
@@ -185,7 +185,7 @@ export const csetWithCcovData = async (cset) => {
 
 export const rawFile = async (revision, path, repoPath) => {
   try {
-    const res = await FetchAPI.getRawFile(revision, path, repoPath);
+    const res = await getRawFile(revision, path, repoPath);
     if (res.status !== 200) {
       throw new Error();
     }

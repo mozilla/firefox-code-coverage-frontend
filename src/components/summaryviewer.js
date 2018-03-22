@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
-import * as localForage from 'localforage';
 
-import * as FetchAPI from '../utils/fetch_data';
 import settings from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
+import getChangesets from '../utils/hg';
 
 import bzIcon from '../static/bugzilla.png';
 
-const { LOADING, PENDING } = settings.STRINGS;
-const { CACHE_SECONDS_TO_EXPIRE, MSTOS, REPO } = settings;
+const { INTERNAL_ERROR, LOADING, PENDING } = settings.STRINGS;
+const { REPO } = settings;
 
 const ChangesetInfo = ({ changeset }) => {
   const {
@@ -70,48 +69,6 @@ const PollingStatus = ({ pollingEnabled }) => (
     </div>) : (null)
 );
 
-// Return list of changesets
-const pushesToCsets = async (pushes, hiddenDefault) => {
-  const ignore = ({ desc, author }) => {
-    if (
-      (author.includes('ffxbld')) ||
-      (desc.includes('a=merge') && desc.includes('r=merge')) ||
-      (desc.includes('erge') && (desc.includes('to'))) ||
-      (desc.includes('ack out')) ||
-      (desc.includes('acked out'))) {
-      return true;
-    }
-
-    return false;
-  };
-  const filteredCsets = [];
-  Object.keys(pushes).reverse().forEach((id) => {
-    // Re-order csets and filter out those we don't want
-    const csets = pushes[id].changesets.reverse().filter(c => !ignore(c));
-    const lenCsets = csets.length;
-
-    if (lenCsets >= 1) {
-      csets.forEach((cset) => {
-        const bzUrlRegex = /^bug\s*(\d*)/i;
-        const bzUrlMatch = bzUrlRegex.exec(cset.desc);
-        const bzUrl = bzUrlMatch ? (`http://bugzilla.mozilla.org/show_bug.cgi?id=${bzUrlMatch[1]}`) : null;
-        const newCset = {
-          pushId: id,
-          hidden: hiddenDefault,
-          bzUrl,
-          linkify: false,
-          ...cset,
-        };
-        filteredCsets.push(newCset);
-      });
-    }
-  });
-  // Separating into two blocks makes it easier to code
-  const newCsets = await Promise.all(filteredCsets
-    .map(async cset => csetWithCcovData(cset)));
-  return newCsets;
-};
-
 export default class ChangesetsViewerContainer extends Component {
   constructor(props) {
     super(props);
@@ -125,42 +82,39 @@ export default class ChangesetsViewerContainer extends Component {
   }
 
   async componentDidMount() {
-    const { repoName } = this.props;
-    const { hideCsetsWithNoCoverage } = this.state;
-
-    const currTime = (new Date()).getTime() / MSTOS;
-    localForage.getItem('cachedTime').then((cachedTime) => {
-      if (cachedTime && (currTime - cachedTime) < CACHE_SECONDS_TO_EXPIRE) {
-        console.log('Retrieving cached changesets.');
-        localForage.getItem('changesets').then((result) => {
-          if (!result) {
-            this.fetchPushes(repoName, hideCsetsWithNoCoverage);
-          } else {
-            console.log(`Retrieved cached changesets. We have ${result.length} changesets.`);
-            this.setState({
-              changesets: arrayToMap(result),
-              pollingEnabled: result.filter(c => c.summary === PENDING).length > 0,
-            });
-          }
-        });
-      } else {
-        this.fetchPushes(repoName, hideCsetsWithNoCoverage);
-      }
-    });
+    this.fetchChangesets(this.props.repoName, this.state.hideCsetsWithNoCoverage);
   }
 
-  async fetchPushes(repoName, hideCsetsWithNoCoverage) {
+  async fetchChangesets(repoName, hideCsetsWithNoCoverage) {
     try {
-      // Fetch last 10 pushes
-      const text = await (await FetchAPI.getJsonPushes(repoName)).json();
-      const csets = await pushesToCsets(text.pushes, hideCsetsWithNoCoverage);
+      // XXX: With this refactor we're only storing changesets w/o coverage data
+      //      This means that the cache is only as useful as saving all the Hg fetches
+      //
+      // Next refactor:
+      // 1) fetch jsonPushes (2 days)
+      // 2) filter out pushes that can be ignored (e.g. only 1 cset)
+      // 3) fetch coverage data for all of them
+      // 4) Inspect pushes from oldest to newest
+      //    FAIL: If there are no pushes with some coverage (Show message)
+      // 5) For every push with coverage data go and fetch each cset
+      const csetsNoCoverage = await getChangesets(repoName, hideCsetsWithNoCoverage);
+      const csets = await Promise.all(csetsNoCoverage.map(async cset =>
+        csetWithCcovData(cset)));
+      const summary = { pending: 0, error: 0 };
+      csets.forEach((cset) => {
+        if (cset.summary === PENDING) {
+          summary.pending += 1;
+        } else if (cset.summary === INTERNAL_ERROR) {
+          summary.error += 1;
+        }
+      });
       console.log(`We have ${csets.length} changesets.`);
+      console.log(`pending: ${summary.pending}`);
+      console.log(`errors: ${summary.error}`);
       this.setState({
         changesets: arrayToMap(csets),
-        pollingEnabled: csets.filter(c => c.summary === PENDING).length > 0,
+        pollingEnabled: summary.pending > 0,
       });
-      localForage.setItem('changesets', csets);
-      localForage.setItem('cachedTime', (new Date()).getTime() / MSTOS);
     } catch (error) {
       console.log(error);
       this.setState({

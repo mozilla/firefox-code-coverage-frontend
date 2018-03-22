@@ -4,7 +4,7 @@ import { orderBy } from 'lodash';
 
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
-import * as FetchAPI from '../utils/fetch_data';
+import { getDiff } from '../utils/hg';
 import settings from '../settings';
 
 const parse = require('parse-diff');
@@ -49,7 +49,7 @@ export default class DiffViewerContainer extends Component {
 
   async fetchSetDiff(changeset) {
     try {
-      const text = await (await FetchAPI.getDiff(changeset)).text();
+      const text = await (await getDiff(changeset)).text();
       this.setState({ parsedDiff: parse(text) });
     } catch (e) {
       if ((e instanceof TypeError) && (e.message === 'Failed to fetch')) {
