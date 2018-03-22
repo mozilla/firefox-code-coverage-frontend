@@ -4,10 +4,9 @@ import { Route } from 'react-router-dom';
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
 import FileViewerContainer from './fileviewer';
+import { REPO, GITHUB_RIBBON } from '../settings';
 import '../style.css';
 
-const REPO = 'https://github.com/mozilla/firefox-code-coverage-frontend';
-const GITHUB_RIBBON = 'https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png';
 
 const GitHubRibbon = () => (
   <div className="github-ribbon">

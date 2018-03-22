@@ -3,7 +3,7 @@ import ReactInterval from 'react-interval';
 import * as localForage from 'localforage';
 
 import * as FetchAPI from '../utils/fetch_data';
-import { PENDING, LOADING } from '../settings';
+import { PENDING, LOADING, REPO } from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
@@ -44,23 +44,22 @@ const ChangesetInfo = ({ changeset }) => {
 };
 
 const ChangesetsViewer = ({ changesets }) => (
-  (changesets.length > 0) ? (
-    <table className="changeset-viewer">
-      <tbody>
-        <tr>
-          <th>Author</th>
-          <th>Changeset</th>
-          <th>Description</th>
-          <th>Coverage summary</th>
-        </tr>
-        {Object.keys(changesets).map(node => (
-          <ChangesetInfo
-            key={node}
-            changeset={changesets[node]}
-          />
-        ))}
-      </tbody>
-    </table>) : (<h3 className="loading">{LOADING}</h3>)
+  <table className="changeset-viewer">
+    <tbody>
+      <tr>
+        <th>Author</th>
+        <th>Changeset</th>
+        <th>Description</th>
+        <th>Coverage summary</th>
+      </tr>
+      {Object.keys(changesets).map(node => (
+        <ChangesetInfo
+          key={node}
+          changeset={changesets[node]}
+        />
+      ))}
+    </tbody>
+  </table>
 );
 
 const PollingStatus = ({ pollingEnabled }) => (
@@ -220,9 +219,18 @@ export default class ChangesetsViewerContainer extends Component {
             />
           </div>
         )}
-        <ChangesetsViewer
-          changesets={viewableCsets}
-        />
+        {viewableCsets.length > 0 &&
+          <ChangesetsViewer changesets={viewableCsets} />
+        }
+        {(!pollingEnabled && Object.keys(changesets).length > 0) &&
+          <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
+            <span>There is currently no coverage data to show. Please </span>
+            <a href={`${REPO}/issues/new`} target="_blank">file an issue</a>.
+          </p>
+        }
+        {(Object.keys(changesets).length === 0) &&
+          (<h3 className="loading">{LOADING}</h3>)
+        }
       </div>
     );
   }
