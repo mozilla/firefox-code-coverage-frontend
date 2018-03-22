@@ -8,6 +8,8 @@ const plainHeaders = {
 const jsonHeaders = {
   Accept: 'application/json',
 };
+const THREE_DAYS_AGO = new Date((new Date()).getTime() - (3 * 24 * 60 * 60 * 1000))
+  .toISOString().substring(0, 10);
 
 const jsonPost = (url, body) =>
   fetch(url, { headers: jsonHeaders, method: 'POST', body: JSON.stringify(body) });
@@ -18,8 +20,8 @@ export const getDiff = (changeset, repoPath = 'mozilla-central') =>
 export const getRawFile = (revision, path, repoPath) =>
   fetch(`${hgHost}/${repoPath}/raw-file/${revision}/${path}`, { plainHeaders });
 
-export const getJsonPushes = repoPath =>
-  fetch(`${hgHost}/${repoPath}/json-pushes?version=2&full=1`, { jsonHeaders });
+export const getJsonPushes = (repoPath, date = THREE_DAYS_AGO) =>
+  fetch(`${hgHost}/${repoPath}/json-pushes?version=2&full=1&startDate=${date}`, { jsonHeaders });
 
 export const getChangesetCoverage = changeset =>
   fetch(`${ccovBackend}/coverage/changeset/${changeset}`, { jsonHeaders });
