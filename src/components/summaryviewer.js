@@ -15,7 +15,9 @@ const CACHETIME = 86400; // 24 hours to seconds
 const MSTOS = 1000; // ms to s conversion
 
 const ChangesetInfo = ({ changeset }) => {
-  const { author, desc, hidden, bzUrl, node, summary, summaryClassName } = changeset;
+  const {
+    author, desc, hidden, bzUrl, node, summary, summaryClassName,
+  } = changeset;
   const hgUrl = changeset.coverage.hgRev;
   const handleClick = (e) => {
     if (e.target.tagName.toLowerCase() === 'td') {
@@ -50,6 +52,7 @@ const ChangesetInfo = ({ changeset }) => {
     </tr>
   );
 };
+
 
 const ChangesetsViewer = ({ changesets }) => (
   (changesets.length > 0) ? (
