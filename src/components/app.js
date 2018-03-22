@@ -5,6 +5,7 @@ import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
 import FileViewerContainer from './fileviewer';
 import { REPO, GITHUB_RIBBON } from '../settings';
+import clearLocalCache from '../utils/localCache';
 import '../style.css';
 
 
@@ -71,6 +72,15 @@ export default class App extends Component {
         <Route
           path="/file"
           component={FileViewerContainer}
+        />
+        <Route
+          path="/clear-cache"
+          render={() => {
+            if (clearLocalCache()) {
+              return (<p>The local database has been cleared.</p>);
+            }
+            return (<p>Failed to clear the local DB.</p>);
+          }}
         />
       </div>
     );
