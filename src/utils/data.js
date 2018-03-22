@@ -1,5 +1,5 @@
 import { uniq } from 'lodash';
-import { MIN_REVISION_LENGTH, PENDING, SETTINGS } from '../settings';
+import settings from '../settings';
 import * as FetchAPI from '../utils/fetch_data';
 
 export const arrayToMap = (csets) => {
@@ -73,7 +73,7 @@ export const fileRevisionCoverageSummary = (coverage) => {
 };
 
 export const coverageSummaryText = (coverage) => {
-  const { coverageThresholds } = SETTINGS;
+  const { coverageThresholds } = settings.COVERAGE_THRESHOLDS;
   const { low, medium, high } = coverageThresholds;
   const s = coverageSummary(coverage);
   const result = { className: 'no-change', text: 'No changes' };
@@ -146,7 +146,7 @@ export const csetWithCcovData = async (cset) => {
     const res = await FetchAPI.getChangesetCoverage(cset.node);
     if (res.status === 202) {
       // This is the only case when we poll again
-      newCset.summary = PENDING;
+      newCset.summary = settings.STRINGS.PENDING;
     } else if (res.status === 200) {
       const coverageData = transformCoverageData(await res.json());
 
@@ -198,7 +198,7 @@ export const rawFile = async (revision, path, repoPath) => {
 
 export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
   try {
-    if (revision.length < MIN_REVISION_LENGTH) {
+    if (revision.length < settings.MIN_REVISION_LENGTH) {
       throw new RangeError('Revision number too short');
     }
     const res = await FetchAPI.queryActiveData({

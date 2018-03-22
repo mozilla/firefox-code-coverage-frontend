@@ -3,13 +3,13 @@ import ReactInterval from 'react-interval';
 import * as localForage from 'localforage';
 
 import * as FetchAPI from '../utils/fetch_data';
-import { PENDING, LOADING, REPO } from '../settings';
+import settings from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 
 import bzIcon from '../static/bugzilla.png';
 
-const CACHETIME = 86400; // 24 hours to seconds
-const MSTOS = 1000; // ms to s conversion
+const { LOADING, PENDING } = settings.STRINGS;
+const { CACHE_SECONDS_TO_EXPIRE, MSTOS, REPO } = settings;
 
 const ChangesetInfo = ({ changeset }) => {
   const {
@@ -130,7 +130,7 @@ export default class ChangesetsViewerContainer extends Component {
 
     const currTime = (new Date()).getTime() / MSTOS;
     localForage.getItem('cachedTime').then((cachedTime) => {
-      if (cachedTime && (currTime - cachedTime) < CACHETIME) {
+      if (cachedTime && (currTime - cachedTime) < CACHE_SECONDS_TO_EXPIRE) {
         console.log('Retrieving cached changesets.');
         localForage.getItem('changesets').then((result) => {
           if (!result) {

@@ -4,10 +4,11 @@ import { Route } from 'react-router-dom';
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
 import FileViewerContainer from './fileviewer';
-import { REPO, GITHUB_RIBBON } from '../settings';
+import settings from '../settings';
 import clearLocalCache from '../utils/localCache';
 import '../style.css';
 
+const { REPO, GITHUB_RIBBON } = settings;
 
 const GitHubRibbon = () => (
   <div className="github-ribbon">
