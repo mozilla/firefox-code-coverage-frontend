@@ -11,7 +11,7 @@
   },
   "scripts": {
     "test": "nyc neutrino test",
-    "watch": "NODE_ENV=testing mocha --watch",
+    "watch": "NODE_ENV=testing mocha",
     "build": "neutrino build",
     "start": "neutrino start",
     "lint": "neutrino lint",

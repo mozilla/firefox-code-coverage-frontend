@@ -94,7 +94,7 @@ export const changesetsMap = {
 export const coverage = {
   build_changeset: 'f258a2b821eaa1c1ee',
   diffs: {
-    local/test/file1.h: {
+    'local\/test\/file1.h': {
       lines: {
         1: '?',
         2: 'Y',
@@ -105,7 +105,7 @@ export const coverage = {
       },
       percent: 33.3
     },
-    local/test/file2.h: {
+    'local\/test\/file2.h': {
       lines: {
         1: '?',
         2: '?',
