@@ -5,7 +5,7 @@ import ChangesetsViewerContainer from '../containers/summaryViewer';
 import DiffViewerContainer from '../containers/diffViewer';
 import FileViewerContainer from '../containers/fileViewer';
 import settings from '../settings';
-import clearLocalCache from '../utils/localCache';
+import { clearCache } from '../utils/localCache';
 import '../style.css';
 import AppDisclaimer from './disclaimer';
 import GitHubRibbon from './githubRibbon';
@@ -42,7 +42,7 @@ export default () => (
     <Route
       path="/clear-cache"
       render={() => {
-        if (clearLocalCache()) {
+        if (clearCache()) {
           return (<p>The local database has been cleared.</p>);
         }
         return (<p>Failed to clear the local DB.</p>);
