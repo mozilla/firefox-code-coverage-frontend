@@ -384,3 +384,7 @@ span.tests {
 	right: 0;
 	border: 0;
 }
+
+.bzIcon {
+	padding: 0 0.3em 0 0.3em;
+}

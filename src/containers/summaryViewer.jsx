@@ -1,74 +1,12 @@
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
+import SummaryViewer from '../components/summaryViewer';
 import settings from '../settings';
 import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
 import getChangesets from '../utils/hg';
 
-import bzIcon from '../static/bugzilla.png';
-import eIcon from '../static/noun_205162_cc.png';
-import dummyIcon from '../static/dummyIcon16x16.png';
-
-const { INTERNAL_ERROR, LOADING, PENDING } = settings.STRINGS;
-const { REPO } = settings;
-
-const ChangesetInfo = ({ changeset }) => {
-  const {
-    authorInfo, desc, hidden, bzUrl, node, summary, summaryClassName,
-  } = changeset;
-  const hgUrl = changeset.coverage.hgRev;
-  const handleClick = (e) => {
-    if (e.target.tagName.toLowerCase() === 'td') {
-      window.open(`/#/changeset/${node}`, '_blank');
-    } else {
-      e.stopPropagation();
-    }
-  };
-  // XXX: For desc display only the first line
-  return (
-    <tr className={(hidden) ? 'hidden-changeset' : 'changeset'} onClick={e => handleClick(e)}>
-      <td className="changeset-author">
-        {(authorInfo.email) ?
-          <a href={`mailto: ${authorInfo.email}`}>
-            <img className="eIcon" src={eIcon} alt="email icon" />
-          </a> : <img className="icon-substitute" src={dummyIcon} alt="placeholder icon" />
-        }
-        <span className="changeset-eIcon-align">{authorInfo.name.substring(0, 60)}</span>
-      </td>
-      <td className="changeset-hg">
-        {(hgUrl) ?
-          <a href={hgUrl} target="_blank">{node.substring(0, 12)}</a>
-          : <span>{node.substring(0, 12)}</span>}
-      </td>
-      <td className="changeset-description">
-        {(bzUrl) ?
-          <a href={bzUrl} target="_blank"><img className="bzIcon" src={bzIcon} alt="bugzilla icon" /></a>
-          : <img className="icon-substitute" src={dummyIcon} alt="placeholder icon" /> }
-        {desc.substring(0, 40).padEnd(40)}
-      </td>
-      <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
-    </tr>
-  );
-};
-
-const ChangesetsViewer = ({ changesets }) => (
-  <table className="changeset-viewer">
-    <tbody>
-      <tr>
-        <th>Author</th>
-        <th>Changeset</th>
-        <th>Description</th>
-        <th>Coverage summary</th>
-      </tr>
-      {changesets.map(cset => (
-        <ChangesetInfo
-          key={cset.node}
-          changeset={cset}
-        />
-      ))}
-    </tbody>
-  </table>
-);
+const { LOADING, INTERNAL_ERROR, PENDING } = settings.STRINGS;
 
 const PollingStatus = ({ pollingEnabled }) => (
   (pollingEnabled) ? (
@@ -183,12 +121,12 @@ export default class ChangesetsViewerContainer extends Component {
           </div>
         )}
         {viewableCsets.length > 0 &&
-          <ChangesetsViewer changesets={viewableCsets} />
+          <SummaryViewer changesets={viewableCsets} />
         }
         {(!pollingEnabled && Object.keys(changesets).length > 0) &&
           <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
             <span>There is currently no coverage data to show. Please </span>
-            <a href={`${REPO}/issues/new`} target="_blank">file an issue</a>.
+            <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
           </p>
         }
         {(Object.keys(changesets).length === 0) &&

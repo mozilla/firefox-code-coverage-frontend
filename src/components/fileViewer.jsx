@@ -1,5 +1,5 @@
 // This file contains coverage information for a particular revision of a source file
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 import getPercentCovColor from '../utils/color';
 import { TRIANGULAR_BULLET } from '../utils/symbol';

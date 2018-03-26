@@ -50,7 +50,6 @@ const initializedChangeset = (cset, id, hidden) => ({
   hidden,
   bzUrl: bzUrl(cset.desc),
   authorInfo: authorInfo(cset.author),
-  linkify: false,
   ...cset,
 });
 

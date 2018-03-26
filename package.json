@@ -20,6 +20,9 @@
   "lint-staged": {
     "*.js": [
       "neutrino lint"
+    ],
+    "*.jsx": [
+      "neutrino lint"
     ]
   },
   "dependencies": {
