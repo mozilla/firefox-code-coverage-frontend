@@ -3,7 +3,8 @@ import ReactInterval from 'react-interval';
 
 import SummaryViewer from '../components/summaryViewer';
 import settings from '../settings';
-import { arrayToMap, csetWithCcovData, mapToArray } from '../utils/data';
+import { arrayToMap, mapToArray } from '../utils/data';
+import { csetWithCcovData } from '../utils/coverage';
 import getChangesets from '../utils/hg';
 
 const { LOADING, INTERNAL_ERROR, PENDING } = settings.STRINGS;
