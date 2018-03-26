@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
-import { getRawFile, HG_HOST } from '../utils/hg';
+import { HG_HOST } from '../utils/hg';
 import * as FetchAPI from '../utils/fetch_data';
 
 export const arrayToMap = (csets) => {
@@ -179,19 +179,6 @@ export const csetWithCcovData = async (cset) => {
     console.log(e);
     console.log(`Failed to fetch data for ${cset.node}`);
     return cset;
-  }
-};
-
-export const rawFile = async (revision, path, repoPath) => {
-  try {
-    const res = await getRawFile(revision, path, repoPath);
-    if (res.status !== 200) {
-      throw new Error();
-    }
-    return (await res.text()).split('\n');
-  } catch (e) {
-    console.error(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
-    throw new Error('Failed to get source code from hg');
   }
 };
 
