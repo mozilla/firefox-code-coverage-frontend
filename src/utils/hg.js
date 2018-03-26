@@ -14,6 +14,19 @@ export const getJsonPushes = (repoPath, date = settings.HG_DAYS_AGO) => (
   fetch(`${HG_HOST}/${repoPath}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS)
 );
 
+export const rawFile = async (revision, path, repoPath) => {
+  try {
+    const res = await getRawFile(revision, path, repoPath);
+    if (res.status !== 200) {
+      throw new Error();
+    }
+    return (await res.text()).split('\n');
+  } catch (e) {
+    console.error(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
+    throw new Error('Failed to get source code from hg');
+  }
+};
+
 const ignoreChangeset = ({ desc, author }) => {
   if (
     (author.includes('ffxbld')) ||
@@ -61,15 +74,14 @@ const initializedChangeset = (cset, id, hidden) => ({
 const pushesToCsets = async (pushes, hidden) => {
   const filteredCsets = [];
   Object.keys(pushes).reverse().forEach((pushId) => {
-    // Re-order csets and filter out those we don't want
-    const csets = pushes[pushId].changesets.reverse().filter(c =>
-      !ignoreChangeset(c));
-
     // We only consider pushes that have more than 1 changeset
-    if (csets.length >= 1) {
-      csets.forEach((cset) => {
-        filteredCsets.push(initializedChangeset(cset, pushId, hidden));
-      });
+    if (pushes[pushId].changesets.length >= 1) {
+      // Re-order csets and filter out those we don't want
+      pushes[pushId].changesets.reverse()
+        .filter(c => !ignoreChangeset(c))
+        .forEach((cset) => {
+          filteredCsets.push(initializedChangeset(cset, pushId, hidden));
+        });
     }
   });
   return filteredCsets;

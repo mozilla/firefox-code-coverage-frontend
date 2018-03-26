@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import * as queryString from 'query-string';
 
-import { fileRevisionCoverageSummary, fileRevisionWithActiveData, rawFile } from '../utils/data';
+import { fileRevisionCoverageSummary, fileRevisionWithActiveData } from '../utils/data';
+import { rawFile } from '../utils/hg';
 import { TestsSideViewer, CoveragePercentageViewer } from '../components/fileViewer';
 import { HORIZONTAL_ELLIPSIS, HEAVY_CHECKMARK } from '../utils/symbol';
 import hash from '../utils/hash';
