@@ -13,7 +13,7 @@ module.exports = {
     [
       '@neutrinojs/airbnb',
       {
-        include: ['test'],
+        include: ['src', 'test'],
         eslint: {
           rules: {
             "no-console": "off",
