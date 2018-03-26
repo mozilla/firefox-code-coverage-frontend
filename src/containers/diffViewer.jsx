@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { orderBy } from 'lodash';
 
 import DiffViewer from '../components/diffViewer';
-import { csetWithCcovData } from '../utils/data';
+import { csetWithCcovData } from '../utils/coverage';
 import { getDiff } from '../utils/hg';
 import settings from '../settings';
 

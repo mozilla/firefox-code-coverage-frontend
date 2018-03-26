@@ -1,8 +1,8 @@
 import settings from '../settings';
-import { JSON_HEADERS, PLAIN_HEADERS } from './fetch_data';
+import { JSON_HEADERS, PLAIN_HEADERS } from './fetch';
 import { getFromCache, saveInCache } from './localCache';
 
-export const HG_HOST = 'https://hg.mozilla.org';
+const { HG_HOST } = settings;
 
 export const getDiff = (changeset, repoPath = 'mozilla-central') =>
   fetch(`${HG_HOST}/${repoPath}/raw-rev/${changeset}`, { PLAIN_HEADERS });
