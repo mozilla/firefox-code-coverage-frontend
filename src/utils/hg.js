@@ -1,6 +1,6 @@
-import * as localForage from 'localforage';
 import settings from '../settings';
 import { JSON_HEADERS, PLAIN_HEADERS } from './fetch_data';
+import { getFromCache, saveInCache } from './localCache';
 
 export const HG_HOST = 'https://hg.mozilla.org';
 
@@ -75,64 +75,34 @@ const pushesToCsets = async (pushes, hidden) => {
   return filteredCsets;
 };
 
-
-const isExpiredCache = (lastCaching) => {
-  const MSTOS = 1000;
-  const currentTime = (new Date()).getTime();
-  const secondsDifference = (currentTime - lastCaching) / MSTOS;
-  console.debug((currentTime - lastCaching) / MSTOS);
-  return (
-    (typeof lastCaching === 'number') &&
-    (secondsDifference > settings.CACHE_CONFIG.SECONDS_TO_EXPIRE))
-    || false;
-};
-
-const getCsetsFromCache = async (repoName, hidden) => {
+const getChangesets = async (repoName, hidden) => {
   let csets = [];
-  try {
-    const lastCaching = await localForage.getItem('cachedTime');
-    const cachedCsets = await localForage.getItem('changesets');
-    if (!isExpiredCache(lastCaching) && cachedCsets) {
-      console.debug(`Retrieved cached changesets. We have ${cachedCsets.length} changesets.`);
-      csets = cachedCsets;
-    } else {
-      console.debug('The cache has expired');
+  if (settings.CACHE_CONFIG.ENABLED) {
+    try {
+      csets = await getFromCache('changesets');
+    } catch (e) {
+      // We only log since we want to fetch the changesets from Hg
+      console.error(e);
     }
-  } catch (e) {
-    // We only log since we want to fetch the changesets from Hg
-    console.error(e);
-  }
 
-  if (csets.length === 0) {
-    console.debug('The local cache was not available.');
-    const pushes = await getJsonPushes(repoName);
-    const text = await (pushes).json();
-    csets = await pushesToCsets(text.pushes, hidden);
+    if (!csets || csets.length === 0) {
+      console.debug('The local cache was not available.');
+      const text = await (await getJsonPushes(repoName)).json();
+      csets = await pushesToCsets(text.pushes, hidden);
+    }
 
     try {
-      const currentTime = (new Date()).getTime();
-      console.debug('Storing on local cache.');
-      await localForage.setItem('changesets', csets);
-      await localForage.setItem('cachedTime', currentTime);
+      saveInCache('changesets', csets);
     } catch (e) {
       console.info('We have failed to store to the local cache');
       // We don't want to throw an error and abort code execution
       console.error(e);
     }
-  }
-
-  return csets;
-};
-
-export default async (repoName, hidden) => {
-  let csets = [];
-  if (settings.CACHE_CONFIG.ENABLED) {
-    console.debug('Local caching enabled');
-    csets = await getCsetsFromCache(repoName, hidden);
   } else {
-    console.debug('Local caching disabled');
     const text = await (await getJsonPushes(repoName)).json();
     csets = await pushesToCsets(text.pushes, hidden);
   }
   return csets;
 };
+
+export default getChangesets;

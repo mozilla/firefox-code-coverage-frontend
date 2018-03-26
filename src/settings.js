@@ -1,4 +1,4 @@
-export default {
+const settings = {
   BZ_URL: 'http://bugzilla.mozilla.org',
   CACHE_CONFIG: {
     SECONDS_TO_EXPIRE: 1 * 60 * 60, // 1 hour
@@ -29,3 +29,11 @@ export default {
   HG_DAYS_AGO: new Date((new Date()).getTime() - (2 * 24 * 60 * 60 * 1000))
     .toISOString().substring(0, 10),
 };
+
+if (settings.CACHE_CONFIG.ENABLED) {
+  console.debug('Local caching enabled');
+} else {
+  console.debug('Local caching disabled');
+}
+
+export default settings;
