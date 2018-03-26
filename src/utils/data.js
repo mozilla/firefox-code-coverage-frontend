@@ -154,7 +154,6 @@ export const csetWithCcovData = async (cset) => {
       if (coverageData.overall_cur) {
         // We have coverage data, thus, adding links to the coverage diff viewer
         // and unhiding the csets
-        newCset.linkify = true;
         newCset.hidden = false;
         newCset.coverage = {
           ...coverageData,

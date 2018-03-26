@@ -7,13 +7,14 @@ import App from './components/app';
 Raven.config('https://60b05bc4ef794a6c9e30e86e6a316083@sentry.io/300397').install();
 
 const root = document.getElementById('root');
-const load = () => render((
+const load = () => render(
   <AppContainer>
     <HashRouter>
       <App />
     </HashRouter>
-  </AppContainer>
-), root);
+  </AppContainer>,
+  root,
+);
 
 // This is needed for Hot Module Replacement
 if (module.hot) {

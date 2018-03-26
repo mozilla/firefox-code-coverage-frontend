@@ -17,6 +17,7 @@ export default {
       className: 'high-coverage',
     },
   },
+  FIREFOX_REPO: 'mozilla-central',
   GITHUB_RIBBON: 'https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png',
   MIN_REVISION_LENGTH: 5,
   REPO: 'https://github.com/mozilla/firefox-code-coverage-frontend',
