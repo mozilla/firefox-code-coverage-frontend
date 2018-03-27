@@ -229,10 +229,10 @@ const DiffLine = ({ change, fileDiffs, id }) => {
         const coverage = fileDiffs.lines[c.ln];
         if (coverage === 'Y') {
           rowClass = 'hit';
-        } else if (coverage === '?') {
-          rowClass = 'nolinechange';
-        } else {
+        } else if (coverage === 'N') {
           rowClass = 'miss';
+        } else {
+          rowClass = 'nolinechange';
         }
       } catch (e) {
         console.log(e);
