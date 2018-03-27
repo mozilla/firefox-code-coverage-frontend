@@ -1,7 +1,8 @@
+import BugzillaIconLink from './bugzillaIconLink';
 import { hgDiffUrl, pushlogUrl } from '../utils/hg';
 
 const CoverageMeta = ({
-  node, overallCoverage, summary,
+  changeset, node, overallCoverage, summary,
 }) => (
   <div className="coverage-meta">
     <div className="coverage-meta-row">
@@ -18,6 +19,14 @@ const CoverageMeta = ({
         <a href={hgDiffUrl(node)} target="_blank">Hg Diff</a>
       </span>
     </div>
+    {changeset &&
+      <div className="coverage-meta-row">
+        <div style={{ display: 'flex' }}>
+          <BugzillaIconLink description={changeset.desc} />
+          <span style={{ verticalAlign: 'top' }}>{changeset.desc}</span>
+        </div>
+      </div>
+    }
   </div>
 );
 

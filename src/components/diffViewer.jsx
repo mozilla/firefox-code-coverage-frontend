@@ -5,7 +5,7 @@ import CoverageFooter from './coverageFooter';
 import settings from '../settings';
 
 const DiffViewer = ({
-  appError, coverage, parsedDiff,
+  appError, changeset, coverage, parsedDiff,
 }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home">
@@ -15,6 +15,7 @@ const DiffViewer = ({
     {(coverage && coverage.summary !== settings.STRINGS.PENDING) && (
       <div>
         <CoverageMeta
+          changeset={changeset}
           node={coverage.node}
           overallCoverage={coverage.overall_cur}
           summary={coverage.summary}
