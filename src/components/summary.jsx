@@ -1,6 +1,6 @@
 import ChangesetInfo from './changesetInfo';
 
-const ChangesetsViewer = ({ changesets }) => (
+const Summary = ({ changesets, coverage }) => (
   <table className="changeset-viewer">
     <tbody>
       <tr>
@@ -13,10 +13,12 @@ const ChangesetsViewer = ({ changesets }) => (
         <ChangesetInfo
           key={node}
           changeset={changesets[node]}
+          summary={coverage[node].summary}
+          summaryClassName={coverage[node].summaryClassName}
         />
       ))}
     </tbody>
   </table>
 );
 
-export default ChangesetsViewer;
+export default Summary;

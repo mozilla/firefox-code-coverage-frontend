@@ -1,14 +1,14 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import ChangesetsViewerContainer from '../containers/summaryViewer';
+import AppDisclaimer from './disclaimer';
 import DiffViewerContainer from '../containers/diffViewer';
 import FileViewerContainer from '../containers/fileViewer';
+import GitHubRibbon from './githubRibbon';
+import SummaryContainer from '../containers/summary';
 import settings from '../settings';
 import { clearCache } from '../utils/localCache';
 import '../style.css';
-import AppDisclaimer from './disclaimer';
-import GitHubRibbon from './githubRibbon';
 
 // Main component
 export default () => (
@@ -20,7 +20,7 @@ export default () => (
         <div className="changesets-viewer">
           <GitHubRibbon />
           <AppDisclaimer />
-          <ChangesetsViewerContainer
+          <SummaryContainer
             repoName={settings.FIREFOX_REPO}
           />
         </div>
@@ -30,7 +30,7 @@ export default () => (
       path="/changeset/:id"
       render={({ match }) => (
         <DiffViewerContainer
-          changeset={match.params.id}
+          node={match.params.id}
           repoName={settings.FIREFOX_REPO}
         />
       )}

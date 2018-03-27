@@ -4,14 +4,22 @@ import { getFromCache, saveInCache } from './localCache';
 
 const { HG_HOST } = settings;
 
-export const getDiff = (changeset, repoPath = 'mozilla-central') =>
-  fetch(`${HG_HOST}/${repoPath}/raw-rev/${changeset}`, { PLAIN_HEADERS });
+export const getDiff = (node, repoPath = 'mozilla-central') =>
+  fetch(`${HG_HOST}/${repoPath}/raw-rev/${node}`, { PLAIN_HEADERS });
 
-export const getRawFile = (revision, path, repoPath) =>
-  fetch(`${HG_HOST}/${repoPath}/raw-file/${revision}/${path}`, { PLAIN_HEADERS });
+export const getRawFile = (node, path, repoPath) =>
+  fetch(`${HG_HOST}/${repoPath}/raw-file/${node}/${path}`, { PLAIN_HEADERS });
 
 export const getJsonPushes = (repoPath, date = settings.HG_DAYS_AGO) => (
   fetch(`${HG_HOST}/${repoPath}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS)
+);
+
+export const hgDiffUrl = (repoName, node) => (
+  `${HG_HOST}/${repoName}/rev/${node}`
+);
+
+export const pushlogUrl = (repoName, node) => (
+  `${HG_HOST}/${repoName}/pushloghtml?changeset=${node}`
 );
 
 export const rawFile = async (revision, path, repoPath) => {
@@ -58,10 +66,9 @@ const authorInfo = (author) => {
   return { name, email };
 };
 
-const initializedChangeset = (cset, id, hidden) => ({
-  pushId: id,
-  hidden,
+const initializedChangeset = (cset, id) => ({
   bzUrl: bzUrl(cset.desc),
+  pushId: id,
   authorInfo: authorInfo(cset.author),
   ...cset,
 });
@@ -71,7 +78,7 @@ const initializedChangeset = (cset, id, hidden) => ({
 // Some changesets will be ignored
 // XXX: We return an array to keep chronological order
 //      A better approach would not rely on that
-const pushesToCsets = async (pushes, hidden) => {
+const pushesToCsets = async (pushes) => {
   const filteredCsets = [];
   Object.keys(pushes).reverse().forEach((pushId) => {
     // We only consider pushes that have more than 1 changeset
@@ -80,14 +87,14 @@ const pushesToCsets = async (pushes, hidden) => {
       pushes[pushId].changesets.reverse()
         .filter(c => !ignoreChangeset(c))
         .forEach((cset) => {
-          filteredCsets.push(initializedChangeset(cset, pushId, hidden));
+          filteredCsets.push(initializedChangeset(cset, pushId));
         });
     }
   });
   return filteredCsets;
 };
 
-const getChangesets = async (repoName, hidden) => {
+const getChangesets = async (repoName) => {
   let csets = [];
   if (settings.CACHE_CONFIG.ENABLED) {
     try {
@@ -100,7 +107,7 @@ const getChangesets = async (repoName, hidden) => {
     if (!csets || csets.length === 0) {
       console.debug('The local cache was not available.');
       const text = await (await getJsonPushes(repoName)).json();
-      csets = await pushesToCsets(text.pushes, hidden);
+      csets = await pushesToCsets(text.pushes);
     }
 
     try {
@@ -112,7 +119,7 @@ const getChangesets = async (repoName, hidden) => {
     }
   } else {
     const text = await (await getJsonPushes(repoName)).json();
-    csets = await pushesToCsets(text.pushes, hidden);
+    csets = await pushesToCsets(text.pushes);
   }
   return csets;
 };
