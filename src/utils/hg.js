@@ -33,10 +33,24 @@ const bzUrl = (description) => {
     `${settings.BZ_URL}/show_bug.cgi?id=${bzUrlMatch[1]}`) : null;
 };
 
+const authorInfo = (author) => {
+  const nameRegex = /([^<]*)/i;
+  const nameMatch = nameRegex.exec(author);
+  const name = nameMatch ? nameMatch[1] : null;
+
+  const emailRegex = /[<]([^>]*@[^>]*)[>]/i;
+  const emailMatch = emailRegex.exec(author);
+  const email = emailMatch ? emailMatch[1] : null;
+
+  return {name, email}
+};
+
+
 const initializedChangeset = (cset, id, hidden) => ({
   pushId: id,
   hidden,
   bzUrl: bzUrl(cset.desc),
+  authorInfo: authorInfo(cset.author),
   linkify: false,
   ...cset,
 });

@@ -124,6 +124,9 @@ pre { margin: 0; }
 	margin: 0em 0em 1em;
 	padding: 1em;
 }
+.bzIcon {
+	margin-right: 5px;
+}
 .polling-status {
 	/* Lemon yellow */
 	background-color: #fff44f; /* Fallback */
@@ -134,9 +137,35 @@ pre { margin: 0; }
 	padding: 1em;
 	text-align: center;
 }
+tr.changeset td{
+	padding-right: 5px;
+}
 .changeset-viewer {
 	border-spacing: 0px;
 	margin: auto;
+}
+.changeset-author {
+	display:flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+.changeset-eIcon-align {
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
+.eIcon {
+	height: 16px;
+	width: 16px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+.icon-substitute {
+	opacity: 0;
+	height: 16px;
+	width: 16px;
+	margin-right: 5px;
+	vertical-align: middle;
 }
 .error-message {
 	color:#ff0000
@@ -155,7 +184,7 @@ pre { margin: 0; }
 }
 .changeset-description {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
 }
 .changeset-summary {
 	text-align: center;
