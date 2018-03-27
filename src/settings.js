@@ -21,7 +21,7 @@ const settings = {
       className: 'high-coverage',
     },
   },
-  FIREFOX_REPO: 'mozilla-central',
+  REPO_NAME: 'mozilla-central',
   GH_GECKO_DEV: 'https://github.com/mozilla/gecko-dev',
   GITHUB_RIBBON: 'https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png',
   HG_HOST: 'https://hg.mozilla.org',
