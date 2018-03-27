@@ -2,18 +2,21 @@ import { uniq } from 'lodash';
 import settings from '../settings';
 import { JSON_HEADERS } from './fetch';
 
-const { ACTIVE_DATA, CCOV_BACKEND, HG_HOST } = settings;
+const {
+  ACTIVE_DATA, BACKEND, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
+} = settings;
+
+export const githubUrl = gitCommit => `${GH_GECKO_DEV}/commit/${gitCommit}`;
+export const codecovUrl = gitCommit => (`${CODECOV_GECKO_DEV}/commit/${gitCommit}`);
+export const ccovBackendUrl = node => (`${BACKEND}/coverage/changeset/${node}`);
 
 const jsonPost = (url, body) =>
   fetch(url, { headers: JSON_HEADERS, method: 'POST', body: JSON.stringify(body) });
 
-export const getChangesetCoverage = changeset =>
-  fetch(`${CCOV_BACKEND}/coverage/changeset/${changeset}`, { JSON_HEADERS });
+const queryChangesetCoverage = node =>
+  fetch(`${CCOV_BACKEND}/coverage/changeset/${node}`, { JSON_HEADERS });
 
-export const getChangesetCoverageSummary = changeset =>
-  fetch(`${CCOV_BACKEND}/coverage/changeset_summary/${changeset}`, { JSON_HEADERS });
-
-export const queryActiveData = body =>
+const queryActiveData = body =>
   jsonPost(`${ACTIVE_DATA}/query`, body);
 
 const coverageSummary = (coverage) => {
@@ -130,57 +133,43 @@ export const transformCoverageData = (cov) => {
       percent: fileCoveragePercent(lines),
     };
   });
+  // Some extra data for the UI
+  const result = coverageSummaryText(newCov);
+  newCov.summary = result.text;
+  newCov.summaryClassName = result.className;
   return newCov;
 };
 
-export const csetWithCcovData = async (cset) => {
-  if (!cset.node) {
-    throw Error(`No node for cset: ${cset}`);
+export const getChangesetCoverage = async (node) => {
+  if (!node) {
+    throw Error(`No node for cset: ${node}`);
   }
-  const newCset = Object.assign({}, cset);
-  // XXX: fetch does not support timeouts. I would like to add a 5 second
-  // timeout rather than wait Heroku's default 30 second timeout. Specially
-  // since we're doing sequential fetches.
-  // XXX: Wrap fetch() in a Promise; add a setTimeout and call reject() if
-  // it goes off, otherwise resolve with the result of the fetch()
+  let coverage;
   try {
-    const res = await getChangesetCoverage(cset.node);
+    const res = await queryChangesetCoverage(node);
     if (res.status === 202) {
       // This is the only case when we poll again
-      newCset.summary = settings.STRINGS.PENDING;
+      coverage = { summary: settings.STRINGS.PENDING };
     } else if (res.status === 200) {
-      const coverageData = transformCoverageData(await res.json());
-
-      // XXX: Document in which cases we would not have overall_cur
-      if (coverageData.overall_cur) {
-        // We have coverage data, thus, adding links to the coverage diff viewer
-        // and unhiding the csets
-        newCset.hidden = false;
-        newCset.coverage = {
-          ...coverageData,
-          hgRev: `${HG_HOST}/mozilla-central/rev/${cset.node}`,
-          ccovBackend: `${CCOV_BACKEND}/coverage/changeset/${cset.node}`,
-          pushlog: `${HG_HOST}/pushloghtml?changeset=${coverageData.build_changeset}`,
-          codecov: `https://codecov.io/gh/marco-c/gecko-dev/commit/${coverageData.git_build_changeset}`,
-          gh: `https://github.com/mozilla/gecko-dev/commit/${coverageData.git_build_changeset}`,
-        };
-        const result = coverageSummaryText(coverageData);
-        newCset.summary = result.text;
-        newCset.summaryClassName = result.className;
-      } else {
-        console.error(`No overall_cur: ${coverageData}`);
-      }
+      coverage = transformCoverageData(await res.json());
     } else if (res.status === 500) {
-      newCset.summary = res.statusText;
+      coverage = { summary: res.statusText };
     } else {
-      console.log(`Unexpected HTTP code (${res.status}) for ${newCset}`);
+      console.log(`Unexpected HTTP code (${res.status}) for ${coverage}`);
     }
-    return newCset;
+    coverage.node = node;
   } catch (e) {
     console.log(e);
-    console.log(`Failed to fetch data for ${cset.node}`);
-    return cset;
+    console.log(`Failed to fetch data for ${node}`);
   }
+  return coverage;
+};
+
+export const getCoverage = async (changesets) => {
+  // XXX: Add local caching in this function
+  const coverage = Promise.all(changesets.map(async cset =>
+    getChangesetCoverage(cset.node)));
+  return coverage;
 };
 
 export const fileRevisionWithActiveData = async (revision, path, repoPath) => {

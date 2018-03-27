@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
-import SummaryViewer from '../components/summaryViewer';
+import Summary from '../components/summary';
 import settings from '../settings';
 import { arrayToMap, mapToArray } from '../utils/data';
-import { csetWithCcovData } from '../utils/coverage';
+import { getCoverage } from '../utils/coverage';
 import getChangesets from '../utils/hg';
 
-const { LOADING, INTERNAL_ERROR, PENDING } = settings.STRINGS;
+const { INTERNAL_ERROR, LOADING, PENDING } = settings.STRINGS;
 
 const PollingStatus = ({ pollingEnabled }) => (
   (pollingEnabled) ? (
@@ -17,11 +17,12 @@ const PollingStatus = ({ pollingEnabled }) => (
     </div>) : (null)
 );
 
-export default class ChangesetsViewerContainer extends Component {
+export default class SummaryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      changesets: {},
+      changesets: [],
+      coverage: [],
       pollingEnabled: false, // We don't start polling until we're ready
       errorMessage: '',
       hideCsetsWithNoCoverage: true,
@@ -45,28 +46,29 @@ export default class ChangesetsViewerContainer extends Component {
       // 4) Inspect pushes from oldest to newest
       //    FAIL: If there are no pushes with some coverage (Show message)
       // 5) For every push with coverage data go and fetch each cset
-      const csetsNoCoverage = await getChangesets(repoName, hideCsetsWithNoCoverage);
-      const csets = await Promise.all(csetsNoCoverage.map(async cset =>
-        csetWithCcovData(cset)));
+      const changesets = await getChangesets(repoName, hideCsetsWithNoCoverage);
+      const coverage = await getCoverage(changesets);
       const summary = { pending: 0, error: 0 };
-      csets.forEach((cset) => {
+      changesets.forEach((cset) => {
         if (cset.summary === PENDING) {
           summary.pending += 1;
         } else if (cset.summary === INTERNAL_ERROR) {
           summary.error += 1;
         }
       });
-      console.log(`We have ${csets.length} changesets.`);
-      console.log(`pending: ${summary.pending}`);
-      console.log(`errors: ${summary.error}`);
+      console.debug(`We have ${changesets.length} changesets.`);
+      console.debug(`pending: ${summary.pending}`);
+      console.debug(`errors: ${summary.error}`);
       this.setState({
-        changesets: arrayToMap(csets),
+        changesets,
+        coverage,
         pollingEnabled: summary.pending > 0,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       this.setState({
-        changesets: {},
+        changesets: [],
+        coverage: [],
         pollingEnabled: false,
         errorMessage: 'We have failed to fetch coverage data.',
       });
@@ -74,23 +76,22 @@ export default class ChangesetsViewerContainer extends Component {
   }
 
   // We poll on an interval for coverage for csets without it
-  async pollPending(changesets) {
-    console.log('Determine if we need to poll csets w/o coverage data...');
+  async pollPending(coverage) {
+    console.debug('We are going to poll again for coverage data.');
     try {
-      let newCsets = mapToArray(changesets);
-      newCsets = await Promise.all(newCsets.map((c) => {
-        if (c.summary !== PENDING) {
-          return c;
-        }
-        return csetWithCcovData(c);
-      }));
-      const count = newCsets.filter(c => c.summary === PENDING).length;
-      const csetsMap = arrayToMap(newCsets);
+      // Only poll changesets that are still pending
+      const partialCoverage = await getCoverage(mapToArray(coverage)
+        .filter(cov => cov.summary === PENDING));
+      const count = partialCoverage.filter(cov => cov.summary === PENDING).length;
+      const newCoverage = {
+        ...coverage,
+        ...arrayToMap(partialCoverage),
+      };
       if (count === 0) {
-        console.log('No more polling required.');
-        this.setState({ changesets: csetsMap, pollingEnabled: false });
+        console.debug('No more polling required.');
+        this.setState({ coverage: newCoverage, pollingEnabled: false });
       } else {
-        this.setState({ changesets: csetsMap });
+        this.setState({ coverage: newCoverage });
       }
     } catch (e) {
       this.setState({ pollingEnabled: false });
@@ -99,13 +100,20 @@ export default class ChangesetsViewerContainer extends Component {
 
   render() {
     const {
-      changesets, pollingEnabled, errorMessage, timeout,
+      changesets, coverage, pollingEnabled, errorMessage, timeout,
     } = this.state;
+    const coverageMap = arrayToMap(coverage);
 
     if (errorMessage) {
       return (<div className="error-message">{errorMessage}</div>);
     }
-    const viewableCsets = mapToArray(changesets).filter(c => c.hidden === false);
+
+    const viewableCsetsMap = {};
+    changesets.forEach((cset) => {
+      if (coverageMap[cset.node].summary !== PENDING) {
+        viewableCsetsMap[cset.node] = cset;
+      }
+    });
 
     return (
       <div>
@@ -114,23 +122,26 @@ export default class ChangesetsViewerContainer extends Component {
             <ReactInterval
               timeout={timeout}
               enabled={pollingEnabled}
-              callback={() => this.pollPending(changesets)}
+              callback={() => this.pollPending(coverage)}
             />
             <PollingStatus
               pollingEnabled={pollingEnabled}
             />
           </div>
         )}
-        {viewableCsets.length > 0 &&
-          <SummaryViewer changesets={viewableCsets} />
+        {Object.keys(viewableCsetsMap).length > 0 &&
+          <Summary
+            changesets={viewableCsetsMap}
+            coverage={coverageMap}
+          />
         }
-        {(!pollingEnabled && Object.keys(changesets).length > 0) &&
+        {(!pollingEnabled && Object.keys(viewableCsetsMap) === 0) &&
           <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
             <span>There is currently no coverage data to show. Please </span>
             <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
           </p>
         }
-        {(Object.keys(changesets).length === 0) &&
+        {Object.keys(changesets).length === 0 &&
           (<h3 className="loading">{LOADING}</h3>)
         }
       </div>

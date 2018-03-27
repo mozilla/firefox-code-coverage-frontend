@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { orderBy } from 'lodash';
 
 import DiffViewer from '../components/diffViewer';
-import { csetWithCcovData } from '../utils/coverage';
+import { getChangesetCoverage } from '../utils/coverage';
 import { getDiff } from '../utils/hg';
 import settings from '../settings';
 
@@ -30,27 +30,25 @@ export default class DiffViewerContainer extends Component {
     super(props);
     this.state = {
       appError: undefined,
-      csetMeta: {
-        coverage: undefined,
-      },
+      coverage: undefined,
       parsedDiff: [],
     };
   }
 
   componentDidMount() {
-    const { changeset } = this.props;
-    Promise.all([this.fetchSetCoverageData(changeset), this.fetchSetDiff(changeset)]);
+    const { node } = this.props;
+    Promise.all([this.fetchSetCoverageData(node), this.fetchSetDiff(node)]);
   }
 
-  async fetchSetCoverageData(changeset) {
+  async fetchSetCoverageData(node) {
     try {
-      const csetMeta = await csetWithCcovData({ node: changeset });
-      if (csetMeta.summary === settings.STRINGS.PENDING) {
+      const coverage = await getChangesetCoverage(node);
+      if (coverage.summary === settings.STRINGS.PENDING) {
         this.setState({
           appError: 'The coverage data is still pending. Try again later.',
         });
       }
-      this.setState({ csetMeta });
+      this.setState({ coverage });
     } catch (error) {
       console.error(error);
       this.setState({
@@ -59,9 +57,9 @@ export default class DiffViewerContainer extends Component {
     }
   }
 
-  async fetchSetDiff(changeset) {
+  async fetchSetDiff(node) {
     try {
-      const text = await (await getDiff(changeset)).text();
+      const text = await (await getDiff(node)).text();
       this.setState({ parsedDiff: parse(text) });
     } catch (e) {
       if ((e instanceof TypeError) && (e.message === 'Failed to fetch')) {
@@ -80,14 +78,15 @@ export default class DiffViewerContainer extends Component {
   }
 
   render() {
-    const { appError, csetMeta, parsedDiff } = this.state;
-    const sortedDiff = sortByPercent(parsedDiff, csetMeta.coverage);
+    const { appError, coverage, parsedDiff } = this.state;
+    const sortedDiff = sortByPercent(parsedDiff, coverage);
 
     return (
       <DiffViewer
-        {...csetMeta}
         appError={appError}
+        coverage={coverage}
         parsedDiff={sortedDiff}
+        repoName={this.props.repoName}
       />
     );
   }

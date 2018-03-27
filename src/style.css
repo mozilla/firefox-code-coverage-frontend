@@ -180,9 +180,6 @@ tr.changeset td{
 }
 
 /* Changesets */
-.hidden-changeset {
-	display: none
-}
 .changeset:hover td {
 	cursor: pointer;
 	background-color: #cce6ff;
