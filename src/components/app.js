@@ -4,10 +4,11 @@ import { Route } from 'react-router-dom';
 import ChangesetsViewerContainer from './summaryviewer';
 import DiffViewerContainer from './diffviewer';
 import FileViewerContainer from './fileviewer';
+import settings from '../settings';
+import clearLocalCache from '../utils/localCache';
 import '../style.css';
 
-const REPO = 'https://github.com/mozilla/firefox-code-coverage-frontend';
-const GITHUB_RIBBON = 'https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png';
+const { REPO, GITHUB_RIBBON } = settings;
 
 const GitHubRibbon = () => (
   <div className="github-ribbon">
@@ -72,6 +73,15 @@ export default class App extends Component {
         <Route
           path="/file"
           component={FileViewerContainer}
+        />
+        <Route
+          path="/clear-cache"
+          render={() => {
+            if (clearLocalCache()) {
+              return (<p>The local database has been cleared.</p>);
+            }
+            return (<p>Failed to clear the local DB.</p>);
+          }}
         />
       </div>
     );

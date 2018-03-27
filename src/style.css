@@ -140,11 +140,6 @@ pre { margin: 0; }
 tr.changeset td{
 	padding-right: 5px;
 }
-.changeset-description {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-}
 .changeset-viewer {
 	border-spacing: 0px;
 	margin: auto;
@@ -189,7 +184,7 @@ tr.changeset td{
 }
 .changeset-description {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
 }
 .changeset-summary {
 	text-align: center;

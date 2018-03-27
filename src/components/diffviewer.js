@@ -4,8 +4,8 @@ import { orderBy } from 'lodash';
 
 import { csetWithCcovData } from '../utils/data';
 import hash from '../utils/hash';
-import * as FetchAPI from '../utils/fetch_data';
-import { PENDING } from '../settings';
+import { getDiff } from '../utils/hg';
+import settings from '../settings';
 
 const parse = require('parse-diff');
 
@@ -33,7 +33,7 @@ export default class DiffViewerContainer extends Component {
   async fetchSetCoverageData(changeset) {
     try {
       const csetMeta = await csetWithCcovData({ node: changeset });
-      if (csetMeta.summary === PENDING) {
+      if (csetMeta.summary === settings.STRINGS.PENDING) {
         this.setState({
           appError: 'The coverage data is still pending. Try again later.',
         });
@@ -49,7 +49,7 @@ export default class DiffViewerContainer extends Component {
 
   async fetchSetDiff(changeset) {
     try {
-      const text = await (await FetchAPI.getDiff(changeset)).text();
+      const text = await (await getDiff(changeset)).text();
       this.setState({ parsedDiff: parse(text) });
     } catch (e) {
       if ((e instanceof TypeError) && (e.message === 'Failed to fetch')) {
@@ -100,7 +100,7 @@ const DiffViewer = ({
       <Link to="/" href="/">Return to main page</Link>
     </div>
     <span className="error_message">{appError}</span>
-    {(coverage && summary !== PENDING) && (
+    {(coverage && summary !== settings.STRINGS.PENDING) && (
       <div>
         <CoverageMeta
           coverage={coverage}

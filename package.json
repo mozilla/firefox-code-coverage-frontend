@@ -12,6 +12,7 @@
   "scripts": {
     "build": "neutrino build",
     "start": "neutrino start",
+    "test": "neutrino test",
     "lint": "neutrino lint",
     "precommit": "lint-staged",
     "heroku-postbuild": "neutrino build"
@@ -38,6 +39,7 @@
   },
   "devDependencies": {
     "@neutrinojs/airbnb": "^8.1.1",
+    "@neutrinojs/mocha": "^8.1.2",
     "@neutrinojs/react": "^8.1.1",
     "babel-cli": "^6.26.0",
     "babel-preset-flow": "^6.23.0",
