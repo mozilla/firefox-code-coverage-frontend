@@ -3,11 +3,10 @@ import { orderBy } from 'lodash';
 
 import DiffViewer from '../components/diffViewer';
 import { getChangesetCoverage } from '../utils/coverage';
-import { getDiff } from '../utils/hg';
+import { getDiff, getChangesetMeta } from '../utils/hg';
 import settings from '../settings';
 
 const parse = require('parse-diff');
-
 
 // Adds a new percent property to each file in parsedDiff that represents
 // the proportion of uncovered lines.
@@ -37,7 +36,15 @@ export default class DiffViewerContainer extends Component {
 
   componentDidMount() {
     const { node } = this.props;
-    Promise.all([this.fetchSetCoverageData(node), this.fetchSetDiff(node)]);
+    Promise.all([
+      this.fetchSetChangesetMeta(node),
+      this.fetchSetCoverageData(node),
+      this.fetchSetDiff(node)]);
+  }
+
+  async fetchSetChangesetMeta(node) {
+    const changeset = await (await getChangesetMeta(node)).json();
+    this.setState({ changeset });
   }
 
   async fetchSetCoverageData(node) {
@@ -78,12 +85,15 @@ export default class DiffViewerContainer extends Component {
   }
 
   render() {
-    const { appError, coverage, parsedDiff } = this.state;
+    const {
+      appError, changeset, coverage, parsedDiff,
+    } = this.state;
     const sortedDiff = sortByPercent(parsedDiff, coverage);
 
     return (
       <DiffViewer
         appError={appError}
+        changeset={changeset}
         coverage={coverage}
         parsedDiff={sortedDiff}
       />

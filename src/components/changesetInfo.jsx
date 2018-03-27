@@ -1,4 +1,4 @@
-import ChangesetDescription from './changesetDescription';
+import BugzillaIconLink from './bugzillaIconLink';
 import { hgDiffUrl } from '../utils/hg';
 
 import eIcon from '../static/noun_205162_cc.png';
@@ -14,7 +14,7 @@ const handleClick = (e, node) => {
 
 const ChangesetInfo = ({ changeset, summary, summaryClassName }) => {
   const {
-    authorInfo, desc, bzUrl, node,
+    authorInfo, desc, node,
   } = changeset;
 
   return (
@@ -31,7 +31,10 @@ const ChangesetInfo = ({ changeset, summary, summaryClassName }) => {
         <a href={hgDiffUrl(node)} target="_blank">{node.substring(0, 12)}</a>
       </td>
       <td>
-        <ChangesetDescription description={desc} bzUrl={bzUrl} />
+        <div className="changeset-description">
+          <BugzillaIconLink description={desc} />
+          {desc.substring(0, 40).padEnd(40)}
+        </div>
       </td>
       <td className={`changeset-summary ${summaryClassName}`}>{summary}</td>
     </tr>

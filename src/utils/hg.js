@@ -10,6 +10,9 @@ export const getDiff = (node, repoName = REPO_NAME) =>
 export const getRawFile = (node, filePath, repoName = REPO_NAME) =>
   fetch(`${HG_HOST}/${repoName}/raw-file/${node}/${filePath}`, { PLAIN_HEADERS });
 
+export const getChangesetMeta = async (node, repoPath = REPO_NAME) =>
+  fetch(`${HG_HOST}/${repoPath}/json-rev/${node}`, JSON_HEADERS);
+
 export const getJsonPushes = (repoName = REPO_NAME, date = settings.HG_DAYS_AGO) =>
   fetch(`${HG_HOST}/${repoName}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS);
 
@@ -44,7 +47,7 @@ const ignoreChangeset = ({ desc, author }) => {
   return false;
 };
 
-const bzUrl = (description) => {
+export const bzUrl = (description) => {
   const bzUrlRegex = /^bug\s*(\d*)/i;
   const bzUrlMatch = bzUrlRegex.exec(description);
   return bzUrlMatch ? (
@@ -64,7 +67,6 @@ const authorInfo = (author) => {
 };
 
 const initializedChangeset = (cset, id) => ({
-  bzUrl: bzUrl(cset.desc),
   pushId: id,
   authorInfo: authorInfo(cset.author),
   ...cset,
