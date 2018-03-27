@@ -86,7 +86,6 @@ export default class DiffViewerContainer extends Component {
         appError={appError}
         coverage={coverage}
         parsedDiff={sortedDiff}
-        repoName={this.props.repoName}
       />
     );
   }

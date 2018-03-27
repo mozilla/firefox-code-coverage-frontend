@@ -25,16 +25,15 @@ export default class SummaryContainer extends Component {
       coverage: [],
       pollingEnabled: false, // We don't start polling until we're ready
       errorMessage: '',
-      hideCsetsWithNoCoverage: true,
       timeout: 30000, // How often we poll for csets w/o coverage status
     };
   }
 
   async componentDidMount() {
-    this.fetchChangesets(this.props.repoName, this.state.hideCsetsWithNoCoverage);
+    this.fetchChangesets();
   }
 
-  async fetchChangesets(repoName, hideCsetsWithNoCoverage) {
+  async fetchChangesets() {
     try {
       // XXX: With this refactor we're only storing changesets w/o coverage data
       //      This means that the cache is only as useful as saving all the Hg fetches
@@ -46,7 +45,7 @@ export default class SummaryContainer extends Component {
       // 4) Inspect pushes from oldest to newest
       //    FAIL: If there are no pushes with some coverage (Show message)
       // 5) For every push with coverage data go and fetch each cset
-      const changesets = await getChangesets(repoName, hideCsetsWithNoCoverage);
+      const changesets = await getChangesets();
       const coverage = await getCoverage(changesets);
       const summary = { pending: 0, error: 0 };
       changesets.forEach((cset) => {

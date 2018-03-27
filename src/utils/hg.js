@@ -2,35 +2,32 @@ import settings from '../settings';
 import { JSON_HEADERS, PLAIN_HEADERS } from './fetch';
 import { getFromCache, saveInCache } from './localCache';
 
-const { HG_HOST } = settings;
+const { REPO_NAME, HG_HOST } = settings;
 
-export const getDiff = (node, repoPath = 'mozilla-central') =>
-  fetch(`${HG_HOST}/${repoPath}/raw-rev/${node}`, { PLAIN_HEADERS });
+export const getDiff = (node, repoName = REPO_NAME) =>
+  fetch(`${HG_HOST}/${repoName}/raw-rev/${node}`, { PLAIN_HEADERS });
 
-export const getRawFile = (node, path, repoPath) =>
-  fetch(`${HG_HOST}/${repoPath}/raw-file/${node}/${path}`, { PLAIN_HEADERS });
+export const getRawFile = (node, filePath, repoName = REPO_NAME) =>
+  fetch(`${HG_HOST}/${repoName}/raw-file/${node}/${filePath}`, { PLAIN_HEADERS });
 
-export const getJsonPushes = (repoPath, date = settings.HG_DAYS_AGO) => (
-  fetch(`${HG_HOST}/${repoPath}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS)
-);
+export const getJsonPushes = (repoName = REPO_NAME, date = settings.HG_DAYS_AGO) =>
+  fetch(`${HG_HOST}/${repoName}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS);
 
-export const hgDiffUrl = (repoName, node) => (
-  `${HG_HOST}/${repoName}/rev/${node}`
-);
+export const hgDiffUrl = (node, repoName = REPO_NAME) =>
+  `${HG_HOST}/${repoName}/rev/${node}`;
 
-export const pushlogUrl = (repoName, node) => (
-  `${HG_HOST}/${repoName}/pushloghtml?changeset=${node}`
-);
+export const pushlogUrl = (node, repoName = REPO_NAME) =>
+  `${HG_HOST}/${repoName}/pushloghtml?changeset=${node}`;
 
-export const rawFile = async (revision, path, repoPath) => {
+export const rawFile = async (node, filePath, repoName = REPO_NAME) => {
   try {
-    const res = await getRawFile(revision, path, repoPath);
+    const res = await getRawFile(node, filePath, repoName);
     if (res.status !== 200) {
       throw new Error();
     }
     return (await res.text()).split('\n');
   } catch (e) {
-    console.error(`Failed to fetch source for revision: ${revision}, path: ${path}\n${e}`);
+    console.error(`Failed to fetch source for revision: ${node}, filePath: ${filePath}\n${e}`);
     throw new Error('Failed to get source code from hg');
   }
 };
@@ -94,7 +91,7 @@ const pushesToCsets = async (pushes) => {
   return filteredCsets;
 };
 
-const getChangesets = async (repoName) => {
+const getChangesets = async (repoName = REPO_NAME) => {
   let csets = [];
   if (settings.CACHE_CONFIG.ENABLED) {
     try {

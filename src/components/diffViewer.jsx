@@ -5,7 +5,7 @@ import CoverageFooter from './coverageFooter';
 import settings from '../settings';
 
 const DiffViewer = ({
-  appError, coverage, parsedDiff, repoName,
+  appError, coverage, parsedDiff,
 }) => (
   <div className="codecoverage-diffviewer">
     <div className="return-home">
@@ -17,7 +17,6 @@ const DiffViewer = ({
         <CoverageMeta
           node={coverage.node}
           overallCoverage={coverage.overall_cur}
-          repoName={repoName}
           summary={coverage.summary}
         />
         {parsedDiff.map((diffBlock) => {

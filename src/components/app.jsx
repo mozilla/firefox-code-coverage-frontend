@@ -6,7 +6,6 @@ import DiffViewerContainer from '../containers/diffViewer';
 import FileViewerContainer from '../containers/fileViewer';
 import GitHubRibbon from './githubRibbon';
 import SummaryContainer from '../containers/summary';
-import settings from '../settings';
 import { clearCache } from '../utils/localCache';
 import '../style.css';
 
@@ -20,19 +19,14 @@ export default () => (
         <div className="changesets-viewer">
           <GitHubRibbon />
           <AppDisclaimer />
-          <SummaryContainer
-            repoName={settings.FIREFOX_REPO}
-          />
+          <SummaryContainer />
         </div>
       )}
     />
     <Route
       path="/changeset/:id"
       render={({ match }) => (
-        <DiffViewerContainer
-          node={match.params.id}
-          repoName={settings.FIREFOX_REPO}
-        />
+        <DiffViewerContainer node={match.params.id} />
       )}
     />
     <Route
