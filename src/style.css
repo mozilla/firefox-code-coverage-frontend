@@ -183,7 +183,7 @@ tr.changeset td{
 	opacity: 0;
 	height: 16px;
 	width: 16px;
-	margin-right: 5px;
+	margin-right: 1em;
 	vertical-align: middle;
 }
 .changeset-summary {
