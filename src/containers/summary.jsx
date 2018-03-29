@@ -109,7 +109,7 @@ export default class SummaryContainer extends Component {
 
     const viewableCsetsMap = {};
     changesets.forEach((cset) => {
-      if (coverageMap[cset.node].summary !== PENDING) {
+      if (coverageMap[cset.node].show) {
         viewableCsetsMap[cset.node] = cset;
       }
     });
