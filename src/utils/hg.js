@@ -1,6 +1,6 @@
 import settings from '../settings';
 import { JSON_HEADERS, PLAIN_HEADERS } from './fetch';
-import { getFromCache, saveInCache } from './localCache';
+import { queryCacheWithFallback } from './localCache';
 
 const { REPO_NAME, HG_HOST } = settings;
 
@@ -94,33 +94,11 @@ const pushesToCsets = async (pushes) => {
 };
 
 const getChangesets = async (repoName = REPO_NAME) => {
-  let csets = [];
-  if (settings.CACHE_CONFIG.ENABLED) {
-    try {
-      csets = await getFromCache('changesets');
-    } catch (e) {
-      // We only log since we want to fetch the changesets from Hg
-      console.error(e);
-    }
-
-    if (!csets || csets.length === 0) {
-      console.debug('The local cache was not available.');
-      const text = await (await getJsonPushes(repoName)).json();
-      csets = await pushesToCsets(text.pushes);
-    }
-
-    try {
-      saveInCache('changesets', csets);
-    } catch (e) {
-      console.info('We have failed to store to the local cache');
-      // We don't want to throw an error and abort code execution
-      console.error(e);
-    }
-  } else {
+  const fallback = async () => {
     const text = await (await getJsonPushes(repoName)).json();
-    csets = await pushesToCsets(text.pushes);
-  }
-  return csets;
+    return pushesToCsets(text.pushes);
+  };
+  return queryCacheWithFallback('changesets', fallback);
 };
 
 export default getChangesets;
