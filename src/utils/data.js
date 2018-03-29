@@ -1,4 +1,4 @@
-export const arrayToMap = (csets) => {
+export const arrayToMap = (csets = []) => {
   const newCsets = {};
   csets.forEach((cset) => {
     newCsets[cset.node] = cset;
@@ -6,6 +6,6 @@ export const arrayToMap = (csets) => {
   return newCsets;
 };
 
-export const mapToArray = csets => (
+export const mapToArray = (csets = {}) => (
   Object.keys(csets).map(node => csets[node])
 );

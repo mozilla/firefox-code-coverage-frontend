@@ -1,6 +1,7 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
 import { JSON_HEADERS } from './fetch';
+import { queryCacheWithFallback } from './localCache';
 
 const {
   ACTIVE_DATA, BACKEND, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
@@ -167,10 +168,11 @@ export const getChangesetCoverage = async (node) => {
 };
 
 export const getCoverage = async (changesets) => {
-  // XXX: Add local caching in this function
-  const coverage = Promise.all(changesets.map(async cset =>
-    getChangesetCoverage(cset.node)));
-  return coverage;
+  const fallback = () => (
+    Promise.all(changesets.map(async cset =>
+      getChangesetCoverage(cset.node)))
+  );
+  return queryCacheWithFallback('coverage', fallback);
 };
 
 export const fileRevisionWithActiveData = async (revision, path, repoPath) => {

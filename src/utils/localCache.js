@@ -48,3 +48,31 @@ export const clearCache = () => {
     throw e;
   }
 };
+
+export const queryCacheWithFallback = async (key, fallback) => {
+  let data;
+  if (settings.CACHE_CONFIG.ENABLED) {
+    try {
+      data = await getFromCache(key);
+    } catch (e) {
+      // We only log since we want to fetch the coverage from the backend
+      console.error(e);
+    }
+
+    if (!data || data.length === 0) {
+      console.debug('The local cache was not available.');
+      data = await fallback();
+    }
+
+    try {
+      saveInCache(key, data);
+    } catch (e) {
+      console.info('We have failed to store to the local cache');
+      // We don't want to throw an error and abort code execution
+      console.error(e);
+    }
+  } else {
+    data = await fallback();
+  }
+  return data;
+};
