@@ -144,16 +144,17 @@ export const getChangesetCoverage = async (node) => {
   if (!node) {
     throw Error(`No node for cset: ${node}`);
   }
-  let coverage;
+  let coverage = { show: false };
   try {
     const res = await queryChangesetCoverage(node);
     if (res.status === 202) {
       // This is the only case when we poll again
-      coverage = { summary: settings.STRINGS.PENDING };
+      coverage.summary = settings.STRINGS.PENDING;
     } else if (res.status === 200) {
       coverage = transformCoverageData(await res.json());
+      coverage.show = true;
     } else if (res.status === 500) {
-      coverage = { summary: res.statusText };
+      coverage.summary = res.statusText;
     } else {
       console.log(`Unexpected HTTP code (${res.status}) for ${coverage}`);
     }
