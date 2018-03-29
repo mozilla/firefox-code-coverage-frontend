@@ -1,6 +1,7 @@
 import settings from '../settings';
 import { JSON_HEADERS, PLAIN_HEADERS } from './fetch';
 import { queryCacheWithFallback } from './localCache';
+import { arrayToMap } from './data';
 
 const { REPO_NAME, HG_HOST } = settings;
 
@@ -10,8 +11,30 @@ export const getDiff = (node, repoName = REPO_NAME) =>
 export const getRawFile = (node, filePath, repoName = REPO_NAME) =>
   fetch(`${HG_HOST}/${repoName}/raw-file/${node}/${filePath}`, { PLAIN_HEADERS });
 
-export const getChangesetMeta = async (node, repoPath = REPO_NAME) =>
-  fetch(`${HG_HOST}/${repoPath}/json-rev/${node}`, JSON_HEADERS);
+export const getChangesetMeta = async (node, repoPath = REPO_NAME) => {
+  let changeset = {};
+  const fallback = async () => {
+    // XXX: We need a different way of caching data than using 'changesets'
+    //      and 'coverage' keys
+    const cset = await (await fetch(
+      `${HG_HOST}/${repoPath}/json-rev/${node}`,
+      JSON_HEADERS,
+    )).json();
+    // We have to return a data structure like the one when we fetch all
+    // changesets; this is less than ideal
+    return [cset];
+  };
+  const changesets = arrayToMap(await queryCacheWithFallback('changesets', fallback));
+  if (node in changesets) {
+    changeset = changesets[node];
+  } else {
+    // XXX: This is probably the case where there was cached changesets
+    //      without this changeset being part of it
+    //      What would be a proper way of handling this?
+    changeset = await fallback()[0];
+  }
+  return changeset;
+};
 
 export const getJsonPushes = (repoName = REPO_NAME, date = settings.HG_DAYS_AGO) =>
   fetch(`${HG_HOST}/${repoName}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS);

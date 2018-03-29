@@ -43,7 +43,7 @@ export default class DiffViewerContainer extends Component {
   }
 
   async fetchSetChangesetMeta(node) {
-    const changeset = await (await getChangesetMeta(node)).json();
+    const changeset = await getChangesetMeta(node);
     this.setState({ changeset });
   }
 
