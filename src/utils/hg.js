@@ -7,11 +7,29 @@ import { arrayToMap } from './data';
 
 const { REPO_NAME, HG_HOST } = settings;
 
-export const getDiff = (node, repoName = REPO_NAME) =>
-  fetch(`${HG_HOST}/${repoName}/raw-rev/${node}`, { PLAIN_HEADERS });
+export const getDiff = async (node, repoName = REPO_NAME) => {
+  const fallback = async () => {
+    const raw = await (await fetch(
+      `${HG_HOST}/${repoName}/raw-rev/${node}`,
+      { PLAIN_HEADERS },
+    )).text();
+    // We're returning a hash with 1 parsedDiff
+    return { [node]: raw };
+  };
+
+  let rawDiff = {};
+  const parsedDiffs = await queryCacheWithFallback('parsedDiffs', fallback);
+  if (node in parsedDiffs) {
+    rawDiff = parsedDiffs[node];
+  } else {
+    // XXX: Add and save the cache?
+    rawDiff = await fallback();
+  }
+  return rawDiff;
+};
 
 export const getParsedDiff = async (node, repoName = REPO_NAME) => {
-  const text = await (await getDiff(node, repoName)).text();
+  const text = await getDiff(node, repoName);
   const parsedDiff = parse(text);
   return parsedDiff;
 };
