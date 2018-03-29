@@ -1,3 +1,5 @@
+import parse from 'parse-diff';
+
 import settings from '../settings';
 import { JSON_HEADERS, PLAIN_HEADERS } from './fetch';
 import { queryCacheWithFallback } from './localCache';
@@ -7,6 +9,12 @@ const { REPO_NAME, HG_HOST } = settings;
 
 export const getDiff = (node, repoName = REPO_NAME) =>
   fetch(`${HG_HOST}/${repoName}/raw-rev/${node}`, { PLAIN_HEADERS });
+
+export const getParsedDiff = async (node, repoName = REPO_NAME) => {
+  const text = await (await getDiff(node, repoName)).text();
+  const parsedDiff = parse(text);
+  return parsedDiff;
+};
 
 export const getRawFile = (node, filePath, repoName = REPO_NAME) =>
   fetch(`${HG_HOST}/${repoName}/raw-file/${node}/${filePath}`, { PLAIN_HEADERS });

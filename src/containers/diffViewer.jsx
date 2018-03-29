@@ -3,10 +3,8 @@ import { orderBy } from 'lodash';
 
 import DiffViewer from '../components/diffViewer';
 import { getChangesetCoverage } from '../utils/coverage';
-import { getDiff, getChangesetMeta } from '../utils/hg';
+import { getParsedDiff, getChangesetMeta } from '../utils/hg';
 import settings from '../settings';
-
-const parse = require('parse-diff');
 
 // Adds a new percent property to each file in parsedDiff that represents
 // the proportion of uncovered lines.
@@ -66,8 +64,7 @@ export default class DiffViewerContainer extends Component {
 
   async fetchSetDiff(node) {
     try {
-      const text = await (await getDiff(node)).text();
-      this.setState({ parsedDiff: parse(text) });
+      this.setState({ parsedDiff: await getParsedDiff(node) });
     } catch (e) {
       if ((e instanceof TypeError) && (e.message === 'Failed to fetch')) {
         this.setState({
