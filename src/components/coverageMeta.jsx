@@ -21,9 +21,16 @@ const CoverageMeta = ({
     </div>
     {changeset &&
       <div className="coverage-meta-row">
-        <div style={{ display: 'flex' }}>
+        <div>
           <BugzillaIconLink description={changeset.desc} />
           <span style={{ verticalAlign: 'top', whiteSpace: 'pre' }}>{changeset.desc}</span>
+        </div>
+        <div className="coverage-meta-row">
+          <ul className="coverage-legend meta-right">
+            <li>Covered<span className="hit coverage-color-legend" /></li>
+            <li>Uncovered<span className="miss coverage-color-legend" /></li>
+            <li>Unchanged line<span className="nocovchange coverage-color-legend" /></li>
+          </ul>
         </div>
       </div>
     }

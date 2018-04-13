@@ -372,3 +372,16 @@ span.tests {
 .github-fork-ribbon:before {
 	background-color: #090;
 }
+
+/* placing coverage color legends in DiffViewer*/
+.coverage-color-legend{
+	border: solid 1px black;
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	vertical-align: bottom;
+	margin: 0 0 0 0.2em;
+}
+.coverage-legend{
+	list-style: none;
+}
