@@ -24,7 +24,7 @@ we would like to lay down some principles and steps that will make contributing 
 git checkout master
 // Set up the upstream remote in the 'Getting started' section
 git pull upstream master 
-git checkout your_feature_branch_name
+git checkout -b your_feature_branch_name
 // This command might show code conflicts that you will have to resolve
 git rebase master
 ```
