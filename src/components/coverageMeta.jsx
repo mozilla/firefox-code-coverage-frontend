@@ -1,6 +1,9 @@
 import BugzillaIconLink from './bugzillaIconLink';
 import { hgDiffUrl, pushlogUrl } from '../utils/hg';
 
+// import dummyIcon from '../static/dummyIcon16x16.png';
+import eIcon from '../static/noun_205162_cc.png';
+
 const CoverageMeta = ({
   changeset, node, overallCoverage, summary,
 }) => (
@@ -19,6 +22,14 @@ const CoverageMeta = ({
         <a href={hgDiffUrl(node)} target="_blank">Hg Diff</a>
       </span>
     </div>
+    {changeset &&
+      <div className="coverage-meta-row">
+        <div style={{ display: 'flex' }}>
+          <img className="eIcon" src={eIcon} alt="email icon" />
+          <span cstyle={{ verticalAlign: 'top' }}>{changeset.user}</span>
+        </div>
+      </div>
+    }
     {changeset &&
       <div className="coverage-meta-row">
         <div style={{ display: 'flex' }}>
