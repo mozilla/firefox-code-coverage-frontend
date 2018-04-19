@@ -173,7 +173,7 @@ tr.changeset td{
 	height: 100%;
 	vertical-align: middle;
 }
-.eIcon {
+.eIcon, .icon-substitute {
 	height: 16px;
 	width: 16px;
 	margin-right: 5px;
@@ -181,10 +181,6 @@ tr.changeset td{
 }
 .icon-substitute {
 	opacity: 0;
-	height: 16px;
-	width: 16px;
-	margin-right: 1em;
-	vertical-align: middle;
 }
 .changeset-summary {
 	text-align: center;
