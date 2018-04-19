@@ -1,11 +1,7 @@
 import settings from '../settings';
 
-const { REPO, GITHUB_RIBBON } = settings;
+const { REPO } = settings;
 
 export default () => (
-  <div className="github-ribbon">
-    <a href={`${REPO}`}>
-      <img src={`${GITHUB_RIBBON}`} alt="Fork me on GitHub" title="Fork me on GitHub" />
-    </a>
-  </div>
+  <a className="github-fork-ribbon" href={`${REPO}`} data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
 );
