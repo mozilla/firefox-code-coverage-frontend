@@ -8,7 +8,7 @@ From there you can navigate to the diff of each changeset
 and see the code coverage for added lines. It is very important to reiterate that it is code coverage for added lines and not for a specific file (as most code coverage viewers focus on).
 
 The data used in this UI is based on data submitted to
-[codecov.io](https://codecov.io/gh/marco-c/gecko-dev/commits).
+[codecov.io](https://codecov.io/gh/mozilla/gecko-dev/commits).
 
 # Planning and views
 This is document tracks the
