@@ -23,7 +23,7 @@ const CoverageMeta = ({
       <div className="coverage-meta-row">
         <div style={{ display: 'flex' }}>
           <BugzillaIconLink description={changeset.desc} />
-          <span style={{ verticalAlign: 'top' }}>{changeset.desc}</span>
+          <span style={{ verticalAlign: 'top', whiteSpace: 'pre' }}>{changeset.desc}</span>
         </div>
       </div>
     }
