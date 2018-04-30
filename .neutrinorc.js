@@ -28,7 +28,8 @@ module.exports = {
         html: {
           title: 'Firefox code coverage diff viewer',
           links: [
-            "https://fonts.googleapis.com/css?family=Fira+Sans:300,400"
+            "https://fonts.googleapis.com/css?family=Fira+Sans:300,400",
+            "https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css"
           ]
         },
         env: Object.keys(acceptedExternalEnvs)

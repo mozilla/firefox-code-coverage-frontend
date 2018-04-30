@@ -372,10 +372,7 @@ span.tests {
 	padding: 0.4em 0.8em;
 }
 
-/* placing GitHub Ribbon on top right corner*/
-.github-ribbon{
-	position: absolute;
-	top: 0;
-	right: 0;
-	border: 0;
+/* GitHub Ribbon (the default background color is #c00) */
+.github-fork-ribbon:before {
+	background-color: #090;
 }
