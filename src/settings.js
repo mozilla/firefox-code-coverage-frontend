@@ -1,12 +1,12 @@
 const settings = {
   ACTIVE_DATA: 'https://activedata.allizom.org',
-  BACKEND: 'https://uplift.shipit.mozilla-releng.net',
+  BACKEND: 'https://coverage.moz.tools',
   BZ_URL: 'https://bugzilla.mozilla.org',
   CACHE_CONFIG: {
     SECONDS_TO_EXPIRE: 1 * 60 * 60, // 1 hour
     ENABLED: process.env.ENABLE_CACHE === 'true' || process.env.NODE_ENV === 'production',
   },
-  CCOV_BACKEND: 'https://uplift.shipit.mozilla-releng.net',
+  CCOV_BACKEND: 'https://coverage.moz.tools',
   CODECOV_GECKO_DEV: 'https://codecov.io/gh/mozilla/gecko-dev',
   COVERAGE_THRESHOLDS: {
     low: {
