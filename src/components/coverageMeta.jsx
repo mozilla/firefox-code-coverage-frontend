@@ -28,7 +28,7 @@ const CoverageMeta = ({
       </div>
     }
     <div className="coverage-meta-row">
-      <ul className="coverage-legend-ul">
+      <ul className="coverage-legend">
         <li><span className="hit coverage-color-legend" /> Covered</li>
         <li><span className="miss coverage-color-legend" /> Uncovered</li>
         <li><span className="nocovchange coverage-color-legend" /> Unchanged line</li>

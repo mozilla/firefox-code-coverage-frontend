@@ -388,7 +388,7 @@ span.tests {
 	height: 14px;
 }
 
-.coverage-legend-ul{
+ul.coverage-legend{
 	list-style: none;
 	padding: 0;
 }
