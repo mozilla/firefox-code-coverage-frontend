@@ -43,7 +43,7 @@ export default class DiffViewerContainer extends Component {
   }
 
   async fetchSetChangesetMeta(node) {
-    const changeset = await (await getChangesetMeta(node)).json();
+    const changeset = await getChangesetMeta(node);
     this.setState({ changeset });
   }
 
@@ -66,7 +66,7 @@ export default class DiffViewerContainer extends Component {
 
   async fetchSetDiff(node) {
     try {
-      const text = await (await getDiff(node)).text();
+      const text = await getDiff(node);
       this.setState({ parsedDiff: parse(text) });
     } catch (e) {
       if ((e instanceof TypeError) && (e.message === 'Failed to fetch')) {

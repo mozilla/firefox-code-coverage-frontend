@@ -4,14 +4,36 @@ import { getFromCache, saveInCache } from './localCache';
 
 const { REPO_NAME, HG_HOST } = settings;
 
-export const getDiff = (node, repoName = REPO_NAME) =>
-  fetch(`${HG_HOST}/${repoName}/raw-rev/${node}`, { PLAIN_HEADERS });
+const authorInfo = (author) => {
+  const nameRegex = /([^<]*)/i;
+  const nameMatch = nameRegex.exec(author);
+  const authorName = nameMatch ? nameMatch[1] : null;
+
+  const emailRegex = /[<]([^>]*@[^>]*)[>]/i;
+  const emailMatch = emailRegex.exec(author);
+  const authorEmail = emailMatch ? emailMatch[1] : null;
+
+  return { authorName, authorEmail };
+};
+
+const initializedChangeset = (cset, author) => ({
+  ...authorInfo(author),
+  ...cset,
+});
+
+export const getDiff = async (node, repoName = REPO_NAME) => {
+  const text = await fetch(`${HG_HOST}/${repoName}/raw-rev/${node}`, { PLAIN_HEADERS });
+  return text.text();
+};
 
 export const getRawFile = (node, filePath, repoName = REPO_NAME) =>
   fetch(`${HG_HOST}/${repoName}/raw-file/${node}/${filePath}`, { PLAIN_HEADERS });
 
-export const getChangesetMeta = async (node, repoPath = REPO_NAME) =>
-  fetch(`${HG_HOST}/${repoPath}/json-rev/${node}`, JSON_HEADERS);
+export const getChangesetMeta = async (node, repoPath = REPO_NAME) => {
+  const text = await fetch(`${HG_HOST}/${repoPath}/json-rev/${node}`, JSON_HEADERS);
+  const meta = await text.json();
+  return initializedChangeset(meta, meta.user);
+};
 
 export const getJsonPushes = (repoName = REPO_NAME, date = settings.HG_DAYS_AGO) =>
   fetch(`${HG_HOST}/${repoName}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS);
@@ -54,24 +76,6 @@ export const bzUrl = (description) => {
     `${settings.BZ_URL}/show_bug.cgi?id=${bzUrlMatch[1]}`) : null;
 };
 
-const authorInfo = (author) => {
-  const nameRegex = /([^<]*)/i;
-  const nameMatch = nameRegex.exec(author);
-  const name = nameMatch ? nameMatch[1] : null;
-
-  const emailRegex = /[<]([^>]*@[^>]*)[>]/i;
-  const emailMatch = emailRegex.exec(author);
-  const email = emailMatch ? emailMatch[1] : null;
-
-  return { name, email };
-};
-
-const initializedChangeset = (cset, id) => ({
-  pushId: id,
-  authorInfo: authorInfo(cset.author),
-  ...cset,
-});
-
 // A push can be composed of multiple changesets
 // We want to return an array of changesets
 // Some changesets will be ignored
@@ -86,7 +90,7 @@ const pushesToCsets = async (pushes) => {
       pushes[pushId].changesets.reverse()
         .filter(c => !ignoreChangeset(c))
         .forEach((cset) => {
-          filteredCsets.push(initializedChangeset(cset, pushId));
+          filteredCsets.push(initializedChangeset(cset, cset.author));
         });
     }
   });
