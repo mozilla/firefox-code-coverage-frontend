@@ -96,12 +96,10 @@ const pushesToCsets = async (pushes) => {
   return filteredCsets;
 };
 
-const getChangesets = async (repoName = REPO_NAME) => {
+export const getChangesets = async (repoName = REPO_NAME) => {
   const fallback = async () => {
     const text = await (await getJsonPushes(repoName)).json();
     return pushesToCsets(text.pushes);
   };
   return queryCacheWithFallback('changesets', fallback);
 };
-
-export default getChangesets;

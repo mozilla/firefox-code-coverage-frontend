@@ -4,13 +4,10 @@ import { connect } from 'react-redux';
 
 import Summary from '../components/summary';
 import settings from '../settings';
-import { mapToArray, extendObject } from '../utils/data';
-import { getCoverage } from '../utils/coverage';
-import getChangesets from '../utils/hg';
-import { saveInCache } from '../utils/localCache';
+import { loadCoverageData, pollPendingChangesets } from '../utils/data';
 import * as a from '../actions';
 
-const { INTERNAL_ERROR, LOADING, PENDING } = settings.STRINGS;
+const { LOADING } = settings.STRINGS;
 
 const PollingStatus = ({ pollingEnabled }) => (
   (pollingEnabled) ? (
@@ -31,41 +28,17 @@ class SummaryContainer extends Component {
   }
 
   async componentDidMount() {
-    this.fetchChangesets();
+    this.loadCoverageData();
   }
 
-  async fetchChangesets() {
+  async loadCoverageData() {
     try {
-      // XXX: With this refactor we're only storing changesets w/o coverage data
-      //      This means that the cache is only as useful as saving all the Hg fetches
-      //
-      // Next refactor:
-      // 1) fetch jsonPushes (2 days)
-      // 2) filter out pushes that can be ignored (e.g. only 1 cset)
-      // 3) fetch coverage data for all of them
-      // 4) Inspect pushes from oldest to newest
-      //    FAIL: If there are no pushes with some coverage (Show message)
-      // 5) For every push with coverage data go and fetch each cset
-      const changesets = await getChangesets();
-      const changesetsCoverage = await getCoverage(changesets);
-      const summary = { pending: 0, error: 0 };
-      Object.values(changesetsCoverage).forEach((csetCoverage) => {
-        if (csetCoverage.summary === PENDING) {
-          summary.pending += 1;
-        } else if (csetCoverage.summary === INTERNAL_ERROR) {
-          summary.error += 1;
-        }
-      });
-      console.debug(`We have ${Object.keys(changesets).length} changesets.`);
-      console.debug(`pending: ${summary.pending}`);
-      console.debug(`errors: ${summary.error}`);
+      const { changesets, changesetsCoverage, summary } = await loadCoverageData();
       this.props.addChangesets(changesets);
       this.props.addChangesetsCoverage(changesetsCoverage);
       this.setState({ pollingEnabled: summary.pending > 0 });
     } catch (error) {
       console.error(error);
-      this.props.addChangesets({});
-      this.props.addChangesetsCoverage({});
       this.setState({
         pollingEnabled: false,
         errorMessage: 'We have failed to fetch coverage data.',
@@ -75,22 +48,10 @@ class SummaryContainer extends Component {
 
   // We poll on an interval for coverage for csets without it
   async pollPending(changesetsCoverage) {
-    console.debug('We are going to poll again for coverage data.');
     try {
-      // Only poll changesets that are still pending
-      const onlyPendingChangesets = mapToArray(changesetsCoverage)
-        .filter(cov => cov.summary === PENDING);
-      const partialCoverage = await getCoverage(onlyPendingChangesets);
-      const count = partialCoverage
-        .filter(cov => cov.summary === PENDING).length;
-      const newCoverage = extendObject(changesetsCoverage, partialCoverage);
-      if (count === 0) {
-        console.debug('No more polling required.');
-        this.setState({ pollingEnabled: false });
-      }
-      // It is recommended to keep redux functions being pure functions
-      saveInCache('coverage', newCoverage);
-      this.props.addChangesetsCoverage(newCoverage);
+      const { csetsCoverage, polling } = await pollPendingChangesets(changesetsCoverage);
+      this.props.addChangesetsCoverage(csetsCoverage);
+      this.setState({ pollingEnabled: polling });
     } catch (e) {
       this.setState({ pollingEnabled: false });
     }
