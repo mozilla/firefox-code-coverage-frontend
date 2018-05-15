@@ -1,10 +1,8 @@
 import {
   changesetsCoverageSummary,
   getCoverage,
-  getPendingCoverage,
 } from '../utils/coverage';
 import { getChangesets } from '../utils/hg';
-import { saveInCache } from '../utils/localCache';
 
 export const sortingMethods = {
   DATE: 'date',
@@ -122,19 +120,6 @@ export const loadCoverageData = async () => {
     changesetsCoverage,
     summary,
   };
-};
-
-export const pollPendingChangesets = async (coverage) => {
-  let pollingEnabled = true;
-  console.debug('We are going to poll again for coverage data.');
-  const { changesetsCoverage, summary } = await getPendingCoverage(coverage);
-  if (summary.pending === 0) {
-    console.debug('No more polling required.');
-    pollingEnabled = false;
-  }
-  // It is recommended to keep redux functions being pure functions
-  saveInCache('coverage', changesetsCoverage);
-  return { changesetsCoverage, pollingEnabled };
 };
 
 export const filterUnsupportedExtensions = (parsedDiff = {}, supportedExtensions = []) => {
