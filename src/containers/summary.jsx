@@ -55,7 +55,6 @@ export default class SummaryContainer extends Component {
 
   // We poll on an interval for coverage for csets without it
   async pollPending(changesetsCoverage) {
-    console.debug('We are going to poll again for coverage data.');
     try {
       const { csetsCoverage, polling } = await pollPendingChangesets(changesetsCoverage);
       this.setState({ changesetsCoverage: csetsCoverage, pollingEnabled: polling });

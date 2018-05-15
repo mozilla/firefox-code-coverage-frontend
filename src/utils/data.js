@@ -126,11 +126,18 @@ export const loadCoverageData = async () => {
 export const pollPendingChangesets = async (changesetsCoverage) => {
   let polling = true;
   console.debug('We are going to poll again for coverage data.');
-  const { coverage, summary } = await getCoverage(changesetsCoverage);
-  if (summary.pending === 0) {
+  // Only poll changesets that are still pending
+  const onlyPendingChangesets = mapToArray(changesetsCoverage)
+    .filter(cov => cov.summary === PENDING);
+  const partialCoverage = await getCoverage(onlyPendingChangesets);
+  const count = partialCoverage
+    .filter(cov => cov.summary === PENDING).length;
+  const coverage = extendObject(changesetsCoverage, partialCoverage);
+  if (count === 0) {
     console.debug('No more polling required.');
     polling = false;
   }
+  // It is recommended to keep redux functions being pure functions
   saveInCache('coverage', coverage);
   return { coverage, polling };
 };
