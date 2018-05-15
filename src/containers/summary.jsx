@@ -4,7 +4,12 @@ import { connect } from 'react-redux';
 
 import Summary from '../components/summary';
 import settings from '../settings';
-import { loadCoverageData, pollPendingChangesets } from '../utils/data';
+import {
+  loadCoverageData,
+  pollPendingChangesets,
+  sortChangesets,
+  sortingMethods,
+} from '../utils/data';
 import * as a from '../actions';
 
 const { LOADING } = settings.STRINGS;
@@ -21,9 +26,10 @@ class SummaryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pollingEnabled: false, // We don't start polling until we're ready
       errorMessage: '',
+      pollingEnabled: false, // We don't start polling until we're ready
       timeout: 10000, // How often we poll for csets w/o coverage status
+      sortingMethod: sortingMethods.DATE,
     };
   }
 
@@ -58,21 +64,15 @@ class SummaryContainer extends Component {
   }
 
   render() {
-    const { pollingEnabled, errorMessage, timeout } = this.state;
+    const { errorMessage, pollingEnabled, timeout } = this.state;
     const { changesets, changesetsCoverage } = this.props;
 
     if (errorMessage) {
       return (<div className="error-message">{errorMessage}</div>);
     }
 
-    const viewableCsetsMap = {};
-    if (Object.keys(changesets).length !== 0) {
-      Object.keys(changesetsCoverage).forEach((node) => {
-        if (changesets[node] && changesetsCoverage[node].show) {
-          viewableCsetsMap[node] = changesets[node];
-        }
-      });
-    }
+    const sortedChangesets =
+      sortChangesets(changesets, changesetsCoverage, this.state.sortingMethod);
 
     return (
       <div>
@@ -88,20 +88,23 @@ class SummaryContainer extends Component {
             />
           </div>
         )}
-        {Object.keys(viewableCsetsMap).length > 0 &&
+        {sortedChangesets.length > 0 && (
           <Summary
-            changesets={viewableCsetsMap}
-            coverage={changesetsCoverage}
+            changesetsCoverage={changesetsCoverage}
+            sortedChangesets={sortedChangesets}
           />
-        }
-        {(!pollingEnabled && Object.keys(viewableCsetsMap) === 0) &&
-          <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
-            <span>There is currently no coverage data to show. Please </span>
-            <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
-          </p>
+        )}
+        {(!pollingEnabled &&
+          (Object.keys(changesetsCoverage).length > 0)
+          && sortedChangesets.length === 0) && (
+            <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
+              <span>There is currently no coverage data to show. Please </span>
+              <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
+            </p>
+          )
         }
         {pollingEnabled &&
-          (<h3 className="adding">{LOADING}</h3>)
+          (<h3 className="loading">{LOADING}</h3>)
         }
       </div>
     );
