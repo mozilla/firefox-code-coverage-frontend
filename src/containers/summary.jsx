@@ -5,11 +5,14 @@ import Summary from '../components/summary';
 import ChangesetFilter from '../components/changesetFilter';
 import GenericErrorMessage from '../components/genericErrorMessage';
 import settings from '../settings';
-import { arrayToMap, mapToArray } from '../utils/data';
-import { getCoverage } from '../utils/coverage';
-import getChangesets from '../utils/hg';
+import {
+  loadCoverageData,
+  pollPendingChangesets,
+  sortChangesets,
+  sortingMethods,
+} from '../utils/data';
 
-const { INTERNAL_ERROR, LOADING, PENDING } = settings.STRINGS;
+const { LOADING } = settings.STRINGS;
 
 const PollingStatus = ({ pollingEnabled }) => (
   (pollingEnabled) ? (
@@ -23,18 +26,19 @@ export default class SummaryContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      changesets: [],
-      coverage: [],
+      errorMessage: '',
+      changesets: {},
+      changesetsCoverage: {},
       descriptionFilterValue: '',
       pollingEnabled: false, // We don't start polling until we're ready
-      errorMessage: '',
-      timeout: 30000, // How often we poll for csets w/o coverage status
+      timeout: 10000, // How often we poll for csets w/o coverage status
+      sortingMethod: sortingMethods.DATE,
     };
     this.onFilterByDescription = this.onFilterByDescription.bind(this);
   }
 
   async componentDidMount() {
-    this.fetchChangesets();
+    this.initializeData();
   }
 
   onFilterByDescription(event) {
@@ -42,41 +46,19 @@ export default class SummaryContainer extends Component {
     this.setState({ descriptionFilterValue: event.target.value });
   }
 
-  async fetchChangesets() {
+  async initializeData() {
     try {
-      // XXX: With this refactor we're only storing changesets w/o coverage data
-      //      This means that the cache is only as useful as saving all the Hg fetches
-      //
-      // Next refactor:
-      // 1) fetch jsonPushes (2 days)
-      // 2) filter out pushes that can be ignored (e.g. only 1 cset)
-      // 3) fetch coverage data for all of them
-      // 4) Inspect pushes from oldest to newest
-      //    FAIL: If there are no pushes with some coverage (Show message)
-      // 5) For every push with coverage data go and fetch each cset
-      const changesets = await getChangesets();
-      const coverage = await getCoverage(changesets);
-      const summary = { pending: 0, error: 0 };
-      changesets.forEach((cset) => {
-        if (cset.summary === PENDING) {
-          summary.pending += 1;
-        } else if (cset.summary === INTERNAL_ERROR) {
-          summary.error += 1;
-        }
-      });
-      console.debug(`We have ${changesets.length} changesets.`);
-      console.debug(`pending: ${summary.pending}`);
-      console.debug(`errors: ${summary.error}`);
+      const { changesets, changesetsCoverage, summary } = await loadCoverageData();
       this.setState({
         changesets,
-        coverage,
+        changesetsCoverage,
         pollingEnabled: summary.pending > 0,
       });
     } catch (error) {
       console.error(error);
       this.setState({
-        changesets: [],
-        coverage: [],
+        changesets: {},
+        changesetsCoverage: {},
         pollingEnabled: false,
         errorMessage: 'We have failed to fetch coverage data.',
       });
@@ -84,23 +66,11 @@ export default class SummaryContainer extends Component {
   }
 
   // We poll on an interval for coverage for csets without it
-  async pollPending(coverage) {
+  async pollPending(changesetsCoverage) {
     console.debug('We are going to poll again for coverage data.');
     try {
-      // Only poll changesets that are still pending
-      const partialCoverage = await getCoverage(mapToArray(coverage)
-        .filter(cov => cov.summary === PENDING));
-      const count = partialCoverage.filter(cov => cov.summary === PENDING).length;
-      const newCoverage = {
-        ...coverage,
-        ...arrayToMap(partialCoverage),
-      };
-      if (count === 0) {
-        console.debug('No more polling required.');
-        this.setState({ coverage: newCoverage, pollingEnabled: false });
-      } else {
-        this.setState({ coverage: newCoverage });
-      }
+      const { csetsCoverage, polling } = await pollPendingChangesets(changesetsCoverage);
+      this.setState({ changesetsCoverage: csetsCoverage, pollingEnabled: polling });
     } catch (e) {
       this.setState({ pollingEnabled: false });
     }
@@ -108,21 +78,20 @@ export default class SummaryContainer extends Component {
 
   render() {
     const {
-      descriptionFilterValue, changesets, coverage, pollingEnabled, errorMessage, timeout,
+      changesets,
+      changesetsCoverage,
+      descriptionFilterValue,
+      errorMessage,
+      pollingEnabled,
+      timeout,
     } = this.state;
-    const coverageMap = arrayToMap(coverage);
 
     if (errorMessage) {
       return (<div className="error-message">{errorMessage}</div>);
     }
 
-    const viewableCsetsMap = {};
-    changesets.forEach((cset) => {
-      if (coverageMap[cset.node] && coverageMap[cset.node].show &&
-          cset.desc.search(descriptionFilterValue) !== -1) {
-        viewableCsetsMap[cset.node] = cset;
-      }
-    });
+    const sortedChangesets =
+      sortChangesets(changesets, changesetsCoverage, this.state.sortingMethod);
 
     return (
       <div>
@@ -131,7 +100,7 @@ export default class SummaryContainer extends Component {
             <ReactInterval
               timeout={timeout}
               enabled={pollingEnabled}
-              callback={() => this.pollPending(coverage)}
+              callback={() => this.pollPending(changesetsCoverage)}
             />
             <PollingStatus
               pollingEnabled={pollingEnabled}
@@ -142,16 +111,19 @@ export default class SummaryContainer extends Component {
           value={descriptionFilterValue}
           onChange={this.onFilterByDescription}
         />
-        {Object.keys(viewableCsetsMap).length > 0 &&
+        {sortedChangesets.length > 0 && (
           <Summary
-            changesets={viewableCsetsMap}
-            coverage={coverageMap}
+            changesetsCoverage={changesetsCoverage}
+            sortedChangesets={sortedChangesets}
           />
+        )}
+        {(!pollingEnabled &&
+          (Object.keys(changesetsCoverage).length > 0)
+          && sortedChangesets.length === 0) && (
+            <GenericErrorMessage />
+          )
         }
-        {(!pollingEnabled && Object.keys(viewableCsetsMap) === 0) &&
-          <GenericErrorMessage />
-        }
-        {Object.keys(changesets).length === 0 &&
+        {pollingEnabled &&
           (<h3 className="loading">{LOADING}</h3>)
         }
       </div>
