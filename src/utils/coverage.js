@@ -168,10 +168,16 @@ export const getChangesetCoverage = async (node) => {
 };
 
 export const getCoverage = async (changesets) => {
-  const fallback = () => (
-    Promise.all(changesets.map(async cset =>
-      getChangesetCoverage(cset.node)))
-  );
+  const fallback = async () => {
+    const results = await Promise.all(
+      Object.keys(changesets)
+        .map(async node => getChangesetCoverage(node)));
+    const changesetsCoverage = {};
+    results.forEach((csetCov) => {
+      changesetsCoverage[csetCov.node] = csetCov;
+    });
+    return changesetsCoverage;
+  };
   return queryCacheWithFallback('coverage', fallback);
 };
 
