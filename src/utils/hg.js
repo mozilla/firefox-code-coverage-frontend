@@ -16,7 +16,13 @@ const authorInfo = (author) => {
   return { authorName, authorEmail };
 };
 
-const initializedChangeset = (cset, author) => ({
+// Depending if information about a changeset is obtained via `json-pushes`
+// versus `json-rev` we will have `pushId` and `date` properties OR
+// have to set the `pushId` and `changesetIndex` (position within a push)
+// in order to facilitate sorting of changesets
+const initializedChangeset = (cset, author, pushId, changesetIndex) => ({
+  pushId,
+  changesetIndex,
   ...authorInfo(author),
   ...cset,
 });
@@ -88,15 +94,16 @@ const pushesToCsets = async (pushes) => {
       // Re-order csets and filter out those we don't want
       pushes[pushId].changesets.reverse()
         .filter(c => !ignoreChangeset(c))
-        .forEach((cset) => {
-          filteredCsets.push(initializedChangeset(cset, cset.author));
+        .forEach((cset, changesetIndex) => {
+          filteredCsets[cset.node] =
+            initializedChangeset(cset, cset.author, pushId, changesetIndex);
         });
     }
   });
   return filteredCsets;
 };
 
-const getChangesets = async (repoName = REPO_NAME) => {
+export const getChangesets = async (repoName = REPO_NAME) => {
   let csets = [];
   if (settings.CACHE_CONFIG.ENABLED) {
     try {
@@ -125,5 +132,3 @@ const getChangesets = async (repoName = REPO_NAME) => {
   }
   return csets;
 };
-
-export default getChangesets;
