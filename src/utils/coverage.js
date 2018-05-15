@@ -199,10 +199,10 @@ export const changesetsCoverageSummary = (changesetsCoverage) => {
   return summary;
 };
 
-export const pollPendingChangesets = async (csetsCoverage) => {
+export const pollPendingChangesets = async (coverage) => {
   let pollingEnabled = true;
   console.debug('We are going to poll again for coverage data.');
-  const { changesetsCoverage, summary } = await getCoverage(csetsCoverage);
+  const { changesetsCoverage, summary } = await getCoverage(coverage);
   if (summary.pending === 0) {
     console.debug('No more polling required.');
     pollingEnabled = false;
