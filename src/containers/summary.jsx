@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
+import { connect } from 'react-redux';
 
 import Summary from '../components/summary';
 import ChangesetFilter from '../components/changesetFilter';
@@ -7,6 +8,8 @@ import GenericErrorMessage from '../components/genericErrorMessage';
 import settings from '../settings';
 import { pollPendingChangesets } from '../utils/coverage';
 import { filterChangesets, loadCoverageData } from '../utils/data';
+import { saveInCache } from '../utils/localCache';
+import * as a from '../actions';
 
 const { LOADING } = settings.STRINGS;
 
@@ -25,18 +28,16 @@ const queryIfAnyDataToDisplay = (changesets, changesetsCoverage) => (
     ).length > 0
 );
 
-export default class SummaryContainer extends Component {
+class SummaryContainer extends Component {
   constructor(props) {
     super(props);
     this.onFilterByDescription = this.onFilterByDescription.bind(this);
   }
 
   state = {
-    errorMessage: '',
-    changesets: {},
-    changesetsCoverage: {},
     descriptionFilterValue: '',
     doneFirstLoad: false,
+    errorMessage: '',
     pollingEnabled: false, // We don't start polling until we're ready
     timeout: 10000, // How often we poll for csets w/o coverage status
   };
@@ -54,17 +55,17 @@ export default class SummaryContainer extends Component {
     try {
       // This will either fetch the data or grab it from the cache
       const { changesets, changesetsCoverage, summary } = await loadCoverageData();
+      this.props.addChangesets(changesets);
+      this.props.addChangesetsCoverage(changesetsCoverage);
       this.setState({
-        changesets,
-        changesetsCoverage,
         doneFirstLoad: true,
         pollingEnabled: summary.pending > 0,
       });
     } catch (error) {
       console.error(error);
+      this.props.addChangesets({});
+      this.props.addChangesetsCoverage({});
       this.setState({
-        changesets: {},
-        changesetsCoverage: {},
         pollingEnabled: false,
         errorMessage: 'We have failed to fetch coverage data.',
       });
@@ -76,6 +77,9 @@ export default class SummaryContainer extends Component {
     try {
       const { changesetsCoverage, pollingEnabled } = await pollPendingChangesets(coverage);
       this.setState({ changesetsCoverage, pollingEnabled });
+      // It is recommended to keep redux functions being pure functions
+      saveInCache('coverage', changesetsCoverage);
+      this.props.addChangesetsCoverage(changesetsCoverage);
     } catch (e) {
       this.setState({ pollingEnabled: false });
     }
@@ -83,14 +87,13 @@ export default class SummaryContainer extends Component {
 
   render() {
     const {
-      changesets,
-      changesetsCoverage,
       descriptionFilterValue,
       doneFirstLoad,
       errorMessage,
       pollingEnabled,
       timeout,
     } = this.state;
+    const { changesets, changesetsCoverage } = this.props;
 
     if (errorMessage) {
       return (<div className="error-message">{errorMessage}</div>);
@@ -135,3 +138,18 @@ export default class SummaryContainer extends Component {
     );
   }
 }
+
+const mapStateToProps = ({ changesets, changesetsCoverage }) => ({
+  changesets,
+  changesetsCoverage,
+});
+
+const mapDispatchToProps = dispatch => ({
+  addChangesets: data => dispatch(a.addChangesets(data)),
+  addChangesetsCoverage: data => dispatch(a.addChangesetsCoverage(data)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SummaryContainer);
