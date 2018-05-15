@@ -47,9 +47,7 @@ export default class Summary extends Component {
   render() {
     const { changesets, changesetsCoverage } = this.props;
 
-    const sortedChangesets = this.sortedChangesets()
-      .filter(({ node }) =>
-        changesetsCoverage[node] && changesetsCoverage[node].show);
+    const sortedChangesets = this.sortedChangesets();
 
     if (sortedChangesets.length === 0) {
       return null;

@@ -26,6 +26,11 @@ const queryIfAnyDataToDisplay = (changesets, changesetsCoverage) => (
 );
 
 export default class SummaryContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.onFilterByDescription = this.onFilterByDescription.bind(this);
+  }
+
   state = {
     errorMessage: '',
     changesets: {},
