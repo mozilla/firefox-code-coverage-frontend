@@ -5,12 +5,8 @@ import Summary from '../components/summary';
 import ChangesetFilter from '../components/changesetFilter';
 import GenericErrorMessage from '../components/genericErrorMessage';
 import settings from '../settings';
-import {
-  loadCoverageData,
-  pollPendingChangesets,
-  sortChangesets,
-  sortingMethods,
-} from '../utils/data';
+import { pollPendingChangesets } from '../utils/coverage';
+import { loadCoverageData } from '../utils/data';
 
 const { LOADING } = settings.STRINGS;
 
@@ -32,7 +28,6 @@ export default class SummaryContainer extends Component {
       descriptionFilterValue: '',
       pollingEnabled: false, // We don't start polling until we're ready
       timeout: 10000, // How often we poll for csets w/o coverage status
-      sortingMethod: sortingMethods.DATE,
     };
     this.onFilterByDescription = this.onFilterByDescription.bind(this);
   }
@@ -48,6 +43,7 @@ export default class SummaryContainer extends Component {
 
   async initializeData() {
     try {
+      // This will either fetch the data or grab it from the cache
       const { changesets, changesetsCoverage, summary } = await loadCoverageData();
       this.setState({
         changesets,
@@ -66,11 +62,10 @@ export default class SummaryContainer extends Component {
   }
 
   // We poll on an interval for coverage for csets without it
-  async pollPending(changesetsCoverage) {
-    console.debug('We are going to poll again for coverage data.');
+  async pollPending(coverage) {
     try {
-      const { csetsCoverage, polling } = await pollPendingChangesets(changesetsCoverage);
-      this.setState({ changesetsCoverage: csetsCoverage, pollingEnabled: polling });
+      const { changesetsCoverage, pollingEnabled } = await pollPendingChangesets(coverage);
+      this.setState({ changesetsCoverage, pollingEnabled });
     } catch (e) {
       this.setState({ pollingEnabled: false });
     }
@@ -90,8 +85,9 @@ export default class SummaryContainer extends Component {
       return (<div className="error-message">{errorMessage}</div>);
     }
 
-    const sortedChangesets =
-      sortChangesets(changesets, changesetsCoverage, this.state.sortingMethod);
+    const ready =
+      Object.keys(changesets).length > 0 &&
+      Object.keys(changesetsCoverage).length > 0;
 
     return (
       <div>
@@ -111,19 +107,16 @@ export default class SummaryContainer extends Component {
           value={descriptionFilterValue}
           onChange={this.onFilterByDescription}
         />
-        {sortedChangesets.length > 0 && (
+        {ready && (
           <Summary
+            changesets={changesets}
             changesetsCoverage={changesetsCoverage}
-            sortedChangesets={sortedChangesets}
           />
         )}
-        {(!pollingEnabled &&
-          (Object.keys(changesetsCoverage).length > 0)
-          && sortedChangesets.length === 0) && (
-            <GenericErrorMessage />
-          )
+        {!pollingEnabled && ready &&
+          <GenericErrorMessage />
         }
-        {pollingEnabled &&
+        {!pollingEnabled &&
           (<h3 className="loading">{LOADING}</h3>)
         }
       </div>

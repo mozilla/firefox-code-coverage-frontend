@@ -119,6 +119,11 @@ export const coverageLow = {
   git_build_changeset: 'e52a95e9e832630',
   overall_cur: '60',
   overall_prev: '55',
+  statistics: {
+    percentage: 0,
+    coveredLines: 0,
+    addedLines: 1,
+  },
 };
 
 export const coverageMed = {
@@ -135,6 +140,11 @@ export const coverageMed = {
   git_build_changeset: '52a95e9e832630f9',
   overall_cur: '58.11328',
   overall_prev: '59.16936',
+  statistics: {
+    percentage: 50,
+    coveredLines: 1,
+    addedLines: 2,
+  },
 };
 
 export const coverageHigh = {
@@ -150,6 +160,11 @@ export const coverageHigh = {
   git_build_changeset: 'faae221e52a95',
   overall_cur: '10.12363',
   overall_prev: '15.29584',
+  statistics: {
+    percentage: 100,
+    coveredLines: 1,
+    addedLines: 1,
+  },
 };
 
 export const coverageTransform = {
