@@ -59,17 +59,17 @@ export const queryCacheWithFallback = async (key, fallback) => {
       console.error(e);
     }
 
-    if (!data || data.length === 0) {
+    // WARNING: This code can only be used if you're expecting an Object
+    if (!data || Object.keys(data).length === 0) {
       console.debug('The local cache was not available.');
       data = await fallback();
-    }
-
-    try {
-      saveInCache(key, data);
-    } catch (e) {
-      console.info('We have failed to store to the local cache');
-      // We don't want to throw an error and abort code execution
-      console.error(e);
+      try {
+        saveInCache(key, data);
+      } catch (e) {
+        console.info('We have failed to store to the local cache');
+        // We don't want to throw an error and abort code execution
+        console.error(e);
+      }
     }
   } else {
     data = await fallback();
