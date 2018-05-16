@@ -6,10 +6,10 @@ import {
 import { getChangesets } from '../utils/hg';
 import { saveInCache } from '../utils/localCache';
 
-export const sortingMethods = () => ({
+export const sortingMethods = {
   DATE: 'date',
   COVERAGE: 'coverage',
-});
+};
 
 export const mapToArray = (csets = {}) => (
   Object.keys(csets).map(node => csets[node])
@@ -49,15 +49,46 @@ const sortChangesetsByRecency = (a, b) => {
   return -1;
 };
 
+const sortWithUndefined = (a, b) => {
+  if ((typeof a.percentage === 'undefined') && (typeof b.percentage === 'undefined')) {
+    return 0;
+  } else if (typeof a.percentage === 'undefined') {
+    return 1;
+  }
+  return -1;
+};
+
+const sortChangesetsByCoverageScore = (a, b) => {
+  let retVal;
+  if ((typeof a.percentage === 'undefined') || (typeof b.percentage === 'undefined')) {
+    retVal = sortWithUndefined(a, b);
+  } else if (a.percentage < b.percentage) {
+    retVal = -1;
+  } else if (a.percentage === b.percentage) {
+    retVal = 0;
+  } else {
+    retVal = 1;
+  }
+  return retVal;
+};
+
 export const sortChangesets = (changesets, changesetsCoverage, sortingMethod) => {
   if ((Object.keys(changesets).legnth === 0) ||
       (Object.keys(changesetsCoverage).length === 0)) {
     return [];
   }
-  const sortedChangesets = mapToArray(changesets)
-    .filter(cset => changesetsCoverage[cset.node].show);
+  let sortedChangesets = [];
   if (sortingMethod === sortingMethods.DATE) {
+    sortedChangesets = mapToArray(changesets)
+      .filter(cset => changesetsCoverage[cset.node].show);
     sortedChangesets.sort(sortChangesetsByRecency);
+  } else if (sortingMethod === sortingMethods.COVERAGE) {
+    Object.keys(changesetsCoverage).forEach((node) => {
+      if (changesetsCoverage[node].show) {
+        sortedChangesets.push(changesetsCoverage[node]);
+      }
+    });
+    sortedChangesets.sort(sortChangesetsByCoverageScore);
   }
   return sortedChangesets;
 };

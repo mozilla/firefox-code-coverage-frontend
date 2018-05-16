@@ -31,6 +31,7 @@ class SummaryContainer extends Component {
       timeout: 10000, // How often we poll for csets w/o coverage status
       sortingMethod: sortingMethods.DATE,
     };
+    this.sortByCoverage = this.sortByCoverage.bind(this);
   }
 
   async componentDidMount() {
@@ -63,6 +64,10 @@ class SummaryContainer extends Component {
     }
   }
 
+  sortByCoverage() {
+    this.setState({ sortingMethod: sortingMethods.COVERAGE });
+  }
+
   render() {
     const { errorMessage, pollingEnabled, timeout } = this.state;
     const { changesets, changesetsCoverage } = this.props;
@@ -90,8 +95,10 @@ class SummaryContainer extends Component {
         )}
         {sortedChangesets.length > 0 && (
           <Summary
+            changesets={changesets}
             changesetsCoverage={changesetsCoverage}
             sortedChangesets={sortedChangesets}
+            onSortByCoverage={this.sortByCoverage}
           />
         )}
         {(!pollingEnabled &&

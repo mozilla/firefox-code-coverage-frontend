@@ -22,7 +22,7 @@ const queryChangesetCoverage = node =>
 const queryActiveData = body =>
   jsonPost(`${ACTIVE_DATA}/query`, body);
 
-const coverageSummary = (coverage) => {
+const coverageStatistics = (coverage) => {
   const s = {
     addedLines: 0,
     coveredLines: 0,
@@ -80,12 +80,12 @@ export const fileRevisionCoverageSummary = (coverage) => {
   return s;
 };
 
-export const coverageSummaryText = (coverage) => {
+export const coverageSummaryText = (covStatistics) => {
+  const { percentage, coveredLines, addedLines } = covStatistics;
   const { low, medium, high } = settings.COVERAGE_THRESHOLDS;
-  const s = coverageSummary(coverage);
   const result = { className: 'no-change', text: 'No changes' };
-  if (typeof s.percentage !== 'undefined') {
-    const perc = parseInt(s.percentage, 10);
+  if (typeof percentage !== 'undefined') {
+    const perc = parseInt(percentage, 10);
     if (perc < low.threshold) {
       result.className = low.className;
     } else if (perc < medium.threshold) {
@@ -93,7 +93,7 @@ export const coverageSummaryText = (coverage) => {
     } else {
       result.className = high.className;
     }
-    result.text = `${perc}% - ${s.coveredLines} lines covered out of ${s.addedLines} added`;
+    result.text = `${perc}% - ${coveredLines} lines covered out of ${addedLines} added`;
   }
   return result;
 };
@@ -137,7 +137,9 @@ export const transformCoverageData = (cov) => {
     };
   });
   // Some extra data for the UI
-  const result = coverageSummaryText(newCov);
+  const stats = coverageStatistics(newCov);
+  newCov.percentage = stats.percentage;
+  const result = coverageSummaryText(stats);
   newCov.summary = result.text;
   newCov.summaryClassName = result.className;
   return newCov;
