@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
-import { jsonPost, plainFetch } from './fetch';
+import { jsonPost, jsonFetch, plainFetch } from './fetch';
 import { queryCacheWithFallback } from './localCache';
 
 const {
@@ -16,6 +16,9 @@ const queryChangesetCoverage = node =>
 
 const queryActiveData = body =>
   jsonPost(`${ACTIVE_DATA}/query`, body);
+
+export const querySupportedFiles = () =>
+  jsonFetch(`${CCOV_BACKEND}/coverage/supported_extensions`);
 
 const coverageSummary = (coverage) => {
   const s = {

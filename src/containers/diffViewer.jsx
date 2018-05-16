@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { orderBy } from 'lodash';
 
 import DiffViewer from '../components/diffViewer';
-import { getChangesetCoverage } from '../utils/coverage';
+import { getChangesetCoverage, querySupportedFiles } from '../utils/coverage';
+import { filterUnsupportedExtensions } from '../utils/data';
 import { getDiff, getChangesetMeta } from '../utils/hg';
 import settings from '../settings';
 
@@ -39,7 +40,9 @@ export default class DiffViewerContainer extends Component {
     Promise.all([
       this.fetchSetChangesetMeta(node),
       this.fetchSetCoverageData(node),
-      this.fetchSetDiff(node)]);
+      this.fetchSetDiff(node),
+      this.fetchSupportedFiles(),
+    ]);
   }
 
   async fetchSetChangesetMeta(node) {
@@ -84,11 +87,17 @@ export default class DiffViewerContainer extends Component {
     }
   }
 
+  async fetchSupportedFiles() {
+    const supportedExtensions = await querySupportedFiles();
+    this.setState({ supportedExtensions });
+  }
+
   render() {
     const {
-      appError, changeset, coverage, parsedDiff,
+      appError, changeset, coverage, parsedDiff, supportedExtensions,
     } = this.state;
-    const sortedDiff = sortByPercent(parsedDiff, coverage);
+    const onlySupportedExtensions = filterUnsupportedExtensions(parsedDiff, supportedExtensions);
+    const sortedDiff = sortByPercent(onlySupportedExtensions, coverage);
 
     return (
       <DiffViewer

@@ -89,3 +89,19 @@ export const changesetsMap = {
     tags: [],
   },
 };
+
+export const supportedExtensions = [
+  'c',
+  'h',
+  'jsm',
+];
+
+// This is an incomplete parsedDiff object
+export const parsedDiff = [
+  {
+    to: 'layout/reftests/reftest.list',
+  },
+  {
+    to: 'layout/tools/reftest/globals.jsm',
+  },
+];
