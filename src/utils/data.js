@@ -1,9 +1,10 @@
-import settings from '../settings';
-import { getCoverage } from '../utils/coverage';
+import {
+  changesetsCoverageSummary,
+  getCoverage,
+  getPendingCoverage,
+} from '../utils/coverage';
 import { getChangesets } from '../utils/hg';
 import { saveInCache } from '../utils/localCache';
-
-const { INTERNAL_ERROR, PENDING } = settings.STRINGS;
 
 export const sortingMethods = {
   DATE: 'date',
@@ -31,57 +32,85 @@ export const extendObject = (obj, copyFrom) => {
 };
 
 const sortChangesetsByChangesetIndex = (a, b) => {
+  let retVal;
   if (a.changesetIndex < b.changesetIndex) {
-    return 1;
+    retVal = 1;
+  } else {
+    retVal = -1;
   }
-  return -1;
+  return retVal;
 };
 
 const sortChangesetsByTimestamp = (a, b) => {
-  if (a.date[0] < b.data[0]) {
-    return 1;
+  let retVal;
+  if (a.date[0] < b.date[0]) {
+    retVal = 1;
+  } else {
+    retVal = -1;
   }
-  return -1;
+  return retVal;
 };
 
 const sortChangesetsByRecency = (a, b) => {
+  let retVal;
   if (a.pushId < b.pushId) {
-    return 1;
+    retVal = 1;
   } else if (a.pushId === b.pushId) {
     if (a.date) {
-      return sortChangesetsByTimestamp(a, b);
+      retVal = sortChangesetsByTimestamp(a, b);
+    } else {
+      retVal = sortChangesetsByChangesetIndex(a, b);
     }
-    return sortChangesetsByChangesetIndex(a, b);
+  } else {
+    retVal = -1;
   }
-  return -1;
+  return retVal;
 };
 
-export const sortChangesets = (changesets, changesetsCoverage, sortingMethod) => {
-  if ((Object.keys(changesets).legnth === 0) ||
-      (Object.keys(changesetsCoverage).length === 0)) {
-    return [];
+const sortWithUndefined = (a, b) => {
+  let retVal;
+  if ((typeof a.percentage === 'undefined') && (typeof b.percentage === 'undefined')) {
+    retVal = 0;
+  } else if (typeof a.percentage === 'undefined') {
+    retVal = 1;
+  } else {
+    retVal = -1;
   }
-  const sortedChangesets = mapToArray(changesets)
-    .filter(cset => changesetsCoverage[cset.node].show);
-  if (sortingMethod === sortingMethods.DATE) {
-    sortedChangesets.sort(sortChangesetsByRecency);
-  }
-  return sortedChangesets;
+  return retVal;
 };
 
-const changesetsCoverageSummary = (changesetsCoverage) => {
-  const summary = { pending: 0, error: 0 };
-  Object.values(changesetsCoverage).forEach((csetCoverage) => {
-    if (csetCoverage.summary === PENDING) {
-      summary.pending += 1;
-    } else if (csetCoverage.summary === INTERNAL_ERROR) {
-      summary.error += 1;
-    }
-  });
-  console.debug(`We have ${Object.keys(changesetsCoverage).length} changesets.`);
-  console.debug(`pending: ${summary.pending}`);
-  console.debug(`errors: ${summary.error}`);
-  return summary;
+const sortChangesetsByCoverageScore = (a, b) => {
+  let retVal;
+  if ((typeof a.percentage === 'undefined') || (typeof b.percentage === 'undefined')) {
+    // Some changesets are marked as 'No changes'
+    // These changes cannot affect coverage, thus, an undefined percentage
+    retVal = sortWithUndefined(a, b);
+  } else if (a.percentage < b.percentage) {
+    retVal = -1;
+  } else if (a.percentage === b.percentage) {
+    retVal = 0;
+  } else {
+    retVal = 1;
+  }
+  return retVal;
+};
+
+const viewableChangesetsArray = changesetsCoverage => (
+  mapToArray(changesetsCoverage).filter(csetCov => csetCov.show));
+
+export const sortChangesetsNewestFirst = (changesets, changesetsCoverage) => {
+  const csets = viewableChangesetsArray(changesetsCoverage);
+  csets.sort(sortChangesetsByRecency);
+  return csets;
+};
+
+export const sortChangesetsByCoverage = (changesets, changesetsCoverage, reversed) => {
+  const csets = viewableChangesetsArray(changesetsCoverage);
+  csets.sort(sortChangesetsByCoverageScore);
+  if (reversed) {
+    csets.reverse();
+  }
+  return csets;
 };
 
 export const loadCoverageData = async () => {
@@ -98,7 +127,7 @@ export const loadCoverageData = async () => {
 export const pollPendingChangesets = async (changesetsCoverage) => {
   let polling = true;
   console.debug('We are going to poll again for coverage data.');
-  const { coverage, summary } = await getCoverage(changesetsCoverage);
+  const { coverage, summary } = await getPendingCoverage(changesetsCoverage);
   if (summary.pending === 0) {
     console.debug('No more polling required.');
     polling = false;
