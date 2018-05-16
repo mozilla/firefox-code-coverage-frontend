@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { orderBy } from 'lodash';
 
 import DiffViewer from '../components/diffViewer';
-import { getChangesetCoverage } from '../utils/coverage';
+import { getChangesetCoverage, querySupportedFiles } from '../utils/coverage';
 import { getDiff, getChangesetMeta } from '../utils/hg';
 import settings from '../settings';
 
@@ -18,6 +18,21 @@ const sortByPercent = (parsedDiff, coverage) => {
   });
   const sortedDiffs = orderBy(parsedDiff, ({ percent }) => percent || 0, ['desc']);
   return sortedDiffs;
+};
+
+const filterUnsupportedExtensions = (parsedDiff, supportedExtensions) => {
+  const newDiff = [];
+  parsedDiff.forEach((p) => {
+    const extensionTo = p.to.split('.').pop();
+    const extensionFrom = p.from.split('.').pop();
+    if (supportedExtensions.find(ext => ext === extensionTo)) {
+      newDiff.push(p);
+    } else if (supportedExtensions.find(ext => ext === extensionFrom)) {
+      // Case for added files
+      newDiff.push(p);
+    }
+  });
+  return newDiff;
 };
 
 /* DiffViewer loads a raw diff from Mozilla's hg-web and code coverage from
@@ -39,7 +54,9 @@ export default class DiffViewerContainer extends Component {
     Promise.all([
       this.fetchSetChangesetMeta(node),
       this.fetchSetCoverageData(node),
-      this.fetchSetDiff(node)]);
+      this.fetchSetDiff(node),
+      this.fetchSupportedFiles(),
+    ]);
   }
 
   async fetchSetChangesetMeta(node) {
@@ -84,11 +101,17 @@ export default class DiffViewerContainer extends Component {
     }
   }
 
+  async fetchSupportedFiles() {
+    const supportedExtensions = await querySupportedFiles();
+    this.setState({ supportedExtensions });
+  }
+
   render() {
     const {
-      appError, changeset, coverage, parsedDiff,
+      appError, changeset, coverage, parsedDiff, supportedExtensions,
     } = this.state;
-    const sortedDiff = sortByPercent(parsedDiff, coverage);
+    const onlySupportedExtensions = filterUnsupportedExtensions(parsedDiff, supportedExtensions);
+    const sortedDiff = sortByPercent(onlySupportedExtensions, coverage);
 
     return (
       <DiffViewer
