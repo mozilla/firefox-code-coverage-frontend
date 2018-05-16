@@ -1,5 +1,5 @@
 import settings from '../settings';
-import { JSON_HEADERS, PLAIN_HEADERS } from './fetch';
+import { jsonFetch, plainFetch } from './fetch';
 import { getFromCache, saveInCache } from './localCache';
 
 const { REPO_NAME, HG_HOST } = settings;
@@ -22,21 +22,20 @@ const initializedChangeset = (cset, author) => ({
 });
 
 export const getDiff = async (node, repoName = REPO_NAME) => {
-  const text = await fetch(`${HG_HOST}/${repoName}/raw-rev/${node}`, { PLAIN_HEADERS });
+  const text = await plainFetch(`${HG_HOST}/${repoName}/raw-rev/${node}`);
   return text.text();
 };
 
 export const getRawFile = (node, filePath, repoName = REPO_NAME) =>
-  fetch(`${HG_HOST}/${repoName}/raw-file/${node}/${filePath}`, { PLAIN_HEADERS });
+  plainFetch(`${HG_HOST}/${repoName}/raw-file/${node}/${filePath}`);
 
 export const getChangesetMeta = async (node, repoPath = REPO_NAME) => {
-  const text = await fetch(`${HG_HOST}/${repoPath}/json-rev/${node}`, JSON_HEADERS);
-  const meta = await text.json();
+  const meta = await jsonFetch(`${HG_HOST}/${repoPath}/json-rev/${node}`);
   return initializedChangeset(meta, meta.user);
 };
 
 export const getJsonPushes = (repoName = REPO_NAME, date = settings.HG_DAYS_AGO) =>
-  fetch(`${HG_HOST}/${repoName}/json-pushes?version=2&full=1&startdate=${date}`, JSON_HEADERS);
+  jsonFetch(`${HG_HOST}/${repoName}/json-pushes?version=2&full=1&startdate=${date}`);
 
 export const hgDiffUrl = (node, repoName = REPO_NAME) =>
   `${HG_HOST}/${repoName}/rev/${node}`;
@@ -109,7 +108,7 @@ const getChangesets = async (repoName = REPO_NAME) => {
 
     if (!csets || csets.length === 0) {
       console.debug('The local cache was not available.');
-      const text = await (await getJsonPushes(repoName)).json();
+      const text = await getJsonPushes(repoName);
       csets = await pushesToCsets(text.pushes);
     }
 
@@ -121,7 +120,7 @@ const getChangesets = async (repoName = REPO_NAME) => {
       console.error(e);
     }
   } else {
-    const text = await (await getJsonPushes(repoName)).json();
+    const text = await getJsonPushes(repoName);
     csets = await pushesToCsets(text.pushes);
   }
   return csets;

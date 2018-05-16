@@ -1,6 +1,6 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
-import { JSON_HEADERS } from './fetch';
+import { jsonPost, plainFetch } from './fetch';
 import { queryCacheWithFallback } from './localCache';
 
 const {
@@ -11,11 +11,8 @@ export const githubUrl = gitCommit => `${GH_GECKO_DEV}/commit/${gitCommit}`;
 export const codecovUrl = gitCommit => (`${CODECOV_GECKO_DEV}/commit/${gitCommit}`);
 export const ccovBackendUrl = node => (`${BACKEND}/coverage/changeset/${node}`);
 
-const jsonPost = (url, body) =>
-  fetch(url, { headers: JSON_HEADERS, method: 'POST', body: JSON.stringify(body) });
-
 const queryChangesetCoverage = node =>
-  fetch(`${CCOV_BACKEND}/coverage/changeset/${node}`, { JSON_HEADERS });
+  plainFetch(`${CCOV_BACKEND}/coverage/changeset/${node}`);
 
 const queryActiveData = body =>
   jsonPost(`${ACTIVE_DATA}/query`, body);
