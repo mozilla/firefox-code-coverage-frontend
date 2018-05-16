@@ -1,20 +1,20 @@
 import ChangesetInfo from './changesetInfo';
 
-const Summary = ({ changesets, coverage }) => (
+const Summary = ({ changesets, changesetsCoverage, sortedChangesets, onSortByCoverage }) => (
   <table className="changeset-viewer">
     <tbody>
       <tr>
         <th>Author</th>
         <th>Changeset</th>
         <th>Description</th>
-        <th>Coverage summary</th>
+        <th onClick={() => onSortByCoverage()}>Coverage summary</th>
       </tr>
-      {Object.keys(changesets).map(node => (
+      {sortedChangesets.map(({ node }) => (
         <ChangesetInfo
           key={node}
           changeset={changesets[node]}
-          summary={coverage[node].summary}
-          summaryClassName={coverage[node].summaryClassName}
+          summary={changesetsCoverage[node].summary}
+          summaryClassName={changesetsCoverage[node].summaryClassName}
         />
       ))}
     </tbody>
