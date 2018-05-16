@@ -6,8 +6,6 @@ import settings from '../settings';
 import {
   loadCoverageData,
   pollPendingChangesets,
-  sortChangesets,
-  sortingMethods,
 } from '../utils/data';
 
 const { LOADING } = settings.STRINGS;
@@ -29,7 +27,6 @@ export default class SummaryContainer extends Component {
       changesetsCoverage: {},
       pollingEnabled: false, // We don't start polling until we're ready
       timeout: 10000, // How often we poll for csets w/o coverage status
-      sortingMethod: sortingMethods.DATE,
     };
   }
 
@@ -74,8 +71,9 @@ export default class SummaryContainer extends Component {
       return (<div className="error-message">{errorMessage}</div>);
     }
 
-    const sortedChangesets =
-      sortChangesets(changesets, changesetsCoverage, this.state.sortingMethod);
+    const ready =
+      Object.keys(changesets).length > 0 &&
+      Object.keys(changesetsCoverage).length > 0;
 
     return (
       <div>
@@ -91,22 +89,19 @@ export default class SummaryContainer extends Component {
             />
           </div>
         )}
-        {sortedChangesets.length > 0 && (
+        {ready && (
           <Summary
+            changesets={changesets}
             changesetsCoverage={changesetsCoverage}
-            sortedChangesets={sortedChangesets}
           />
         )}
-        {(!pollingEnabled &&
-          (Object.keys(changesetsCoverage).length > 0)
-          && sortedChangesets.length === 0) && (
-            <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
-              <span>There is currently no coverage data to show. Please </span>
-              <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
-            </p>
-          )
-        }
-        {pollingEnabled &&
+        {!pollingEnabled && ready && (
+          <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
+            <span>There is currently no coverage data to show. Please </span>
+            <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
+          </p>
+        )}
+        {!pollingEnabled &&
           (<h3 className="loading">{LOADING}</h3>)
         }
       </div>

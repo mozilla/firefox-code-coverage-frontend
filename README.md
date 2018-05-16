@@ -54,3 +54,6 @@ Checkout the code and run:
 yarn install
 yarn start
 ```
+
+# Attribution
+Icons from [Material Design Icons](https://material.io/tools/icons/?style=baseline).
