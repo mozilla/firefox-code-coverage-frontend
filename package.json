@@ -30,6 +30,7 @@
     "form-serialize": "^0.7.2",
     "localforage": ">=1.0",
     "lodash": "^4.17.4",
+    "mdi-react": "^3.3.0",
     "parse-diff": "^0.4.2",
     "prop-types": "^15.6.0",
     "query-string": "^5.0.1",

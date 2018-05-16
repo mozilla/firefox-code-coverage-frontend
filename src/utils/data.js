@@ -56,17 +56,45 @@ const sortChangesetsByRecency = (a, b) => {
   return -1;
 };
 
-export const sortChangesets = (changesets, changesetsCoverage, sortingMethod) => {
-  if ((Object.keys(changesets).legnth === 0) ||
-      (Object.keys(changesetsCoverage).length === 0)) {
-    return [];
+const sortWithUndefined = (a, b) => {
+  if ((typeof a.percentage === 'undefined') && (typeof b.percentage === 'undefined')) {
+    return 0;
+  } else if (typeof a.percentage === 'undefined') {
+    return 1;
   }
-  const sortedChangesets = mapToArray(changesets)
-    .filter(cset => changesetsCoverage[cset.node].show);
-  if (sortingMethod === sortingMethods.DATE) {
-    sortedChangesets.sort(sortChangesetsByRecency);
+  return -1;
+};
+
+const sortChangesetsByCoverageScore = (a, b) => {
+  let retVal;
+  if ((typeof a.percentage === 'undefined') || (typeof b.percentage === 'undefined')) {
+    retVal = sortWithUndefined(a, b);
+  } else if (a.percentage < b.percentage) {
+    retVal = -1;
+  } else if (a.percentage === b.percentage) {
+    retVal = 0;
+  } else {
+    retVal = 1;
   }
-  return sortedChangesets;
+  return retVal;
+};
+
+const viewableChangesetsArray = changesetsCoverage => (
+  mapToArray(changesetsCoverage).filter(csetCov => csetCov.show));
+
+export const sortChangesetsNewestFirst = (changesets, changesetsCoverage) => {
+  const csets = viewableChangesetsArray(changesetsCoverage);
+  csets.sort(sortChangesetsByRecency);
+  return csets;
+};
+
+export const sortChangesetsByCoverage = (changesets, changesetsCoverage, reversed) => {
+  const csets = viewableChangesetsArray(changesetsCoverage);
+  csets.sort(sortChangesetsByCoverageScore);
+  if (reversed) {
+    csets.reverse();
+  }
+  return csets;
 };
 
 const changesetsCoverageSummary = (changesetsCoverage) => {

@@ -150,6 +150,10 @@ tr.changeset td{
 .loading {
 	text-align: center;
 }
+.mdi-icon {
+	height: 1em;
+	vertical-align: middle;
+}
 
 /* Changesets */
 .hidden-changeset {
