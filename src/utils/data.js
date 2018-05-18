@@ -1,14 +1,6 @@
 import { getCoverage, changesetsCoverageSummary } from '../utils/coverage';
 import { getChangesets } from '../utils/hg';
 
-export const arrayToMap = (csets = []) => {
-  const newCsets = {};
-  csets.forEach((cset) => {
-    newCsets[cset.node] = cset;
-  });
-  return newCsets;
-};
-
 export const sortingMethods = {
   DATE: 'date',
   COVERAGE: 'coverage',
