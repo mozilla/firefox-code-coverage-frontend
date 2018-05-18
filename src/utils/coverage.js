@@ -1,7 +1,7 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
 import { jsonFetch, jsonPost, plainFetch } from './fetch';
-import { queryCacheWithFallback, saveInCache } from './localCache';
+import { saveInCache } from './localCache';
 
 const {
   ACTIVE_DATA, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
@@ -166,17 +166,14 @@ export const getChangesetCoverage = async (node) => {
 };
 
 export const getCoverage = async (changesets) => {
-  const fallback = async () => {
-    const results = await Promise.all(
-      Object.keys(changesets)
-        .map(async node => getChangesetCoverage(node)));
-    const changesetsCoverage = {};
-    results.forEach((csetCov) => {
-      changesetsCoverage[csetCov.node] = csetCov;
-    });
-    return changesetsCoverage;
-  };
-  return queryCacheWithFallback('coverage', fallback);
+  const results = await Promise.all(
+    Object.keys(changesets)
+      .map(async node => getChangesetCoverage(node)));
+  const changesetsCoverage = {};
+  results.forEach((csetCov) => {
+    changesetsCoverage[csetCov.node] = csetCov;
+  });
+  return changesetsCoverage;
 };
 
 export const changesetsCoverageSummary = (changesetsCoverage) => {

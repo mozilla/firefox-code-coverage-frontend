@@ -6,7 +6,7 @@ import ChangesetFilter from '../components/changesetFilter';
 import GenericErrorMessage from '../components/genericErrorMessage';
 import settings from '../settings';
 import { pollPendingChangesets } from '../utils/coverage';
-import { filterChangesets, loadCoverageData } from '../utils/data';
+import { filterChangesets, loadOrFetchCoverageData } from '../utils/data';
 
 const { LOADING } = settings.STRINGS;
 
@@ -53,7 +53,7 @@ export default class SummaryContainer extends Component {
   async initializeData() {
     try {
       // This will either fetch the data or grab it from the cache
-      const { changesets, changesetsCoverage, summary } = await loadCoverageData();
+      const { changesets, changesetsCoverage, summary } = await loadOrFetchCoverageData();
       this.setState({
         changesets,
         changesetsCoverage,

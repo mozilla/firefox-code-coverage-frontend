@@ -1,6 +1,5 @@
 import settings from '../settings';
 import { jsonFetch, plainFetch } from './fetch';
-import { queryCacheWithFallback } from './localCache';
 
 const { REPO_NAME, HG_HOST } = settings;
 
@@ -102,9 +101,6 @@ const pushesToCsets = async (pushes) => {
 };
 
 export const getChangesets = async (repoName = REPO_NAME) => {
-  const fallback = async () => {
-    const text = await getJsonPushes(repoName);
-    return pushesToCsets(text.pushes);
-  };
-  return queryCacheWithFallback('changesets', fallback);
+  const text = await getJsonPushes(repoName);
+  return pushesToCsets(text.pushes);
 };

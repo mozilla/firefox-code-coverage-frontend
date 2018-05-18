@@ -1,9 +1,12 @@
 import * as localForage from 'localforage';
 import settings from '../settings';
+import CacheError from '../utils/errors';
 
+const VALID_KEYS = ['changesets', 'coverage'];
 const CACHING_KEY = 'cachedTime';
 
-export const isExpiredCache = (lastCaching) => {
+const queryCacheIsExpired = async () => {
+  const lastCaching = await localForage.getItem(CACHING_KEY);
   const MSTOS = 1000;
   const currentTime = (new Date()).getTime();
   const secondsDifference = (currentTime - lastCaching) / MSTOS;
@@ -14,21 +17,22 @@ export const isExpiredCache = (lastCaching) => {
     || false;
 };
 
-export const getFromCache = async (key) => {
-  let data;
-  try {
-    const lastCaching = await localForage.getItem(CACHING_KEY);
-    data = await localForage.getItem(key);
-    if (!isExpiredCache(lastCaching) && data) {
-      console.debug('Retrieved data from the local cache.');
-    } else {
-      console.debug('The cache has expired');
-      data = undefined;
-    }
-  } catch (e) {
-    // We only log since we want to fetch the changesets from Hg
-    console.error(e);
+const getFromCache = async (key) => {
+  if (typeof key !== 'string') {
+    throw new CacheError(`${key} should be a string.`);
+  } else if (!VALID_KEYS.find(elem => elem === key)) {
+    throw new CacheError(`${key} is not a valid cache key.`);
   }
+
+  if (await queryCacheIsExpired()) {
+    throw new CacheError('The cache has expired.');
+  }
+
+  const data = await localForage.getItem(key);
+  if (!data) {
+    throw new CacheError(`${key} was not found in the cache.`);
+  }
+
   return data;
 };
 
@@ -56,7 +60,8 @@ export const queryCacheWithFallback = async (key, fallback) => {
       data = await getFromCache(key);
     } catch (e) {
       // We only log since we want to fetch the coverage from the backend
-      console.error(e);
+      console.warning(e);
+      data = undefined;
     }
 
     // WARNING: This code can only be used if you're expecting an Object
@@ -75,4 +80,22 @@ export const queryCacheWithFallback = async (key, fallback) => {
     data = await fallback();
   }
   return data;
+};
+
+export const loadDataFromCache = async () => {
+  let data;
+  try {
+    data.changesets = await getFromCache('changesets');
+    data.changesetsCoverage = await getFromCache('coverage');
+  } catch (e) {
+    console.error(e);
+  }
+
+  return data;
+};
+
+export const saveDataToCache = (data) => {
+  Object.entries(data).forEach((key, value) => {
+    saveInCache(key, value);
+  });
 };

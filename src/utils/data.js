@@ -3,6 +3,10 @@ import {
   getCoverage,
 } from '../utils/coverage';
 import { getChangesets } from '../utils/hg';
+import {
+  loadDataFromCache,
+  saveDataToCache,
+} from '../utils/localCache';
 
 export const sortingMethods = {
   DATE: 'date',
@@ -110,13 +114,24 @@ export const sortChangesetsByCoverage = (changesets, changesetsCoverage, reverse
   return filteredChangesetsCoverage.map(({ node }) => (node));
 };
 
-export const loadCoverageData = async () => {
-  const changesets = await getChangesets();
-  const changesetsCoverage = await getCoverage(changesets);
-  const summary = changesetsCoverageSummary(changesetsCoverage);
+// Hit the cache first, otherwise, query the backend
+export const loadOrFetchCoverageData = async () => {
+  let data;
+  try {
+    data = await loadDataFromCache();
+  } catch (e) {
+    if (e.name !== 'CacheError') {
+      throw e;
+    }
+  }
+  if (!data) {
+    data.changesets = await getChangesets();
+    data.changesetsCoverage = await getCoverage(data.changesets);
+    saveDataToCache(data);
+  }
+  const summary = changesetsCoverageSummary(data.changesetsCoverage);
   return {
-    changesets,
-    changesetsCoverage,
+    ...data,
     summary,
   };
 };
