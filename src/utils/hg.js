@@ -1,6 +1,6 @@
 import settings from '../settings';
 import { jsonFetch, plainFetch } from './fetch';
-import { getFromCache, saveInCache } from './localCache';
+import { queryCacheWithFallback } from './localCache';
 
 const { REPO_NAME, HG_HOST } = settings;
 
@@ -84,15 +84,13 @@ export const bzUrl = (description) => {
 // A push can be composed of multiple changesets
 // We want to return an array of changesets
 // Some changesets will be ignored
-// XXX: We return an array to keep chronological order
-//      A better approach would not rely on that
 const pushesToCsets = async (pushes) => {
-  const filteredCsets = [];
-  Object.keys(pushes).reverse().forEach((pushId) => {
+  const filteredCsets = {};
+  Object.keys(pushes).forEach((pushId) => {
     // We only consider pushes that have more than 1 changeset
     if (pushes[pushId].changesets.length >= 1) {
       // Re-order csets and filter out those we don't want
-      pushes[pushId].changesets.reverse()
+      pushes[pushId].changesets
         .filter(c => !ignoreChangeset(c))
         .forEach((cset, changesetIndex) => {
           filteredCsets[cset.node] =
@@ -104,31 +102,9 @@ const pushesToCsets = async (pushes) => {
 };
 
 export const getChangesets = async (repoName = REPO_NAME) => {
-  let csets = [];
-  if (settings.CACHE_CONFIG.ENABLED) {
-    try {
-      csets = await getFromCache('changesets');
-    } catch (e) {
-      // We only log since we want to fetch the changesets from Hg
-      console.error(e);
-    }
-
-    if (!csets || csets.length === 0) {
-      console.debug('The local cache was not available.');
-      const text = await getJsonPushes(repoName);
-      csets = await pushesToCsets(text.pushes);
-    }
-
-    try {
-      saveInCache('changesets', csets);
-    } catch (e) {
-      console.info('We have failed to store to the local cache');
-      // We don't want to throw an error and abort code execution
-      console.error(e);
-    }
-  } else {
+  const fallback = async () => {
     const text = await getJsonPushes(repoName);
-    csets = await pushesToCsets(text.pushes);
-  }
-  return csets;
+    return pushesToCsets(text.pushes);
+  };
+  return queryCacheWithFallback('changesets', fallback);
 };
