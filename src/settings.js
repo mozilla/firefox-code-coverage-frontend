@@ -1,3 +1,5 @@
+import { daysAgoDate } from './utils/date';
+
 const settings = {
   ACTIVE_DATA: 'https://activedata.allizom.org',
   BZ_URL: 'https://bugzilla.mozilla.org',
@@ -30,8 +32,7 @@ const settings = {
     LOADING: 'Loading...',
     PENDING: 'Pending',
   },
-  HG_DAYS_AGO: new Date((new Date()).getTime() - (1 * 24 * 60 * 60 * 1000))
-    .toISOString().substring(0, 10),
+  HG_DAYS_AGO: daysAgoDate(1),
 };
 
 if (settings.CACHE_CONFIG.ENABLED) {
