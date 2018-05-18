@@ -3,10 +3,8 @@ import ReactInterval from 'react-interval';
 
 import Summary from '../components/summary';
 import settings from '../settings';
-import {
-  loadCoverageData,
-  pollPendingChangesets,
-} from '../utils/data';
+import { pollPendingChangesets } from '../utils/coverage';
+import { loadCoverageData } from '../utils/data';
 
 const { LOADING } = settings.STRINGS;
 
@@ -31,11 +29,12 @@ export default class SummaryContainer extends Component {
   }
 
   async componentDidMount() {
-    this.loadCoverageData();
+    this.initializeData();
   }
 
-  async loadCoverageData() {
+  async initializeData() {
     try {
+      // This will either fetch the data or grab it from the cache
       const { changesets, changesetsCoverage, summary } = await loadCoverageData();
       this.setState({
         changesets,
@@ -54,11 +53,10 @@ export default class SummaryContainer extends Component {
   }
 
   // We poll on an interval for coverage for csets without it
-  async pollPending(changesetsCoverage) {
-    console.debug('We are going to poll again for coverage data.');
+  async pollPending(coverage) {
     try {
-      const { csetsCoverage, polling } = await pollPendingChangesets(changesetsCoverage);
-      this.setState({ changesetsCoverage: csetsCoverage, pollingEnabled: polling });
+      const { changesetsCoverage, pollingEnabled } = await pollPendingChangesets(coverage);
+      this.setState({ changesetsCoverage, pollingEnabled });
     } catch (e) {
       this.setState({ pollingEnabled: false });
     }

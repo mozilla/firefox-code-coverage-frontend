@@ -1,11 +1,13 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
-import { jsonPost, jsonFetch, plainFetch } from './fetch';
-import { queryCacheWithFallback } from './localCache';
+import { jsonFetch, jsonPost, plainFetch } from './fetch';
+import { queryCacheWithFallback, saveInCache } from './localCache';
 
 const {
   ACTIVE_DATA, BACKEND, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
 } = settings;
+
+const { INTERNAL_ERROR, PENDING } = settings.STRINGS;
 
 export const githubUrl = gitCommit => `${GH_GECKO_DEV}/commit/${gitCommit}`;
 export const codecovUrl = gitCommit => (`${CODECOV_GECKO_DEV}/commit/${gitCommit}`);
@@ -181,6 +183,54 @@ export const getCoverage = async (changesets) => {
     return changesetsCoverage;
   };
   return queryCacheWithFallback('coverage', fallback);
+};
+
+export const changesetsCoverageSummary = (changesetsCoverage) => {
+  const summary = { pending: 0, error: 0 };
+  Object.values(changesetsCoverage).forEach((csetCoverage) => {
+    if (csetCoverage.summary === PENDING) {
+      summary.pending += 1;
+    } else if (csetCoverage.summary === INTERNAL_ERROR) {
+      summary.error += 1;
+    }
+  });
+  console.debug(`We have ${Object.keys(changesetsCoverage).length} changesets.`);
+  console.debug(`pending: ${summary.pending}`);
+  console.debug(`errors: ${summary.error}`);
+  return summary;
+};
+
+export const pollPendingChangesets = async (csetsCoverage) => {
+  let pollingEnabled = true;
+  console.debug('We are going to poll again for coverage data.');
+  const { changesetsCoverage, summary } = await getCoverage(csetsCoverage);
+  if (summary.pending === 0) {
+    console.debug('No more polling required.');
+    pollingEnabled = false;
+  }
+  saveInCache('coverage', changesetsCoverage);
+  return { changesetsCoverage, pollingEnabled };
+};
+
+export const getPendingCoverage = async (changesetsCoverage) => {
+  const results = await Promise.all(
+    Object.keys(changesetsCoverage)
+      .map(async (node) => {
+        let csetCoverage = changesetsCoverage[node];
+        if (csetCoverage.summary === PENDING) {
+          csetCoverage = await getChangesetCoverage(node);
+        }
+        return csetCoverage;
+      }));
+
+  const csetsCoverage = {};
+  results.forEach((csetCov) => {
+    csetsCoverage[csetCov.node] = csetCov;
+  });
+  return {
+    coverage: csetsCoverage,
+    summary: changesetsCoverageSummary(csetsCoverage),
+  };
 };
 
 export const fileRevisionWithActiveData = async (revision, path, repoPath) => {

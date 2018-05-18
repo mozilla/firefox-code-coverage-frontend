@@ -30,28 +30,21 @@ export default class Summary extends Component {
 
   displaySortingStatusIcon() {
     const { sortingMethod, sortingReversed } = this.state;
-    let icon;
     if (sortingMethod === sortingMethods.DATE) {
-      icon = <MenuRightIcon />;
-    } else if (sortingMethod === sortingMethods.COVERAGE && !sortingReversed) {
-      icon = <MenuDownIcon />;
-    } else {
-      icon = <MenuUpIcon />;
+      return <MenuRightIcon />;
     }
-    return icon;
+    if (sortingMethod === sortingMethods.COVERAGE) {
+      return sortingReversed ? <MenuDownIcon /> : <MenuUpIcon />;
+    }
+    return undefined;
   }
 
   sortedChangesets() {
     const { changesets, changesetsCoverage } = this.props;
-    let sortedChangesets = [];
     if (this.state.sortingMethod === sortingMethods.DATE) {
-      sortedChangesets =
-        sortChangesetsNewestFirst(changesets, changesetsCoverage);
-    } else {
-      sortedChangesets =
-        sortChangesetsByCoverage(changesets, changesetsCoverage, this.state.sortingReversed);
+      return sortChangesetsNewestFirst(changesets, changesetsCoverage);
     }
-    return sortedChangesets;
+    return sortChangesetsByCoverage(changesets, changesetsCoverage, this.state.sortingReversed);
   }
 
   render() {
