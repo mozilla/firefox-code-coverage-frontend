@@ -1,6 +1,5 @@
 /* global describe it */
 import {
-  arrayToMap,
   mapToArray,
   filterUnsupportedExtensions,
   sortChangesetsByCoverage,
@@ -16,18 +15,10 @@ const sortedChangesetsByHighCoverage = require('../expected/sortedChangesetsByHi
 
 const assert = require('assert');
 
-describe('Data structure converters', () => {
-  describe('arrayToMap', () => {
-    it('should return a map of node:changeset pairs', () => {
-      const csetMap = arrayToMap(dummyData.changesetsArray);
-      assert.deepEqual(csetMap, dummyData.changesetsMap);
-    });
-  });
-  describe('mapToArray', () => {
-    it('should return an array of changesets', () => {
-      const csetArray = mapToArray(dummyData.changesetsMap);
-      assert.deepEqual(csetArray, dummyData.changesetsArray);
-    });
+describe('Data structure converter', () => {
+  it('should return an array of changesets', () => {
+    const csetArray = mapToArray(dummyData.changesetsMap);
+    assert.deepEqual(csetArray, dummyData.changesetsArray);
   });
 });
 
