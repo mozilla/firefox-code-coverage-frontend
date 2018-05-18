@@ -1,10 +1,5 @@
-import {
-  getCoverage,
-  getPendingCoverage,
-  changesetsCoverageSummary,
-} from '../utils/coverage';
+import { getCoverage, changesetsCoverageSummary } from '../utils/coverage';
 import { getChangesets } from '../utils/hg';
-import { saveInCache } from '../utils/localCache';
 
 export const arrayToMap = (csets = []) => {
   const newCsets = {};
@@ -32,43 +27,58 @@ export const extendObject = (obj, copyFrom) => {
 };
 
 const sortChangesetsByChangesetIndex = (a, b) => {
+  let retVal;
   if (a.changesetIndex < b.changesetIndex) {
-    return 1;
+    retVal = 1;
+  } else {
+    retVal = -1;
   }
-  return -1;
+  return retVal;
 };
 
 const sortChangesetsByTimestamp = (a, b) => {
-  if (a.date[0] < b.data[0]) {
-    return 1;
+  let retVal;
+  if (a.date[0] < b.date[0]) {
+    retVal = 1;
+  } else {
+    retVal = -1;
   }
-  return -1;
+  return retVal;
 };
 
 const sortChangesetsByRecency = (a, b) => {
+  let retVal;
   if (a.pushId < b.pushId) {
-    return 1;
+    retVal = 1;
   } else if (a.pushId === b.pushId) {
     if (a.date) {
-      return sortChangesetsByTimestamp(a, b);
+      retVal = sortChangesetsByTimestamp(a, b);
+    } else {
+      retVal = sortChangesetsByChangesetIndex(a, b);
     }
-    return sortChangesetsByChangesetIndex(a, b);
+  } else {
+    retVal = -1;
   }
-  return -1;
+  return retVal;
 };
 
 const sortWithUndefined = (a, b) => {
+  let retVal;
   if ((typeof a.percentage === 'undefined') && (typeof b.percentage === 'undefined')) {
-    return 0;
+    retVal = 0;
   } else if (typeof a.percentage === 'undefined') {
-    return 1;
+    retVal = 1;
+  } else {
+    retVal = -1;
   }
-  return -1;
+  return retVal;
 };
 
 const sortChangesetsByCoverageScore = (a, b) => {
   let retVal;
   if ((typeof a.percentage === 'undefined') || (typeof b.percentage === 'undefined')) {
+    // Some changesets are marked as 'No changes'
+    // These changes cannot affect coverage, thus, an undefined percentage
     retVal = sortWithUndefined(a, b);
   } else if (a.percentage < b.percentage) {
     retVal = -1;
@@ -107,17 +117,4 @@ export const loadCoverageData = async () => {
     changesetsCoverage,
     summary,
   };
-};
-
-export const pollPendingChangesets = async (changesetsCoverage) => {
-  let polling = true;
-  console.debug('We are going to poll again for coverage data.');
-  const { coverage, summary } = await getPendingCoverage(changesetsCoverage);
-  if (summary.pending === 0) {
-    console.debug('No more polling required.');
-    polling = false;
-  }
-  // It is recommended to keep redux functions being pure functions
-  saveInCache('coverage', coverage);
-  return { coverage, polling };
 };

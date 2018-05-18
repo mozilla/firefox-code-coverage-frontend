@@ -1,7 +1,7 @@
 import { uniq } from 'lodash';
 import settings from '../settings';
 import { jsonPost, plainFetch } from './fetch';
-import { queryCacheWithFallback } from './localCache';
+import { queryCacheWithFallback, saveInCache } from './localCache';
 
 const {
   ACTIVE_DATA, BACKEND, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
@@ -195,6 +195,18 @@ export const changesetsCoverageSummary = (changesetsCoverage) => {
   console.debug(`pending: ${summary.pending}`);
   console.debug(`errors: ${summary.error}`);
   return summary;
+};
+
+export const pollPendingChangesets = async (csetsCoverage) => {
+  let pollingEnabled = true;
+  console.debug('We are going to poll again for coverage data.');
+  const { changesetsCoverage, summary } = await getCoverage(csetsCoverage);
+  if (summary.pending === 0) {
+    console.debug('No more polling required.');
+    pollingEnabled = false;
+  }
+  saveInCache('coverage', changesetsCoverage);
+  return { changesetsCoverage, pollingEnabled };
 };
 
 export const getPendingCoverage = async (changesetsCoverage) => {
