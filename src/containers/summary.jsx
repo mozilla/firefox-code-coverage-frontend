@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactInterval from 'react-interval';
 
 import Summary from '../components/summary';
+import ChangesetFilter from '../components/changesetFilter';
 import settings from '../settings';
 import { arrayToMap, mapToArray } from '../utils/data';
 import { getCoverage } from '../utils/coverage';
@@ -23,14 +24,21 @@ export default class SummaryContainer extends Component {
     this.state = {
       changesets: [],
       coverage: [],
+      descriptionFilterValue: '',
       pollingEnabled: false, // We don't start polling until we're ready
       errorMessage: '',
       timeout: 30000, // How often we poll for csets w/o coverage status
     };
+    this.onFilterByDescription = this.onFilterByDescription.bind(this);
   }
 
   async componentDidMount() {
     this.fetchChangesets();
+  }
+
+  onFilterByDescription(event) {
+    event.preventDefault();
+    this.setState({ descriptionFilterValue: event.target.value });
   }
 
   async fetchChangesets() {
@@ -99,7 +107,7 @@ export default class SummaryContainer extends Component {
 
   render() {
     const {
-      changesets, coverage, pollingEnabled, errorMessage, timeout,
+      descriptionFilterValue, changesets, coverage, pollingEnabled, errorMessage, timeout,
     } = this.state;
     const coverageMap = arrayToMap(coverage);
 
@@ -109,7 +117,8 @@ export default class SummaryContainer extends Component {
 
     const viewableCsetsMap = {};
     changesets.forEach((cset) => {
-      if (coverageMap[cset.node].show) {
+      if (coverageMap[cset.node].show &&
+          cset.desc.search(descriptionFilterValue) !== -1) {
         viewableCsetsMap[cset.node] = cset;
       }
     });
@@ -128,6 +137,10 @@ export default class SummaryContainer extends Component {
             />
           </div>
         )}
+        <ChangesetFilter
+          value={descriptionFilterValue}
+          onChange={this.onFilterByDescription}
+        />
         {Object.keys(viewableCsetsMap).length > 0 &&
           <Summary
             changesets={viewableCsetsMap}

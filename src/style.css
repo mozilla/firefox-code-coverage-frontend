@@ -158,6 +158,13 @@ tr.changeset td{
 	vertical-align: middle;
 }
 
+form:not(:focus-within) {
+	opacity: 0;
+}
+form:focus-within + button {
+	display: none;
+}
+
 /* Changesets */
 .hidden-changeset {
 	display: none
