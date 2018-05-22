@@ -12,4 +12,5 @@ after_failure:
 - yarn build -- --inspect
 script:
 - yarn lint
+- yarn test
 - yarn build
