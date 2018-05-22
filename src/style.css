@@ -20,6 +20,9 @@ a {
 	color: white;
 	font-weight: bold;
 }
+.file-path .mdi-icon {
+	fill: white;
+}
 .file-summary {
 	background-color: black;
 	padding: 0.8em;
@@ -149,6 +152,10 @@ tr.changeset td{
 }
 .loading {
 	text-align: center;
+}
+.mdi-icon {
+	height: 1em;
+	vertical-align: middle;
 }
 
 /* Changesets */
