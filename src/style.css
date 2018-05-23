@@ -385,3 +385,16 @@ span.tests {
 .coverage-legend{
 	list-style: none;
 }
+
+/* placing coverage color legends in DiffViewer*/
+.coverage-color-legend{
+	border: solid 1px black;
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+}
+
+ul.coverage-legend{
+	list-style: none;
+	padding: 0;
+}
