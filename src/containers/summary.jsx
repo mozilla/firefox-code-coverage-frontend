@@ -113,10 +113,10 @@ export default class SummaryContainer extends Component {
             changesetsCoverage={changesetsCoverage}
           />
         )}
-        {!pollingEnabled && ready &&
+        {!ready && !pollingEnabled && (
           <GenericErrorMessage />
-        }
-        {!pollingEnabled &&
+        )}
+        {!ready &&
           (<h3 className="loading">{LOADING}</h3>)
         }
       </div>
