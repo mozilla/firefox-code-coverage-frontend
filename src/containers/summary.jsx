@@ -93,13 +93,13 @@ export default class SummaryContainer extends Component {
             changesetsCoverage={changesetsCoverage}
           />
         )}
-        {!pollingEnabled && ready && (
+        {!ready && !pollingEnabled && (
           <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
             <span>There is currently no coverage data to show. Please </span>
             <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
           </p>
         )}
-        {!pollingEnabled &&
+        {!ready &&
           (<h3 className="loading">{LOADING}</h3>)
         }
       </div>
