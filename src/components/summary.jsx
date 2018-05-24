@@ -11,32 +11,29 @@ import {
 
 export default class Summary extends Component {
   state = {
+    sortingIcon: <MenuRightIcon />,
     sortingMethod: sortingMethods.DATE,
     sortingReversed: false,
   }
 
   onClickNextSorting() {
     if (this.state.sortingMethod === sortingMethods.DATE) {
-      this.setState({ sortingMethod: sortingMethods.COVERAGE });
+      this.setState({
+        sortingIcon: <MenuDownIcon />,
+        sortingMethod: sortingMethods.COVERAGE,
+      });
     } else if (!this.state.sortingReversed) {
-      this.setState({ sortingReversed: true });
+      this.setState({
+        sortingIcon: <MenuUpIcon />,
+        sortingReversed: true,
+      });
     } else {
       this.setState({
+        sortingIcon: <MenuRightIcon />,
         sortingMethod: sortingMethods.DATE,
         sortingReversed: false,
       });
     }
-  }
-
-  displaySortingStatusIcon() {
-    const { sortingMethod, sortingReversed } = this.state;
-    if (sortingMethod === sortingMethods.DATE) {
-      return <MenuRightIcon />;
-    }
-    if (sortingMethod === sortingMethods.COVERAGE) {
-      return sortingReversed ? <MenuDownIcon /> : <MenuUpIcon />;
-    }
-    return undefined;
   }
 
   sortedChangesets() {
@@ -60,7 +57,7 @@ export default class Summary extends Component {
             <th>Changeset</th>
             <th>Description</th>
             <th onClick={() => this.onClickNextSorting()}>
-              {this.displaySortingStatusIcon()}
+              {this.state.sortingIcon}
               <span>Coverage summary</span>
             </th>
           </tr>
