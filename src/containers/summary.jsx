@@ -17,19 +17,23 @@ const PollingStatus = ({ pollingEnabled }) => (
     </div>) : (null)
 );
 
+const queryIfAnyDataToDisplay = (changesets, changesetsCoverage) => (
+  Object.keys(changesets)
+    .filter(node =>
+      changesetsCoverage[node] && changesetsCoverage[node].show,
+    ).length > 0
+);
+
 export default class SummaryContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      errorMessage: '',
-      changesets: {},
-      changesetsCoverage: {},
-      descriptionFilterValue: '',
-      pollingEnabled: false, // We don't start polling until we're ready
-      timeout: 10000, // How often we poll for csets w/o coverage status
-    };
-    this.onFilterByDescription = this.onFilterByDescription.bind(this);
-  }
+  state = {
+    errorMessage: '',
+    changesets: {},
+    changesetsCoverage: {},
+    descriptionFilterValue: '',
+    doneFirstLoad: false,
+    pollingEnabled: false, // We don't start polling until we're ready
+    timeout: 10000, // How often we poll for csets w/o coverage status
+  };
 
   async componentDidMount() {
     this.initializeData();
@@ -47,6 +51,7 @@ export default class SummaryContainer extends Component {
       this.setState({
         changesets,
         changesetsCoverage,
+        doneFirstLoad: true,
         pollingEnabled: summary.pending > 0,
       });
     } catch (error) {
@@ -75,6 +80,7 @@ export default class SummaryContainer extends Component {
       changesets,
       changesetsCoverage,
       descriptionFilterValue,
+      doneFirstLoad,
       errorMessage,
       pollingEnabled,
       timeout,
@@ -84,9 +90,7 @@ export default class SummaryContainer extends Component {
       return (<div className="error-message">{errorMessage}</div>);
     }
 
-    const ready =
-      Object.keys(changesets).length > 0 &&
-      Object.keys(changesetsCoverage).length > 0;
+    const someDataToShow = queryIfAnyDataToDisplay(changesets, changesetsCoverage);
 
     return (
       <div>
@@ -106,19 +110,19 @@ export default class SummaryContainer extends Component {
           value={descriptionFilterValue}
           onChange={this.onFilterByDescription}
         />
-        {ready && (
+        {someDataToShow && (
           <Summary
             changesets={changesets}
             changesetsCoverage={changesetsCoverage}
           />
         )}
-        {!ready && !pollingEnabled && (
+        {!someDataToShow && !pollingEnabled && doneFirstLoad && (
           <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
             <span>There is currently no coverage data to show. Please </span>
             <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
           </p>
         )}
-        {!ready &&
+        {!someDataToShow && !pollingEnabled &&
           (<h3 className="loading">{LOADING}</h3>)
         }
       </div>

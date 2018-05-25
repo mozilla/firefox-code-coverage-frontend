@@ -47,8 +47,13 @@ export default class Summary extends Component {
   render() {
     const { changesets, changesetsCoverage } = this.props;
 
-    const sortedChangesets = this.sortedChangesets();
+    const sortedChangesets = this.sortedChangesets()
+      .filter(({ node }) =>
+        changesetsCoverage[node] && changesetsCoverage[node].show);
 
+    if (sortedChangesets.length === 0) {
+      return null;
+    }
     return (
       <table className="changeset-viewer">
         <tbody>
