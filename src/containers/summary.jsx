@@ -27,11 +27,9 @@ export default class SummaryContainer extends Component {
       descriptionFilterValue: '',
       pollingEnabled: false, // We don't start polling until we're ready
       errorMessage: '',
-      showFilter: false,
       timeout: 30000, // How often we poll for csets w/o coverage status
     };
     this.onFilterByDescription = this.onFilterByDescription.bind(this);
-    this.onToggleFilter = this.onToggleFilter.bind(this);
   }
 
   async componentDidMount() {
@@ -41,10 +39,6 @@ export default class SummaryContainer extends Component {
   onFilterByDescription(event) {
     event.preventDefault();
     this.setState({ descriptionFilterValue: event.target.value });
-  }
-
-  onToggleFilter() {
-    this.setState({ showFilter: !this.state.showFilter });
   }
 
   async fetchChangesets() {
@@ -143,17 +137,14 @@ export default class SummaryContainer extends Component {
             />
           </div>
         )}
-        {this.state.showFilter &&
-          <ChangesetFilter
-            value={descriptionFilterValue}
-            onChange={this.onFilterByDescription}
-          />
-        }
+        <ChangesetFilter
+          value={descriptionFilterValue}
+          onChange={this.onFilterByDescription}
+        />
         {Object.keys(viewableCsetsMap).length > 0 &&
           <Summary
             changesets={viewableCsetsMap}
             coverage={coverageMap}
-            onToggleFilter={this.onToggleFilter}
           />
         }
         {(!pollingEnabled && Object.keys(viewableCsetsMap) === 0) &&
