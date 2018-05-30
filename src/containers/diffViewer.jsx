@@ -29,9 +29,11 @@ export default class DiffViewerContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      appError: undefined,
-      coverage: undefined,
+      appError: '',
+      changeset: {},
+      coverage: {},
       parsedDiff: [],
+      supportedExtensions: [],
     };
   }
 
@@ -53,12 +55,14 @@ export default class DiffViewerContainer extends Component {
   async fetchSetCoverageData(node) {
     try {
       const coverage = await getChangesetCoverage(node);
+      let appError = '';
       if (coverage.summary === settings.STRINGS.PENDING) {
-        this.setState({
-          appError: 'The coverage data is still pending. Try again later.',
-        });
+        appError = 'The coverage data is still pending. Try again later.';
       }
-      this.setState({ coverage });
+      if (!coverage.show) {
+        appError = 'The coverage backend has had an internal error.';
+      }
+      this.setState({ appError, coverage });
     } catch (error) {
       console.error(error);
       this.setState({
@@ -94,10 +98,17 @@ export default class DiffViewerContainer extends Component {
 
   render() {
     const {
-      appError, changeset, coverage, parsedDiff, supportedExtensions,
+      appError,
+      changeset,
+      coverage,
+      parsedDiff,
+      supportedExtensions,
     } = this.state;
-    const onlySupportedExtensions = filterUnsupportedExtensions(parsedDiff, supportedExtensions);
-    const sortedDiff = sortByPercent(onlySupportedExtensions, coverage);
+    let sortedDiff = [];
+    if (coverage && coverage.show) {
+      const onlySupportedExtensions = filterUnsupportedExtensions(parsedDiff, supportedExtensions);
+      sortedDiff = sortByPercent(onlySupportedExtensions, coverage);
+    }
 
     return (
       <DiffViewer

@@ -31,7 +31,7 @@ export const getRawFile = (node, filePath, repoName = REPO_NAME) =>
 
 export const getChangesetMeta = async (node, repoPath = REPO_NAME) => {
   const meta = await jsonFetch(`${HG_HOST}/${repoPath}/json-rev/${node}`);
-  return initializedChangeset(meta, meta.user);
+  return initializedChangeset(meta, meta.user, meta.pushid);
 };
 
 export const getJsonPushes = (repoName = REPO_NAME, date = settings.HG_DAYS_AGO) =>
