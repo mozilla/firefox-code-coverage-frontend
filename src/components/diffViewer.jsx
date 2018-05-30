@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import DiffFile from './diffFile';
 import CoverageMeta from './coverageMeta';
 import CoverageFooter from './coverageFooter';
-import settings from '../settings';
 
 const DiffViewer = ({
   appError, changeset, coverage, parsedDiff,
@@ -12,7 +11,7 @@ const DiffViewer = ({
       <Link to="/" href="/">Return to main page</Link>
     </div>
     <span className="error_message">{appError}</span>
-    {(coverage && coverage.summary !== settings.STRINGS.PENDING) && (
+    {(coverage && coverage.show) && (
       <div>
         <CoverageMeta
           changeset={changeset}
