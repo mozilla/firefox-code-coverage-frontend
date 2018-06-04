@@ -56,7 +56,11 @@ export default class Summary extends Component {
             <th>Author</th>
             <th>Changeset</th>
             <th>Description</th>
-            <th onClick={() => this.onClickNextSorting()}>
+            <th
+              onClick={() => this.onClickNextSorting()}
+              title={'sorted by date (click to sort by coverage)'}
+              style={{ cursor: 'pointer' }}
+            >
               {this.state.sortingIcon}
               <span>Coverage summary</span>
             </th>
