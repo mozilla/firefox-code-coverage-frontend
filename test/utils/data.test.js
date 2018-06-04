@@ -1,6 +1,15 @@
 /* global describe it */
-import { arrayToMap, mapToArray, filterUnsupportedExtensions } from '../../src/utils/data';
+import {
+  arrayToMap,
+  mapToArray,
+  filterUnsupportedExtensions,
+  sortChangesetsNewestFirst,
+} from '../../src/utils/data';
 import * as dummyData from '../dummy.test';
+
+const changesetMocks = require('../mocks/changesetsMocks.json');
+const changesetsCoverageMock = require('../mocks/changesetsCoverageMock.json');
+const sortedChangesetsByRecency = require('../expected/sortedChangesetsByRecency');
 
 const assert = require('assert');
 
@@ -39,5 +48,12 @@ describe('Supported file extensions', () => {
     const parsedDiff =
       filterUnsupportedExtensions(dummyData.parsedDiff, undefined);
     assert.deepEqual(dummyData.parsedDiff, parsedDiff);
+  });
+});
+
+describe('Sorting of changesets and coverage', () => {
+  it('should sort by recency of changesets', () => {
+    const actual = sortChangesetsNewestFirst(changesetMocks, changesetsCoverageMock);
+    assert.deepEqual(actual, sortedChangesetsByRecency);
   });
 });
