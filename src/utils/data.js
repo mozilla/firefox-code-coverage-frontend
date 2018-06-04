@@ -69,9 +69,9 @@ const sortChangesetsByRecency = (a, b) => {
 
 const sortWithUndefined = (a, b) => {
   let retVal;
-  if ((typeof a.percentage === 'undefined') && (typeof b.percentage === 'undefined')) {
+  if ((typeof a.statistics.percentage === 'undefined') && (typeof b.statistics.percentage === 'undefined')) {
     retVal = 0;
-  } else if (typeof a.percentage === 'undefined') {
+  } else if (typeof a.statistics.percentage === 'undefined') {
     retVal = 1;
   } else {
     retVal = -1;
@@ -81,13 +81,13 @@ const sortWithUndefined = (a, b) => {
 
 const sortChangesetsByCoverageScore = (a, b) => {
   let retVal;
-  if ((typeof a.percentage === 'undefined') || (typeof b.percentage === 'undefined')) {
+  if ((typeof a.statistics.percentage === 'undefined') || (typeof b.statistics.percentage === 'undefined')) {
     // Some changesets are marked as 'No changes'
     // These changes cannot affect coverage, thus, an undefined percentage
     retVal = sortWithUndefined(a, b);
-  } else if (a.percentage < b.percentage) {
+  } else if (a.statistics.percentage < b.statistics.percentage) {
     retVal = -1;
-  } else if (a.percentage === b.percentage) {
+  } else if (a.statistics.percentage === b.statistics.percentage) {
     retVal = 0;
   } else {
     retVal = 1;
