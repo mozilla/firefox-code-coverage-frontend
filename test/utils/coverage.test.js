@@ -1,6 +1,6 @@
 /* global describe it */
 import { fileRevisionCoverageSummary, coverageSummaryText, transformCoverageData } from '../../src/utils/coverage';
-import * as dummyData from '../dummy.test';
+import * as dummyData from '../mocks/coverageMocks';
 
 const assert = require('assert');
 
