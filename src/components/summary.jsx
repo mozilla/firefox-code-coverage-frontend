@@ -61,7 +61,7 @@ export default class Summary extends Component {
               <span>Coverage summary</span>
             </th>
           </tr>
-          {sortedChangesets.map(({ node }) => (
+          {sortedChangesets.map(node => (
             <ChangesetInfo
               key={node}
               changeset={changesets[node]}

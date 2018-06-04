@@ -101,7 +101,7 @@ const viewableChangesetsArray = changesetsCoverage => (
 export const sortChangesetsNewestFirst = (changesets, changesetsCoverage) => {
   const csets = viewableChangesetsArray(changesetsCoverage);
   csets.sort(sortChangesetsByRecency);
-  return csets;
+  return csets.map(({ node }) => (node));
 };
 
 export const sortChangesetsByCoverage = (changesets, changesetsCoverage, reversed) => {
@@ -110,7 +110,7 @@ export const sortChangesetsByCoverage = (changesets, changesetsCoverage, reverse
   if (reversed) {
     csets.reverse();
   }
-  return csets;
+  return csets.map(({ node }) => (node));
 };
 
 export const loadCoverageData = async () => {
