@@ -117,7 +117,7 @@ export default class SummaryContainer extends Component {
 
     const viewableCsetsMap = {};
     changesets.forEach((cset) => {
-      if (coverageMap[cset.node].show &&
+      if (coverageMap[cset.node] && coverageMap[cset.node].show &&
           cset.desc.search(descriptionFilterValue) !== -1) {
         viewableCsetsMap[cset.node] = cset;
       }
