@@ -107,16 +107,18 @@ export default class SummaryContainer extends Component {
             />
           </div>
         )}
-        <ChangesetFilter
-          value={descriptionFilterValue}
-          onChange={this.onFilterByDescription}
-        />
-        {someDataToShow && (
-          <Summary
-            changesets={changesets}
-            changesetsCoverage={changesetsCoverage}
-          />
-        )}
+        {someDataToShow &&
+          <div>
+            <ChangesetFilter
+              value={descriptionFilterValue}
+              onChange={this.onFilterByDescription}
+            />
+            <Summary
+              changesets={changesets}
+              changesetsCoverage={changesetsCoverage}
+            />
+          </div>
+        }
         {!someDataToShow && !pollingEnabled && doneFirstLoad && (
           <GenericErrorMessage />
         )}
