@@ -1,22 +1,12 @@
 import {
   changesetsCoverageSummary,
   getCoverage,
-  getPendingCoverage,
 } from '../utils/coverage';
 import { getChangesets } from '../utils/hg';
-import { saveInCache } from '../utils/localCache';
 
 export const sortingMethods = {
   DATE: 'date',
   COVERAGE: 'coverage',
-};
-
-export const arrayToMap = (csets = []) => {
-  const newCsets = {};
-  csets.forEach((cset) => {
-    newCsets[cset.node] = cset;
-  });
-  return newCsets;
 };
 
 export const mapToArray = (csets = {}) => (
@@ -122,18 +112,6 @@ export const loadCoverageData = async () => {
     changesetsCoverage,
     summary,
   };
-};
-
-export const pollPendingChangesets = async (changesetsCoverage) => {
-  let polling = true;
-  console.debug('We are going to poll again for coverage data.');
-  const { coverage, summary } = await getPendingCoverage(changesetsCoverage);
-  if (summary.pending === 0) {
-    console.debug('No more polling required.');
-    polling = false;
-  }
-  saveInCache('coverage', coverage);
-  return { coverage, polling };
 };
 
 export const filterUnsupportedExtensions = (parsedDiff = {}, supportedExtensions = []) => {
