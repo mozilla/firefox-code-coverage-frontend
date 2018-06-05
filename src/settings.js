@@ -1,6 +1,5 @@
 const settings = {
   ACTIVE_DATA: 'https://activedata.allizom.org',
-  BACKEND: 'https://coverage.moz.tools',
   BZ_URL: 'https://bugzilla.mozilla.org',
   CACHE_CONFIG: {
     SECONDS_TO_EXPIRE: 1 * 60 * 60, // 1 hour
