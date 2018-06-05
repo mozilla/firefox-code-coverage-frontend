@@ -95,22 +95,29 @@ const sortChangesetsByCoverageScore = (a, b) => {
   return retVal;
 };
 
-const viewableChangesetsArray = changesetsCoverage => (
-  mapToArray(changesetsCoverage).filter(csetCov => csetCov.show));
+const viewableChangesetsArray = (changesets, changesetsCoverage) => {
+  const filteredChangesetsCoverage = [];
+  Object.keys(changesets).forEach((node) => {
+    if (changesetsCoverage[node] && changesetsCoverage[node].show) {
+      filteredChangesetsCoverage.push(changesetsCoverage[node]);
+    }
+  });
+  return filteredChangesetsCoverage;
+};
 
 export const sortChangesetsNewestFirst = (changesets, changesetsCoverage) => {
-  const csets = viewableChangesetsArray(changesetsCoverage);
-  csets.sort(sortChangesetsByRecency);
-  return csets.map(({ node }) => (node));
+  const filteredChangesetsCoverage = viewableChangesetsArray(changesets, changesetsCoverage);
+  filteredChangesetsCoverage.sort(sortChangesetsByRecency);
+  return filteredChangesetsCoverage.map(({ node }) => (node));
 };
 
 export const sortChangesetsByCoverage = (changesets, changesetsCoverage, reversed) => {
-  const csets = viewableChangesetsArray(changesetsCoverage);
-  csets.sort(sortChangesetsByCoverageScore);
+  const filteredChangesetsCoverage = viewableChangesetsArray(changesets, changesetsCoverage);
+  filteredChangesetsCoverage.sort(sortChangesetsByCoverageScore);
   if (reversed) {
-    csets.reverse();
+    filteredChangesetsCoverage.reverse();
   }
-  return csets.map(({ node }) => (node));
+  return filteredChangesetsCoverage.map(({ node }) => (node));
 };
 
 export const loadCoverageData = async () => {
@@ -148,4 +155,17 @@ export const filterUnsupportedExtensions = (parsedDiff = {}, supportedExtensions
     }
   });
   return newDiff;
+};
+
+export const filterChangesets = (changesets, filter) => {
+  if (filter === '') {
+    return changesets;
+  }
+  const filteredChangesets = {};
+  Object.keys(changesets).forEach((node) => {
+    if (changesets[node].desc.search(filter) !== -1) {
+      filteredChangesets[node] = changesets[node];
+    }
+  });
+  return filteredChangesets;
 };

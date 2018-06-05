@@ -6,7 +6,7 @@ import ChangesetFilter from '../components/changesetFilter';
 import GenericErrorMessage from '../components/genericErrorMessage';
 import settings from '../settings';
 import { pollPendingChangesets } from '../utils/coverage';
-import { loadCoverageData } from '../utils/data';
+import { filterChangesets, loadCoverageData } from '../utils/data';
 
 const { LOADING } = settings.STRINGS;
 
@@ -26,6 +26,11 @@ const queryIfAnyDataToDisplay = (changesets, changesetsCoverage) => (
 );
 
 export default class SummaryContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.onFilterByDescription = this.onFilterByDescription.bind(this);
+  }
+
   state = {
     errorMessage: '',
     changesets: {},
@@ -92,6 +97,7 @@ export default class SummaryContainer extends Component {
     }
 
     const someDataToShow = queryIfAnyDataToDisplay(changesets, changesetsCoverage);
+    const filteredChangesets = filterChangesets(changesets, descriptionFilterValue);
 
     return (
       <div>
@@ -114,7 +120,7 @@ export default class SummaryContainer extends Component {
               onChange={this.onFilterByDescription}
             />
             <Summary
-              changesets={changesets}
+              changesets={filteredChangesets}
               changesetsCoverage={changesetsCoverage}
             />
           </div>
