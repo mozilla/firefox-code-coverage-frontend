@@ -4,12 +4,12 @@ import { jsonPost, jsonFetch, plainFetch } from './fetch';
 import { queryCacheWithFallback } from './localCache';
 
 const {
-  ACTIVE_DATA, BACKEND, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
+  ACTIVE_DATA, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
 } = settings;
 
 export const githubUrl = gitCommit => `${GH_GECKO_DEV}/commit/${gitCommit}`;
 export const codecovUrl = gitCommit => (`${CODECOV_GECKO_DEV}/commit/${gitCommit}`);
-export const ccovBackendUrl = node => (`${BACKEND}/coverage/changeset/${node}`);
+export const ccovBackendUrl = node => (`${CCOV_BACKEND}/coverage/changeset/${node}`);
 
 const queryChangesetCoverage = node =>
   plainFetch(`${CCOV_BACKEND}/coverage/changeset/${node}`);
@@ -145,7 +145,7 @@ export const getChangesetCoverage = async (node) => {
   if (!node) {
     throw Error(`No node for cset: ${node}`);
   }
-  let coverage = { show: false, node };
+  let coverage = { show: false };
   const res = await queryChangesetCoverage(node);
   if (res.status === 202) {
     // This is the only case when we poll again
@@ -158,6 +158,7 @@ export const getChangesetCoverage = async (node) => {
   } else {
     console.warning(`Unexpected HTTP code (${res.status}) for ${coverage}`);
   }
+  coverage.node = node;
   return coverage;
 };
 

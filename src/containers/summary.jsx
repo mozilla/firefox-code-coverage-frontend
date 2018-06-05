@@ -3,6 +3,7 @@ import ReactInterval from 'react-interval';
 
 import Summary from '../components/summary';
 import ChangesetFilter from '../components/changesetFilter';
+import GenericErrorMessage from '../components/genericErrorMessage';
 import settings from '../settings';
 import { arrayToMap, mapToArray } from '../utils/data';
 import { getCoverage } from '../utils/coverage';
@@ -117,7 +118,7 @@ export default class SummaryContainer extends Component {
 
     const viewableCsetsMap = {};
     changesets.forEach((cset) => {
-      if (coverageMap[cset.node].show &&
+      if (coverageMap[cset.node] && coverageMap[cset.node].show &&
           cset.desc.search(descriptionFilterValue) !== -1) {
         viewableCsetsMap[cset.node] = cset;
       }
@@ -148,10 +149,7 @@ export default class SummaryContainer extends Component {
           />
         }
         {(!pollingEnabled && Object.keys(viewableCsetsMap) === 0) &&
-          <p style={{ textAlign: 'center', fontWeight: 'bold' }}>
-            <span>There is currently no coverage data to show. Please </span>
-            <a href={`${settings.REPO}/issues/new`} target="_blank">file an issue</a>.
-          </p>
+          <GenericErrorMessage />
         }
         {Object.keys(changesets).length === 0 &&
           (<h3 className="loading">{LOADING}</h3>)
