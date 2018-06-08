@@ -1,0 +1,3744 @@
+{
+  "08753da56e121ff186ce5895e6b93a41dc99baf6": {
+    "pushId": "34084",
+    "changesetIndex": 0,
+    "authorName": "Robin Templeton ",
+    "authorEmail": "robin@igalia.com",
+    "author": "Robin Templeton <robin@igalia.com>",
+    "branch": "default",
+    "desc": "bug 1461050 - Implement string-to-BigInt conversion. r=jandem",
+    "files": [
+      "js/src/vm/BigIntType.cpp",
+      "js/src/vm/BigIntType.h"
+    ],
+    "node": "08753da56e121ff186ce5895e6b93a41dc99baf6",
+    "parents": [
+      "1f62ecdf59b6ecaa3c0fdda39bb296ec092a156b"
+    ],
+    "tags": []
+  },
+  "26cbc312b5cb3a17e3553287c5b6ac7090ad62fa": {
+    "pushId": "34086",
+    "changesetIndex": 0,
+    "authorName": "Jan de Mooij ",
+    "authorEmail": "jdemooij@mozilla.com",
+    "author": "Jan de Mooij <jdemooij@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464772 part 1 - Make JS_GetIsSecureContext take a realm instead of compartment and move to JS namespace. r=bz",
+    "files": [
+      "dom/base/nsGlobalWindowInner.cpp",
+      "dom/workers/RuntimeService.cpp",
+      "dom/workers/WorkerScope.cpp",
+      "js/src/jsfriendapi.cpp",
+      "js/src/jsfriendapi.h"
+    ],
+    "node": "26cbc312b5cb3a17e3553287c5b6ac7090ad62fa",
+    "parents": [
+      "ad1249c83efb4c01bb86a1f4e4744af73d10acf8"
+    ],
+    "tags": []
+  },
+  "f58f5333e3755cc51368041782e59adf79509a4f": {
+    "pushId": "34086",
+    "changesetIndex": 1,
+    "authorName": "Jan de Mooij ",
+    "authorEmail": "jdemooij@mozilla.com",
+    "author": "Jan de Mooij <jdemooij@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464772 part 2 - Remove RealmBehaviorsRef(obj), change RealmBehaviorsRef(compartment) to take a realm. r=luke\n\nAt some point I'll audit the obj->realm() calls for CCWs; removing RealmBehaviorsRef(obj) prepares for that.\n\nAlso, RealmBehaviorsRef(realm) could be removed and we could use RealmBehaviorsRef(cx) everywhere, but it seems reasonable to keep it.",
+    "files": [
+      "js/src/jsapi-tests/testSourcePolicy.cpp",
+      "js/src/jsapi.cpp",
+      "js/src/jsapi.h",
+      "js/xpconnect/src/XPCShellImpl.cpp"
+    ],
+    "node": "f58f5333e3755cc51368041782e59adf79509a4f",
+    "parents": [
+      "26cbc312b5cb3a17e3553287c5b6ac7090ad62fa"
+    ],
+    "tags": []
+  },
+  "e3a6af0b27ecb3b92d875e213d6ef5caed7dedd1": {
+    "pushId": "34086",
+    "changesetIndex": 2,
+    "authorName": "Jan de Mooij ",
+    "authorEmail": "jdemooij@mozilla.com",
+    "author": "Jan de Mooij <jdemooij@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464772 part 3 - Remove unused RealmCreationOptionsRef(obj). r=luke",
+    "files": [
+      "js/src/jsapi.cpp",
+      "js/src/jsapi.h"
+    ],
+    "node": "e3a6af0b27ecb3b92d875e213d6ef5caed7dedd1",
+    "parents": [
+      "f58f5333e3755cc51368041782e59adf79509a4f"
+    ],
+    "tags": []
+  },
+  "a4187e4b06ee99d518f24e9106b73ed95deb1322": {
+    "pushId": "34086",
+    "changesetIndex": 3,
+    "authorName": "Jan de Mooij ",
+    "authorEmail": "jdemooij@mozilla.com",
+    "author": "Jan de Mooij <jdemooij@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464772 part 4 - Use cx->realm()->creationOptions() instead of RealmCreationOptionsRef in NowAsMillis. r=luke",
+    "files": [
+      "js/src/jsdate.cpp"
+    ],
+    "node": "a4187e4b06ee99d518f24e9106b73ed95deb1322",
+    "parents": [
+      "e3a6af0b27ecb3b92d875e213d6ef5caed7dedd1"
+    ],
+    "tags": []
+  },
+  "2aa7b79f43a891e77dcf0089cc7a0d316f35719c": {
+    "pushId": "34086",
+    "changesetIndex": 4,
+    "authorName": "Tiberius Oros ",
+    "authorEmail": "toros@mozilla.com",
+    "author": "Tiberius Oros <toros@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1291027 - disable browser_dbg_variables-view-popup-10.js for frequent Windows failures. r=jmaher",
+    "files": [
+      "devtools/client/debugger/test/mochitest/browser2.ini"
+    ],
+    "node": "2aa7b79f43a891e77dcf0089cc7a0d316f35719c",
+    "parents": [
+      "a4187e4b06ee99d518f24e9106b73ed95deb1322"
+    ],
+    "tags": []
+  },
+  "ceb7075bb6c347ed4aac6d327d0fff4a2f827f45": {
+    "pushId": "34086",
+    "changesetIndex": 5,
+    "authorName": "Tiberius Oros ",
+    "authorEmail": "toros@mozilla.com",
+    "author": "Tiberius Oros <toros@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1402554 - disable test_main.html for frequent failures on quantum-renderer platforms. r=jmaher",
+    "files": [
+      "dom/security/test/mixedcontentblocker/mochitest.ini"
+    ],
+    "node": "ceb7075bb6c347ed4aac6d327d0fff4a2f827f45",
+    "parents": [
+      "2aa7b79f43a891e77dcf0089cc7a0d316f35719c"
+    ],
+    "tags": []
+  },
+  "6b7ace4745e30ba914ea8350bfc7fa12f2980c54": {
+    "pushId": "34086",
+    "changesetIndex": 6,
+    "authorName": "Jonathan Watt ",
+    "authorEmail": "jwatt@jwatt.org",
+    "author": "Jonathan Watt <jwatt@jwatt.org>",
+    "branch": "default",
+    "desc": "Bug 1270217 - Change the default MACOS_DEPLOYMENT_TARGET value to 10.9. r=froydnj",
+    "files": [
+      "build/gyp.mozbuild",
+      "build/moz.configure/toolchain.configure",
+      "old-configure.in"
+    ],
+    "node": "6b7ace4745e30ba914ea8350bfc7fa12f2980c54",
+    "parents": [
+      "ceb7075bb6c347ed4aac6d327d0fff4a2f827f45"
+    ],
+    "tags": []
+  },
+  "0ee6b755ab2ee6d2ab79b17cc97bd4e83424cbfc": {
+    "pushId": "34086",
+    "changesetIndex": 7,
+    "authorName": "Jonathan Watt ",
+    "authorEmail": "jwatt@jwatt.org",
+    "author": "Jonathan Watt <jwatt@jwatt.org>",
+    "branch": "default",
+    "desc": "Bug 1405083 - Disable test_getUserMedia_basicScreenshare.html for now. r=permafail\n\nThis test became permafail after the patch for bug 1270217 landed to update\nthe default value for MACOS_DEPLOYMENT_TARGET from 10.7 to 10.9.  We need to\nupdate that value since otherwise local builds are broken on Mac, halting all\nMac development.  As the lesser of two evils I'm disabling this test for now.",
+    "files": [
+      "dom/media/tests/mochitest/mochitest.ini"
+    ],
+    "node": "0ee6b755ab2ee6d2ab79b17cc97bd4e83424cbfc",
+    "parents": [
+      "6b7ace4745e30ba914ea8350bfc7fa12f2980c54"
+    ],
+    "tags": []
+  },
+  "5fcf365d7f82556054775683face2bd583e64d25": {
+    "pushId": "34087",
+    "changesetIndex": 0,
+    "authorName": "Cosmin Sabou ",
+    "authorEmail": "csabou@mozilla.com",
+    "author": "Cosmin Sabou <csabou@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463107 - Disable /fetch/api/redirect/redirect-count.any.worker.html on Linux for frequent timeouts. r=jmaher",
+    "files": [
+      "testing/web-platform/meta/fetch/api/redirect/redirect-count.any.js.ini"
+    ],
+    "node": "5fcf365d7f82556054775683face2bd583e64d25",
+    "parents": [
+      "0ee6b755ab2ee6d2ab79b17cc97bd4e83424cbfc"
+    ],
+    "tags": []
+  },
+  "b33f95eb174a4acb571400a187359b8f7a1c6d01": {
+    "pushId": "34087",
+    "changesetIndex": 1,
+    "authorName": "Jonathan Kew ",
+    "authorEmail": "jkew@mozilla.com",
+    "author": "Jonathan Kew <jkew@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1466332 - patch 1 - Update StretchDistance function to more closely follow CSS4 Fonts algorithm. r=jwatt",
+    "files": [
+      "gfx/thebes/gfxFontEntry.cpp"
+    ],
+    "node": "b33f95eb174a4acb571400a187359b8f7a1c6d01",
+    "parents": [
+      "5fcf365d7f82556054775683face2bd583e64d25"
+    ],
+    "tags": []
+  },
+  "68e78883a0312d5e1be05b8c2319b33653640467": {
+    "pushId": "34087",
+    "changesetIndex": 2,
+    "authorName": "Jonathan Kew ",
+    "authorEmail": "jkew@mozilla.com",
+    "author": "Jonathan Kew <jkew@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1466332 - patch 2 - Update WeightDistance function to more closely follow CSS4 Fonts algorithm. r=jwatt",
+    "files": [
+      "gfx/thebes/gfxFontEntry.cpp"
+    ],
+    "node": "68e78883a0312d5e1be05b8c2319b33653640467",
+    "parents": [
+      "b33f95eb174a4acb571400a187359b8f7a1c6d01"
+    ],
+    "tags": []
+  },
+  "fa5724780fe76d6ccbbd08d978342a1db6a43d49": {
+    "pushId": "34087",
+    "changesetIndex": 3,
+    "authorName": "Jonathan Kew ",
+    "authorEmail": "jkew@mozilla.com",
+    "author": "Jonathan Kew <jkew@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1466332 - patch 3 - Update StyleDistance function to more closely follow CSS4 Fonts algorithm. r=jwatt",
+    "files": [
+      "gfx/thebes/gfxFontEntry.cpp"
+    ],
+    "node": "fa5724780fe76d6ccbbd08d978342a1db6a43d49",
+    "parents": [
+      "68e78883a0312d5e1be05b8c2319b33653640467"
+    ],
+    "tags": []
+  },
+  "171f9e5d15784910428d5680dc8c17f55d8f970a": {
+    "pushId": "34088",
+    "changesetIndex": 0,
+    "authorName": "Tom Prince ",
+    "authorEmail": "mozilla@hocat.ca",
+    "author": "Tom Prince <mozilla@hocat.ca>",
+    "branch": "default",
+    "desc": "Bug 1458700: [release] Allow passing  extra-config to bouncer-check from taskcluster; r=jlorenzo\n\nThis allows passing configuration like `bouncer_prefix` per-branch, without\nneeding multiple mozharness configs.\n\nDifferential Revision: https://phabricator.services.mozilla.com/D1483",
+    "files": [
+      "taskcluster/taskgraph/transforms/bouncer_check.py"
+    ],
+    "node": "171f9e5d15784910428d5680dc8c17f55d8f970a",
+    "parents": [
+      "69d43b0517a9a651dabe48fb6e9fb1ee4bdc7516"
+    ],
+    "tags": []
+  },
+  "ebe99842f5f8d543e5453ce78b1eae3641830b13": {
+    "pushId": "34088",
+    "changesetIndex": 1,
+    "authorName": "Tom Prince ",
+    "authorEmail": "mozilla@hocat.ca",
+    "author": "Tom Prince <mozilla@hocat.ca>",
+    "branch": "default",
+    "desc": "Bug 1458700: [release] Don't hard-code firefox in bouncer filenames; r=jlorenzo\n\nThis allows thunderbird to be supported.\n\nDifferential Revision: https://phabricator.services.mozilla.com/D1484",
+    "files": [
+      "taskcluster/taskgraph/transforms/bouncer_submission.py"
+    ],
+    "node": "ebe99842f5f8d543e5453ce78b1eae3641830b13",
+    "parents": [
+      "171f9e5d15784910428d5680dc8c17f55d8f970a"
+    ],
+    "tags": []
+  },
+  "9b26de736798720c1b30eeddb6c85941dc32579c": {
+    "pushId": "34088",
+    "changesetIndex": 2,
+    "authorName": "Jared Wein ",
+    "authorEmail": "jwein@mozilla.com",
+    "author": "Jared Wein <jwein@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1461477 - Create a CreditCard.jsm to consolidate various credit card handling and validation. r=MattN\n\nMozReview-Commit-ID: 3tJdzU3hBvY",
+    "files": [
+      "browser/components/payments/test/browser/head.js",
+      "browser/extensions/formautofill/FormAutofillParent.jsm",
+      "browser/extensions/formautofill/FormAutofillStorage.jsm",
+      "browser/extensions/formautofill/FormAutofillUtils.jsm",
+      "browser/extensions/formautofill/ProfileAutoCompleteResult.jsm",
+      "browser/extensions/formautofill/content/manageDialog.js",
+      "browser/extensions/formautofill/test/browser/browser_creditCard_doorhanger.js",
+      "browser/extensions/formautofill/test/browser/browser_manageCreditCardsDialog.js",
+      "browser/extensions/formautofill/test/browser/head.js",
+      "browser/extensions/formautofill/test/mochitest/formautofill_common.js",
+      "browser/extensions/formautofill/test/mochitest/test_basic_creditcard_autocomplete_form.html",
+      "browser/extensions/formautofill/test/mochitest/test_clear_form.html",
+      "browser/extensions/formautofill/test/mochitest/test_creditcard_autocomplete_off.html",
+      "toolkit/components/satchel/formSubmitListener.js",
+      "toolkit/modules/CreditCard.jsm",
+      "toolkit/modules/moz.build",
+      "toolkit/modules/sessionstore/FormData.jsm",
+      "toolkit/modules/tests/browser/browser.ini",
+      "toolkit/modules/tests/browser/browser_CreditCard.js",
+      "toolkit/modules/tests/xpcshell/test_CreditCard.js",
+      "toolkit/modules/tests/xpcshell/xpcshell.ini"
+    ],
+    "node": "9b26de736798720c1b30eeddb6c85941dc32579c",
+    "parents": [
+      "ebe99842f5f8d543e5453ce78b1eae3641830b13"
+    ],
+    "tags": []
+  },
+  "330f40fac3e84b7d0d5720003bc690336300fe86": {
+    "pushId": "34088",
+    "changesetIndex": 3,
+    "authorName": "Dão Gottwald ",
+    "authorEmail": "dao@mozilla.com",
+    "author": "Dão Gottwald <dao@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465497 - Stop setting a color on hovered checkboxes and radio buttons. r=jaws\n\nGtk checkboxes and radio buttons used to render a solid background on hover and so we also set a text color for that state. Apparently we're not getting that background anymore.\n\nMozReview-Commit-ID: 7c5dbWroRbP",
+    "files": [
+      "toolkit/themes/linux/global/checkbox.css",
+      "toolkit/themes/linux/global/in-content/common.css",
+      "toolkit/themes/linux/global/radio.css"
+    ],
+    "node": "330f40fac3e84b7d0d5720003bc690336300fe86",
+    "parents": [
+      "9b26de736798720c1b30eeddb6c85941dc32579c"
+    ],
+    "tags": []
+  },
+  "c3afc68aab2c175165f73ded98a4d2a34decbabe": {
+    "pushId": "34088",
+    "changesetIndex": 4,
+    "authorName": "Gregory Szorc ",
+    "authorEmail": "gps@mozilla.com",
+    "author": "Gregory Szorc <gps@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465996 - Disable l10n-check in code coverage builds; r=ted\n\nBecause we don't care about them for this build configuration.\n\nMozReview-Commit-ID: JKEN2pN2x4K",
+    "files": [
+      "browser/config/mozconfigs/linux64/code-coverage"
+    ],
+    "node": "c3afc68aab2c175165f73ded98a4d2a34decbabe",
+    "parents": [
+      "330f40fac3e84b7d0d5720003bc690336300fe86"
+    ],
+    "tags": []
+  },
+  "cfdc0001c91b96a488d9cd6b54ee28dfcf870347": {
+    "pushId": "34088",
+    "changesetIndex": 5,
+    "authorName": "Anny Gakhokidze ",
+    "authorEmail": "agakhokidze@mozilla.com",
+    "author": "Anny Gakhokidze <agakhokidze@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464211 - In DataTransferItemList::Remove do not throw an error if deleting nonexistent item, r=Nika\n\nIn the spec, https://html.spec.whatwg.org/multipage/dnd.html#dom-datatransferitemlist-remove,\nDataTransferItemList::Remove does not specify that an error should be thrown if a nonexistent item\nis to be removed.\n\nMozReview-Commit-ID: 8HriMr6poTY",
+    "files": [
+      "dom/events/DataTransferItemList.cpp"
+    ],
+    "node": "cfdc0001c91b96a488d9cd6b54ee28dfcf870347",
+    "parents": [
+      "c3afc68aab2c175165f73ded98a4d2a34decbabe"
+    ],
+    "tags": []
+  },
+  "4231bd54fb2feca2d479876db705acc3262bea58": {
+    "pushId": "34088",
+    "changesetIndex": 6,
+    "authorName": "Anny Gakhokidze ",
+    "authorEmail": "agakhokidze@mozilla.com",
+    "author": "Anny Gakhokidze <agakhokidze@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464205 - Clear cached values unconditionally in DataTransferItemList::SetDataWithPrincipal, r=Nika\n\nMozReview-Commit-ID: 9HLkDwNkdo7",
+    "files": [
+      "dom/events/DataTransferItemList.cpp"
+    ],
+    "node": "4231bd54fb2feca2d479876db705acc3262bea58",
+    "parents": [
+      "cfdc0001c91b96a488d9cd6b54ee28dfcf870347"
+    ],
+    "tags": []
+  },
+  "94ffa7844ae7ab8053c22028d9b2cb9f7fc571e5": {
+    "pushId": "34088",
+    "changesetIndex": 7,
+    "authorName": "Anny Gakhokidze ",
+    "authorEmail": "agakhokidze@mozilla.com",
+    "author": "Anny Gakhokidze <agakhokidze@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1351193 - Part 1: Added new DataTransfer constructor, r=Nika\n\nDeleted the old Chrome DataTransfer constructor because it was only used\nfor some tests which can be easily changed. Added a new constructor that\nis not Chrome Only.\n\nMozReview-Commit-ID: HjcgafSiWfM",
+    "files": [
+      "dom/events/DataTransfer.cpp",
+      "dom/events/DataTransfer.h",
+      "dom/webidl/DataTransfer.webidl",
+      "testing/web-platform/meta/html/editing/dnd/datastore/datatransfer-constructor-001.html.ini"
+    ],
+    "node": "94ffa7844ae7ab8053c22028d9b2cb9f7fc571e5",
+    "parents": [
+      "4231bd54fb2feca2d479876db705acc3262bea58"
+    ],
+    "tags": []
+  },
+  "b05e943f8d2ca718a02895997fd30fcf9a9470d9": {
+    "pushId": "34088",
+    "changesetIndex": 8,
+    "authorName": "Anny Gakhokidze ",
+    "authorEmail": "agakhokidze@mozilla.com",
+    "author": "Anny Gakhokidze <agakhokidze@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1351193 - Part 2: Prevent content sniffing of the response in original echo-content.py, r=Nika\n\nThe changes made to echo-content.py are the same as the ones made in Bug\n1435781.\n\nMozReview-Commit-ID: GEPJxuptBii",
+    "files": [
+      "testing/web-platform/meta/MANIFEST.json",
+      "testing/web-platform/tests/fetch/api/resources/echo-content.py"
+    ],
+    "node": "b05e943f8d2ca718a02895997fd30fcf9a9470d9",
+    "parents": [
+      "94ffa7844ae7ab8053c22028d9b2cb9f7fc571e5"
+    ],
+    "tags": []
+  },
+  "cc8d552173981747b96c95bd2b0953d685ad7947": {
+    "pushId": "34088",
+    "changesetIndex": 9,
+    "authorName": "Anny Gakhokidze ",
+    "authorEmail": "agakhokidze@mozilla.com",
+    "author": "Anny Gakhokidze <agakhokidze@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1351193 - Part 3: Update status of affected Web-Platform tests, r=Nika\n\nBecause of modifications to the DataTransfer constructors, the status of the tests that use DataTransfer objects had to be changed to reflect the fact that those tests now pass. Additionally, a test had to be deleted because it tested an obscure situation using the old Chrome only constructor.\n\nMozReview-Commit-ID: LOWuPwh0NeW",
+    "files": [
+      "dom/bindings/test/test_dom_xrays.html",
+      "testing/web-platform/meta/FileAPI/file/send-file-form-iso-2022-jp.tentative.html.ini",
+      "testing/web-platform/meta/FileAPI/file/send-file-form-utf-8.html.ini",
+      "testing/web-platform/meta/FileAPI/file/send-file-form-windows-1252.tentative.html.ini",
+      "testing/web-platform/meta/FileAPI/file/send-file-form-x-user-defined.tentative.html.ini",
+      "testing/web-platform/meta/FileAPI/file/send-file-form.html.ini",
+      "testing/web-platform/meta/html/dom/interfaces.https.html.ini",
+      "testing/web-platform/meta/html/editing/dnd/datastore/datatransfer-types.html.ini",
+      "testing/web-platform/meta/html/semantics/forms/form-submission-0/submit-file.sub.html.ini",
+      "toolkit/content/tests/chrome/window_browser_drop.xul"
+    ],
+    "node": "cc8d552173981747b96c95bd2b0953d685ad7947",
+    "parents": [
+      "b05e943f8d2ca718a02895997fd30fcf9a9470d9"
+    ],
+    "tags": []
+  },
+  "92022a2097214fdffc0db0737c82fcfc2c53a356": {
+    "pushId": "34088",
+    "changesetIndex": 10,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 1. Add layout.accessiblecaret.script_change_update_mode pref; r=bz\n\nCurrently, if the \"layout.accessiblecaret.allow_script_change_updates\"\npref is false, we always hide accessible carets when the selection\nchanges due to JS calls (e.g. setSelectionRange(0, 1)). If the pref is\ntrue, instead, we update the accessible carets if they are already\nvisible. In either case, we never show the carets if they're invisible.\n\nHowever for testing purposes, it's useful to make it so we do try to\nshow the carets if they're invisible. This patch replaces that pref with\nthe new integer pref \"layout.accessiblecaret.script_change_update_mode\",\nwhich can be 0 or 1, which correspond to the old pref, or the value 2,\nwhich introduces this new behavior of always showing the carets.\n\nMozReview-Commit-ID: Bf1gPpIzcyb",
+    "files": [
+      "layout/base/AccessibleCaretManager.cpp",
+      "layout/base/AccessibleCaretManager.h",
+      "mobile/android/app/mobile.js",
+      "modules/libpref/init/all.js"
+    ],
+    "node": "92022a2097214fdffc0db0737c82fcfc2c53a356",
+    "parents": [
+      "cc8d552173981747b96c95bd2b0953d685ad7947"
+    ],
+    "tags": []
+  },
+  "fb9bb29f0b40fc2fb830c46331f9d8b14aa331f0": {
+    "pushId": "34088",
+    "changesetIndex": 11,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 2. Add test-only geckoview.selection_action.show_on_focus pref; r=jchen\n\nAdd the \"geckoview.selection_action.show_on_focus\" pref for testing\nonly. The pref makes us show selection actions when the selection is\ninitially collapsed in an editor, which makes it easier to test behavior\nfor collapsed selections.\n\nMozReview-Commit-ID: 3U6UfzokHaI",
+    "files": [
+      "mobile/android/chrome/geckoview/GeckoViewSelectionActionContent.js"
+    ],
+    "node": "fb9bb29f0b40fc2fb830c46331f9d8b14aa331f0",
+    "parents": [
+      "92022a2097214fdffc0db0737c82fcfc2c53a356"
+    ],
+    "tags": []
+  },
+  "68ddcec7bb45688c7aee08a90346816d00e59758": {
+    "pushId": "34088",
+    "changesetIndex": 12,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 3. Add external delegate support in GeckoSessionTestRule; r=snorp\n\nAdd support for using non-GeckoSession, external delegates with\nGeckoSessionTestRule, so we can wait on the clipboard to change during a\ntest, for example.\n\nMozReview-Commit-ID: D8sfJ8gMLaY",
+    "files": [
+      "mobile/android/geckoview/src/androidTest/java/org/mozilla/geckoview/test/GeckoSessionTestRuleTest.kt",
+      "mobile/android/geckoview/src/androidTest/java/org/mozilla/geckoview/test/rule/GeckoSessionTestRule.java"
+    ],
+    "node": "68ddcec7bb45688c7aee08a90346816d00e59758",
+    "parents": [
+      "fb9bb29f0b40fc2fb830c46331f9d8b14aa331f0"
+    ],
+    "tags": []
+  },
+  "a3eab1ac5c28d2302b3f5ff44d4ed033b36da675": {
+    "pushId": "34088",
+    "changesetIndex": 13,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 4. Add SelectionActionDelegateTest; r=snorp\n\nAdd SelectionActionDelegateTest, which includes tests for all built-in\nselection actions, for multiple content types such as input or\ncontentEditable.\n\nMozReview-Commit-ID: Dzlzjo233Fe",
+    "files": [
+      "mobile/android/geckoview/src/androidTest/assets/www/selectionAction.html",
+      "mobile/android/geckoview/src/androidTest/assets/www/selectionAction_frame.html",
+      "mobile/android/geckoview/src/androidTest/java/org/mozilla/geckoview/test/BaseSessionTest.kt",
+      "mobile/android/geckoview/src/androidTest/java/org/mozilla/geckoview/test/SelectionActionDelegateTest.kt"
+    ],
+    "node": "a3eab1ac5c28d2302b3f5ff44d4ed033b36da675",
+    "parents": [
+      "68ddcec7bb45688c7aee08a90346816d00e59758"
+    ],
+    "tags": []
+  },
+  "f30ca96560d785498a0ece683718bd4146fd333b": {
+    "pushId": "34088",
+    "changesetIndex": 14,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 5. Use docshell commands for selection actions; r=snorp\n\nUse nsIDocShell.doCommand to perform selection actions, in order to\nsimplify code in GeckoViewSelectionActionContent.\n\nMozReview-Commit-ID: IWVh7XfQ5l8",
+    "files": [
+      "mobile/android/chrome/geckoview/GeckoViewSelectionActionContent.js"
+    ],
+    "node": "f30ca96560d785498a0ece683718bd4146fd333b",
+    "parents": [
+      "a3eab1ac5c28d2302b3f5ff44d4ed033b36da675"
+    ],
+    "tags": []
+  },
+  "8f4c34fd430f9db4bd75d2aa7761180ae07de64d": {
+    "pushId": "34088",
+    "changesetIndex": 15,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 6. Refactor GeckoRuntime; r=jchen\n\nAdd UI thread checks and reformat some code in GeckoRuntime.\n\nMozReview-Commit-ID: 2AE1IZGFnQd",
+    "files": [
+      "mobile/android/geckoview/src/main/java/org/mozilla/geckoview/GeckoRuntime.java"
+    ],
+    "node": "8f4c34fd430f9db4bd75d2aa7761180ae07de64d",
+    "parents": [
+      "f30ca96560d785498a0ece683718bd4146fd333b"
+    ],
+    "tags": []
+  },
+  "3f54e44389532054656501ea6e2525d5c635ccf0": {
+    "pushId": "34088",
+    "changesetIndex": 16,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 7. Simplify clipboard code; r=snorp\n\nDon't use a different thread when accessing the clipboard. The original\nissue was using the clipboard required a thread with a Looper, when\nGeckoThread did not have one. It does have one now so it's safe to\naccess the clipboard there.\n\nAlso, make hasText() return false for empty strings to avoid us\nmistakenly think there is something on the clipboard.\n\nMozReview-Commit-ID: AwKEcNnIkhT",
+    "files": [
+      "mobile/android/geckoview/src/main/java/org/mozilla/gecko/Clipboard.java",
+      "mobile/android/geckoview/src/main/java/org/mozilla/geckoview/GeckoRuntime.java"
+    ],
+    "node": "3f54e44389532054656501ea6e2525d5c635ccf0",
+    "parents": [
+      "8f4c34fd430f9db4bd75d2aa7761180ae07de64d"
+    ],
+    "tags": []
+  },
+  "8dae9b53c3569e5407970e4e15efba6166589def": {
+    "pushId": "34088",
+    "changesetIndex": 17,
+    "authorName": "Jim Chen ",
+    "authorEmail": "nchen@mozilla.com",
+    "author": "Jim Chen <nchen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463576 - 8. Hide selection actions on pagehide; r=snorp\n\nWhen the page navigates away, we should hide any active selection\nactions.\n\nMozReview-Commit-ID: 2LojAuPxyyl",
+    "files": [
+      "mobile/android/chrome/geckoview/GeckoViewSelectionActionContent.js"
+    ],
+    "node": "8dae9b53c3569e5407970e4e15efba6166589def",
+    "parents": [
+      "3f54e44389532054656501ea6e2525d5c635ccf0"
+    ],
+    "tags": []
+  },
+  "0a822de7f5d50fd52f27d841b04c2ce792c76477": {
+    "pushId": "34088",
+    "changesetIndex": 18,
+    "authorName": "Tom Prince ",
+    "authorEmail": "mozilla@hocat.ca",
+    "author": "Tom Prince <mozilla@hocat.ca>",
+    "branch": "default",
+    "desc": "No bug: [source-docs] Log the file being uploaded; r=gps\n\nDifferential Revision: https://phabricator.services.mozilla.com/D1479",
+    "files": [
+      "tools/docs/moztreedocs/upload.py"
+    ],
+    "node": "0a822de7f5d50fd52f27d841b04c2ce792c76477",
+    "parents": [
+      "354491fabd5fa3b82d4275c25e52be418e3baaa4"
+    ],
+    "tags": []
+  },
+  "750295aad764cefa0ae1b5972106a12f1b6d69c6": {
+    "pushId": "34088",
+    "changesetIndex": 19,
+    "authorName": "Mathieu Leplatre ",
+    "authorEmail": "mathieu@mozilla.com",
+    "author": "Mathieu Leplatre <mathieu@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463750 - Move RemoteSettings to services/settings/ r=mgoodwin\n\nMozReview-Commit-ID: 7IwUysPBHZu",
+    "files": [
+      "browser/installer/package-manifest.in",
+      "services/common/blocklist-clients.js",
+      "services/common/docs/RemoteSettings.rst",
+      "services/common/moz.build",
+      "services/common/remote-settings.js",
+      "services/common/tests/unit/head_global.js",
+      "services/common/tests/unit/test_blocklist_targetapp_filter.js",
+      "services/common/tests/unit/test_remote_settings.js",
+      "services/common/tests/unit/test_remote_settings_jexl_filters.js",
+      "services/common/tests/unit/test_remote_settings_poll.js",
+      "services/common/tests/unit/xpcshell.ini",
+      "services/settings/moz.build",
+      "services/settings/remote-settings.js",
+      "services/settings/servicesSettings.manifest",
+      "services/settings/test/unit/.eslintrc.js",
+      "services/settings/test/unit/test_remote_settings.js",
+      "services/settings/test/unit/test_remote_settings_jexl_filters.js",
+      "services/settings/test/unit/test_remote_settings_poll.js",
+      "services/settings/test/unit/xpcshell.ini",
+      "toolkit/mozapps/extensions/Blocklist.jsm"
+    ],
+    "node": "750295aad764cefa0ae1b5972106a12f1b6d69c6",
+    "parents": [
+      "9fd9a942834c8dff3f0e9935498d4ed5f854beb9"
+    ],
+    "tags": []
+  },
+  "1fbf7e0d341d86ec4b188769ae074f30bbc8c0ac": {
+    "pushId": "34088",
+    "changesetIndex": 20,
+    "authorName": "James Graham ",
+    "authorEmail": "james@hoppipolla.co.uk",
+    "author": "James Graham <james@hoppipolla.co.uk>",
+    "branch": "default",
+    "desc": "Bug 1466124 - Readd new_disabled flag on expectation manifest root, r=maja_zf\n\nThis was unintentionally removed in Bug 1265584.\n\nMozReview-Commit-ID: 1t5Aq7OuI0x",
+    "files": [
+      "testing/web-platform/tests/tools/wptrunner/wptrunner/manifestupdate.py"
+    ],
+    "node": "1fbf7e0d341d86ec4b188769ae074f30bbc8c0ac",
+    "parents": [
+      "750295aad764cefa0ae1b5972106a12f1b6d69c6"
+    ],
+    "tags": []
+  },
+  "c2911a626671ec41cad3de50db94996e81f739d5": {
+    "pushId": "34088",
+    "changesetIndex": 21,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Change the enum ProfilingStackFrame::Category from a bitfield to a regular enum. r=njn\n\nMozReview-Commit-ID: HmDu8Rri5AF",
+    "files": [
+      "js/public/ProfilingStack.h"
+    ],
+    "node": "c2911a626671ec41cad3de50db94996e81f739d5",
+    "parents": [
+      "1fbf7e0d341d86ec4b188769ae074f30bbc8c0ac"
+    ],
+    "tags": []
+  },
+  "1d38a4cf5a4a7e54adbdb5ffa31c944e41e27e18": {
+    "pushId": "34088",
+    "changesetIndex": 22,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Remove EVENTS category. r=njn\n\nCategories are useful to indicate: This much % of time was spent in this category.\n\nThe EVENTS category isn't a very good match for this. This category is currently\nonly set on labels of functions that handle the processing of an event. But\nthose functions are usually closer to the base of the stack, and the actual CPU\nwork during the processing of an event is usually in another category closer to\nthe top of the stack, e.g. in JS if we're running an event handler, or in LAYOUT\nif we're hit testing the position of the event.\n\nThis changeset removes the EVENTS category and replaces all uses of it with the\nOTHER category.\n\nMozReview-Commit-ID: JPm5hQiBkvp",
+    "files": [
+      "dom/base/nsDOMWindowUtils.cpp",
+      "dom/base/nsFrameMessageManager.cpp",
+      "dom/events/EventDispatcher.cpp",
+      "dom/events/EventListenerManager.cpp",
+      "dom/events/EventStateManager.cpp",
+      "dom/ipc/ContentChild.cpp",
+      "dom/ipc/TabChild.cpp",
+      "dom/ipc/TabParent.cpp",
+      "dom/ipc/nsIContentChild.cpp",
+      "dom/ipc/nsIContentParent.cpp",
+      "js/public/ProfilingStack.h",
+      "view/nsViewManager.cpp",
+      "widget/android/nsAppShell.cpp",
+      "widget/cocoa/nsAppShell.mm"
+    ],
+    "node": "1d38a4cf5a4a7e54adbdb5ffa31c944e41e27e18",
+    "parents": [
+      "692017229de6e4bfa51fa3138c9912b0ca82b8b0"
+    ],
+    "tags": []
+  },
+  "99b4a433a8e54c001521c9178db4605db5ee51b6": {
+    "pushId": "34088",
+    "changesetIndex": 23,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Rename the CSS category to LAYOUT. r=njn\n\nThe next changeset is going to move over more annotations that Gecko developers\nwould count as \"layout\" into the LAYOUT category, and which is currently marked\nas GRAPHICS.\nWe can add a subcategory for style resolution once we have subcategories, but\nfor now I think it makes more sense to put style resolution into the same bucket\nas reflow and display list building.\n\nMozReview-Commit-ID: 7r9eICVBA1Z",
+    "files": [
+      "js/public/ProfilingStack.h",
+      "layout/base/RestyleManager.cpp",
+      "layout/style/ComputedStyle.cpp",
+      "tools/profiler/tests/gtest/GeckoProfiler.cpp"
+    ],
+    "node": "99b4a433a8e54c001521c9178db4605db5ee51b6",
+    "parents": [
+      "1d38a4cf5a4a7e54adbdb5ffa31c944e41e27e18"
+    ],
+    "tags": []
+  },
+  "106967fc29d2671aaa498d06964a18ac2c8775bd": {
+    "pushId": "34088",
+    "changesetIndex": 24,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate layout-related stacks with the LAYOUT category instead of the GRAPHICS category. r=njn\n\nMozReview-Commit-ID: 77lvtLaxgEE",
+    "files": [
+      "layout/base/PresShell.cpp",
+      "layout/base/nsLayoutUtils.cpp",
+      "layout/base/nsRefreshDriver.cpp"
+    ],
+    "node": "106967fc29d2671aaa498d06964a18ac2c8775bd",
+    "parents": [
+      "99b4a433a8e54c001521c9178db4605db5ee51b6"
+    ],
+    "tags": []
+  },
+  "0663d1a6d2da10a008f47aa44cce1605b0fb6b8f": {
+    "pushId": "34088",
+    "changesetIndex": 25,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add a DOM category and use it for the WebIDL binding stack labels. r=njn\n\nMozReview-Commit-ID: AevGMqeBvXO",
+    "files": [
+      "dom/bindings/Codegen.py",
+      "js/public/ProfilingStack.h"
+    ],
+    "node": "0663d1a6d2da10a008f47aa44cce1605b0fb6b8f",
+    "parents": [
+      "106967fc29d2671aaa498d06964a18ac2c8775bd"
+    ],
+    "tags": []
+  },
+  "e09c3885317283d44d08ff6d2bdb01bd4aa3441d": {
+    "pushId": "34088",
+    "changesetIndex": 26,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Remove the STORAGE category. r=njn\n\nThis was used to label IndexedDB work and work in storage/mozStorage*.\nI don't think this deserves its own category; categories are most useful for\nthe main thread, and most of the time-consuming database-related work happens\non helper threads. The main thread pieces are mostly for asynchronicity-\ncoordination and don't usually take up time.\n\nThis patch labels IndexedDB work as DOM instead (which is maybe debatable) and\nthe rest as OTHER.\n\nMozReview-Commit-ID: 3UYhFFbi3Ry",
+    "files": [
+      "dom/indexedDB/ActorsChild.cpp",
+      "dom/indexedDB/ActorsParent.cpp",
+      "dom/storage/StorageDBThread.cpp",
+      "js/public/ProfilingStack.h",
+      "storage/mozStorageConnection.cpp",
+      "storage/mozStorageStatement.cpp",
+      "tools/profiler/tests/gtest/GeckoProfiler.cpp"
+    ],
+    "node": "e09c3885317283d44d08ff6d2bdb01bd4aa3441d",
+    "parents": [
+      "0663d1a6d2da10a008f47aa44cce1605b0fb6b8f"
+    ],
+    "tags": []
+  },
+  "329645ff1e233ca5a492066b71ded88de7ee5fcc": {
+    "pushId": "34088",
+    "changesetIndex": 27,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Relabel various other stuff as being OTHER. r=njn\n\nAny more specific work that is happening in these methods will have its own\nspecific category labeling in that specific code. The instances touched in this\npatch are more on the outside and don't really know what kind of code is going\nto be running inside.\n\nMozReview-Commit-ID: 47NO1DZzkdH",
+    "files": [
+      "dom/base/nsFrameLoader.cpp",
+      "gfx/thebes/gfxWindowsPlatform.cpp",
+      "js/xpconnect/src/XPCComponents.cpp",
+      "widget/cocoa/nsChildView.mm",
+      "widget/gtk/nsWindow.cpp",
+      "widget/uikit/nsWindow.mm",
+      "xpcom/io/FileUtilsWin.cpp"
+    ],
+    "node": "329645ff1e233ca5a492066b71ded88de7ee5fcc",
+    "parents": [
+      "e09c3885317283d44d08ff6d2bdb01bd4aa3441d"
+    ],
+    "tags": []
+  },
+  "e5ad2e525ea9dfbaf932763d5c1a90b01e52b210": {
+    "pushId": "34088",
+    "changesetIndex": 28,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add an IDLE category. r=njn\n\nMozReview-Commit-ID: JJ30AhXofBr",
+    "files": [
+      "js/public/ProfilingStack.h",
+      "widget/android/nsAppShell.cpp"
+    ],
+    "node": "e5ad2e525ea9dfbaf932763d5c1a90b01e52b210",
+    "parents": [
+      "329645ff1e233ca5a492066b71ded88de7ee5fcc"
+    ],
+    "tags": []
+  },
+  "6fe79d1ca1bd5230fb6407861f8268761d79d811": {
+    "pushId": "34088",
+    "changesetIndex": 29,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the chromium event loop. r=froydnj\n\nMozReview-Commit-ID: Ac8H02GKnmV",
+    "files": [
+      "ipc/chromium/src/base/message_pump_default.cc"
+    ],
+    "node": "6fe79d1ca1bd5230fb6407861f8268761d79d811",
+    "parents": [
+      "e5ad2e525ea9dfbaf932763d5c1a90b01e52b210"
+    ],
+    "tags": []
+  },
+  "34e71c78990355a6beb33d744d3305cc31c1c1bd": {
+    "pushId": "34088",
+    "changesetIndex": 30,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the main thread event loop. r=froydnj\n\nMozReview-Commit-ID: I4WSeZtXPBD",
+    "files": [
+      "xpcom/threads/Scheduler.cpp",
+      "xpcom/threads/ThreadEventQueue.cpp"
+    ],
+    "node": "34e71c78990355a6beb33d744d3305cc31c1c1bd",
+    "parents": [
+      "6fe79d1ca1bd5230fb6407861f8268761d79d811"
+    ],
+    "tags": []
+  },
+  "68eabfbf3c167dc35923bbb795685ff318b4c6a1": {
+    "pushId": "34088",
+    "changesetIndex": 31,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the native event loop on macOS. r=spohl\n\nMozReview-Commit-ID: HD48iBTT8EN",
+    "files": [
+      "widget/cocoa/nsAppShell.mm"
+    ],
+    "node": "68eabfbf3c167dc35923bbb795685ff318b4c6a1",
+    "parents": [
+      "34e71c78990355a6beb33d744d3305cc31c1c1bd"
+    ],
+    "tags": []
+  },
+  "d1ca8b0f22219693c455c09d7b63ed5eb77a1dee": {
+    "pushId": "34088",
+    "changesetIndex": 32,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the native event loop on Windows. r=froydnj\n\nMozReview-Commit-ID: A0c3ZLLkLUC",
+    "files": [
+      "widget/windows/nsAppShell.cpp"
+    ],
+    "node": "d1ca8b0f22219693c455c09d7b63ed5eb77a1dee",
+    "parents": [
+      "68eabfbf3c167dc35923bbb795685ff318b4c6a1"
+    ],
+    "tags": []
+  },
+  "a543b94b049a48ac005fc504a54759d306fb1906": {
+    "pushId": "34088",
+    "changesetIndex": 33,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the native event loop on Linux. r=froydnj\n\nMozReview-Commit-ID: 3Q2A7ytsn1Y",
+    "files": [
+      "widget/gtk/nsAppShell.cpp"
+    ],
+    "node": "a543b94b049a48ac005fc504a54759d306fb1906",
+    "parents": [
+      "d1ca8b0f22219693c455c09d7b63ed5eb77a1dee"
+    ],
+    "tags": []
+  },
+  "71fe35fd1f7ead6eeffd8f6b79abd09813d6724d": {
+    "pushId": "34088",
+    "changesetIndex": 34,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add idle annotations for DOM worker threads. r=froydnj\n\nMozReview-Commit-ID: 7WM1ALzhDzY",
+    "files": [
+      "dom/workers/WorkerPrivate.cpp"
+    ],
+    "node": "71fe35fd1f7ead6eeffd8f6b79abd09813d6724d",
+    "parents": [
+      "a543b94b049a48ac005fc504a54759d306fb1906"
+    ],
+    "tags": []
+  },
+  "7880f9dc7023f937ca2db886ab36ba42b4122657": {
+    "pushId": "34088",
+    "changesetIndex": 35,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in nsThreadPool. r=froydnj\n\nMozReview-Commit-ID: GtHBHQiXpf3",
+    "files": [
+      "xpcom/threads/nsThreadPool.cpp"
+    ],
+    "node": "7880f9dc7023f937ca2db886ab36ba42b4122657",
+    "parents": [
+      "71fe35fd1f7ead6eeffd8f6b79abd09813d6724d"
+    ],
+    "tags": []
+  },
+  "88321efb673be38907d849d38712fd8e39be24e7": {
+    "pushId": "34088",
+    "changesetIndex": 36,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add the list of categories into the profile JSON and bump the version to 11. r=njn\n\nMozReview-Commit-ID: 1g4WqsWFFbg",
+    "files": [
+      "tools/profiler/core/platform.cpp"
+    ],
+    "node": "88321efb673be38907d849d38712fd8e39be24e7",
+    "parents": [
+      "7880f9dc7023f937ca2db886ab36ba42b4122657"
+    ],
+    "tags": []
+  },
+  "79556798ff9f2fdab1bf1212cd27399d6d5c599d": {
+    "pushId": "34088",
+    "changesetIndex": 37,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Update the devtools performance panel for the new category list. r=gregtatum\n\nMozReview-Commit-ID: HwRFEfgA4L",
+    "files": [
+      "devtools/client/locales/en-US/performance.properties",
+      "devtools/client/performance/modules/categories.js",
+      "devtools/client/performance/modules/logic/frame-utils.js",
+      "devtools/client/performance/test/browser_perf-tree-view-02.js",
+      "devtools/client/performance/test/browser_perf-tree-view-08.js",
+      "devtools/client/performance/test/helpers/synth-utils.js",
+      "devtools/client/performance/test/unit/test_profiler-categories.js",
+      "devtools/client/performance/test/unit/test_tree-model-07.js",
+      "devtools/client/performance/test/unit/test_tree-model-08.js",
+      "devtools/client/performance/test/unit/test_tree-model-09.js",
+      "devtools/client/shared/widgets/FlameGraph.js"
+    ],
+    "node": "79556798ff9f2fdab1bf1212cd27399d6d5c599d",
+    "parents": [
+      "88321efb673be38907d849d38712fd8e39be24e7"
+    ],
+    "tags": []
+  },
+  "8885e98d44d4a34619e5840b160f48d0b89a1337": {
+    "pushId": "34088",
+    "changesetIndex": 38,
+    "authorName": "Harry Twyford ",
+    "authorEmail": "htwyford@mozilla.com",
+    "author": "Harry Twyford <htwyford@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1453722 - Improvements to Dark Theme search bar. r=dao\n\nMozReview-Commit-ID: AH3QVBRKymc",
+    "files": [
+      "browser/components/nsBrowserGlue.js",
+      "browser/themes/linux/browser.css",
+      "browser/themes/osx/browser.css",
+      "browser/themes/shared/compacttheme.inc.css",
+      "browser/themes/shared/searchbar.inc.css",
+      "browser/themes/windows/browser.css"
+    ],
+    "node": "8885e98d44d4a34619e5840b160f48d0b89a1337",
+    "parents": [
+      "79556798ff9f2fdab1bf1212cd27399d6d5c599d"
+    ],
+    "tags": []
+  },
+  "fa5bb4df41e76757e623a5b2277a28c32b9c28e0": {
+    "pushId": "34088",
+    "changesetIndex": 39,
+    "authorName": "Panos Astithas ",
+    "authorEmail": "past@mozilla.com",
+    "author": "Panos Astithas <past@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1455694 - Record the number of CPU cores in the profile. r=mstange\n\nMozReview-Commit-ID: 3S6KV4apUwG",
+    "files": [
+      "tools/profiler/core/platform.cpp"
+    ],
+    "node": "fa5bb4df41e76757e623a5b2277a28c32b9c28e0",
+    "parents": [
+      "66f87c551f18e83f5b04f34c42d2feddbe4fd88c"
+    ],
+    "tags": []
+  },
+  "fbea249b05219eef6300b3658bb1dc47215665a2": {
+    "pushId": "34088",
+    "changesetIndex": 40,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Change the enum ProfilingStackFrame::Category from a bitfield to a regular enum. r=njn\n\nMozReview-Commit-ID: HmDu8Rri5AF",
+    "files": [
+      "js/public/ProfilingStack.h"
+    ],
+    "node": "fbea249b05219eef6300b3658bb1dc47215665a2",
+    "parents": [
+      "fa5bb4df41e76757e623a5b2277a28c32b9c28e0"
+    ],
+    "tags": []
+  },
+  "6dc964ee521c253dd0c5e33b8861788dc3ff70d3": {
+    "pushId": "34088",
+    "changesetIndex": 41,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Remove EVENTS category. r=njn\n\nCategories are useful to indicate: This much % of time was spent in this category.\n\nThe EVENTS category isn't a very good match for this. This category is currently\nonly set on labels of functions that handle the processing of an event. But\nthose functions are usually closer to the base of the stack, and the actual CPU\nwork during the processing of an event is usually in another category closer to\nthe top of the stack, e.g. in JS if we're running an event handler, or in LAYOUT\nif we're hit testing the position of the event.\n\nThis changeset removes the EVENTS category and replaces all uses of it with the\nOTHER category.\n\nMozReview-Commit-ID: JPm5hQiBkvp",
+    "files": [
+      "dom/base/nsDOMWindowUtils.cpp",
+      "dom/base/nsFrameMessageManager.cpp",
+      "dom/events/EventDispatcher.cpp",
+      "dom/events/EventListenerManager.cpp",
+      "dom/events/EventStateManager.cpp",
+      "dom/ipc/ContentChild.cpp",
+      "dom/ipc/TabChild.cpp",
+      "dom/ipc/TabParent.cpp",
+      "dom/ipc/nsIContentChild.cpp",
+      "dom/ipc/nsIContentParent.cpp",
+      "js/public/ProfilingStack.h",
+      "view/nsViewManager.cpp",
+      "widget/android/nsAppShell.cpp",
+      "widget/cocoa/nsAppShell.mm"
+    ],
+    "node": "6dc964ee521c253dd0c5e33b8861788dc3ff70d3",
+    "parents": [
+      "45f1cff50efc67ba22ee1553525f2d03a0c1a8c7"
+    ],
+    "tags": []
+  },
+  "3ba0b75a1419348dea3127e759395ee28984eeac": {
+    "pushId": "34088",
+    "changesetIndex": 42,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Rename the CSS category to LAYOUT. r=njn\n\nThe next changeset is going to move over more annotations that Gecko developers\nwould count as \"layout\" into the LAYOUT category, and which is currently marked\nas GRAPHICS.\nWe can add a subcategory for style resolution once we have subcategories, but\nfor now I think it makes more sense to put style resolution into the same bucket\nas reflow and display list building.\n\nMozReview-Commit-ID: 7r9eICVBA1Z",
+    "files": [
+      "js/public/ProfilingStack.h",
+      "layout/base/RestyleManager.cpp",
+      "layout/style/ComputedStyle.cpp",
+      "tools/profiler/tests/gtest/GeckoProfiler.cpp"
+    ],
+    "node": "3ba0b75a1419348dea3127e759395ee28984eeac",
+    "parents": [
+      "6dc964ee521c253dd0c5e33b8861788dc3ff70d3"
+    ],
+    "tags": []
+  },
+  "88a612098ee5c4af5f4e84888674eae1951af2bc": {
+    "pushId": "34088",
+    "changesetIndex": 43,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate layout-related stacks with the LAYOUT category instead of the GRAPHICS category. r=njn\n\nMozReview-Commit-ID: 77lvtLaxgEE",
+    "files": [
+      "layout/base/PresShell.cpp",
+      "layout/base/nsLayoutUtils.cpp",
+      "layout/base/nsRefreshDriver.cpp"
+    ],
+    "node": "88a612098ee5c4af5f4e84888674eae1951af2bc",
+    "parents": [
+      "3ba0b75a1419348dea3127e759395ee28984eeac"
+    ],
+    "tags": []
+  },
+  "83d77dfa66eb1ea164468b5682d5c8e0c44f016e": {
+    "pushId": "34088",
+    "changesetIndex": 44,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add a DOM category and use it for the WebIDL binding stack labels. r=njn\n\nMozReview-Commit-ID: AevGMqeBvXO",
+    "files": [
+      "dom/bindings/Codegen.py",
+      "js/public/ProfilingStack.h"
+    ],
+    "node": "83d77dfa66eb1ea164468b5682d5c8e0c44f016e",
+    "parents": [
+      "88a612098ee5c4af5f4e84888674eae1951af2bc"
+    ],
+    "tags": []
+  },
+  "5bc21aa25ea78c189f017c0f1e15943b45e69bef": {
+    "pushId": "34088",
+    "changesetIndex": 45,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Remove the STORAGE category. r=njn\n\nThis was used to label IndexedDB work and work in storage/mozStorage*.\nI don't think this deserves its own category; categories are most useful for\nthe main thread, and most of the time-consuming database-related work happens\non helper threads. The main thread pieces are mostly for asynchronicity-\ncoordination and don't usually take up time.\n\nThis patch labels IndexedDB work as DOM instead (which is maybe debatable) and\nthe rest as OTHER.\n\nMozReview-Commit-ID: 3UYhFFbi3Ry",
+    "files": [
+      "dom/indexedDB/ActorsChild.cpp",
+      "dom/indexedDB/ActorsParent.cpp",
+      "dom/storage/StorageDBThread.cpp",
+      "js/public/ProfilingStack.h",
+      "storage/mozStorageConnection.cpp",
+      "storage/mozStorageStatement.cpp",
+      "tools/profiler/tests/gtest/GeckoProfiler.cpp"
+    ],
+    "node": "5bc21aa25ea78c189f017c0f1e15943b45e69bef",
+    "parents": [
+      "83d77dfa66eb1ea164468b5682d5c8e0c44f016e"
+    ],
+    "tags": []
+  },
+  "a3c9ec2c9d7aefbac9e783bfbdc534297d4c57af": {
+    "pushId": "34088",
+    "changesetIndex": 46,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Relabel various other stuff as being OTHER. r=njn\n\nAny more specific work that is happening in these methods will have its own\nspecific category labeling in that specific code. The instances touched in this\npatch are more on the outside and don't really know what kind of code is going\nto be running inside.\n\nMozReview-Commit-ID: 47NO1DZzkdH",
+    "files": [
+      "dom/base/nsFrameLoader.cpp",
+      "gfx/thebes/gfxWindowsPlatform.cpp",
+      "js/xpconnect/src/XPCComponents.cpp",
+      "widget/cocoa/nsChildView.mm",
+      "widget/gtk/nsWindow.cpp",
+      "widget/uikit/nsWindow.mm",
+      "xpcom/io/FileUtilsWin.cpp"
+    ],
+    "node": "a3c9ec2c9d7aefbac9e783bfbdc534297d4c57af",
+    "parents": [
+      "5bc21aa25ea78c189f017c0f1e15943b45e69bef"
+    ],
+    "tags": []
+  },
+  "d539f9f0f7bad4e6f34c9ff1787e76d43b3c5c2d": {
+    "pushId": "34088",
+    "changesetIndex": 47,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add an IDLE category. r=njn\n\nMozReview-Commit-ID: JJ30AhXofBr",
+    "files": [
+      "js/public/ProfilingStack.h",
+      "widget/android/nsAppShell.cpp"
+    ],
+    "node": "d539f9f0f7bad4e6f34c9ff1787e76d43b3c5c2d",
+    "parents": [
+      "a3c9ec2c9d7aefbac9e783bfbdc534297d4c57af"
+    ],
+    "tags": []
+  },
+  "8d812a39d56f05c248f02845438a3cacdb3f111e": {
+    "pushId": "34088",
+    "changesetIndex": 48,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the chromium event loop. r=froydnj\n\nMozReview-Commit-ID: Ac8H02GKnmV",
+    "files": [
+      "ipc/chromium/src/base/message_pump_default.cc"
+    ],
+    "node": "8d812a39d56f05c248f02845438a3cacdb3f111e",
+    "parents": [
+      "d539f9f0f7bad4e6f34c9ff1787e76d43b3c5c2d"
+    ],
+    "tags": []
+  },
+  "4d488c0cdc695a2581c34d97051122db81ec242c": {
+    "pushId": "34088",
+    "changesetIndex": 49,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the main thread event loop. r=froydnj\n\nMozReview-Commit-ID: I4WSeZtXPBD",
+    "files": [
+      "xpcom/threads/Scheduler.cpp",
+      "xpcom/threads/ThreadEventQueue.cpp"
+    ],
+    "node": "4d488c0cdc695a2581c34d97051122db81ec242c",
+    "parents": [
+      "8d812a39d56f05c248f02845438a3cacdb3f111e"
+    ],
+    "tags": []
+  },
+  "400afc8aaee29321c4943be3b351acb4bb951213": {
+    "pushId": "34088",
+    "changesetIndex": 50,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the native event loop on macOS. r=spohl\n\nMozReview-Commit-ID: HD48iBTT8EN",
+    "files": [
+      "widget/cocoa/nsAppShell.mm"
+    ],
+    "node": "400afc8aaee29321c4943be3b351acb4bb951213",
+    "parents": [
+      "4d488c0cdc695a2581c34d97051122db81ec242c"
+    ],
+    "tags": []
+  },
+  "7cde6d6997b6eca2c96e70a3ec437f704d17db78": {
+    "pushId": "34088",
+    "changesetIndex": 51,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the native event loop on Windows. r=froydnj\n\nMozReview-Commit-ID: A0c3ZLLkLUC",
+    "files": [
+      "widget/windows/nsAppShell.cpp"
+    ],
+    "node": "7cde6d6997b6eca2c96e70a3ec437f704d17db78",
+    "parents": [
+      "400afc8aaee29321c4943be3b351acb4bb951213"
+    ],
+    "tags": []
+  },
+  "e40a185033e540fb900358ec85a4f33619f93ded": {
+    "pushId": "34088",
+    "changesetIndex": 52,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in the native event loop on Linux. r=froydnj\n\nMozReview-Commit-ID: 3Q2A7ytsn1Y",
+    "files": [
+      "widget/gtk/nsAppShell.cpp"
+    ],
+    "node": "e40a185033e540fb900358ec85a4f33619f93ded",
+    "parents": [
+      "7cde6d6997b6eca2c96e70a3ec437f704d17db78"
+    ],
+    "tags": []
+  },
+  "b2adab83964fa0eb16da1ceb64548be8ee064c6a": {
+    "pushId": "34088",
+    "changesetIndex": 53,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add idle annotations for DOM worker threads. r=froydnj\n\nMozReview-Commit-ID: 7WM1ALzhDzY",
+    "files": [
+      "dom/workers/WorkerPrivate.cpp"
+    ],
+    "node": "b2adab83964fa0eb16da1ceb64548be8ee064c6a",
+    "parents": [
+      "e40a185033e540fb900358ec85a4f33619f93ded"
+    ],
+    "tags": []
+  },
+  "21c3c5fd4fac25854e83b92e584fd7d93e38d341": {
+    "pushId": "34088",
+    "changesetIndex": 54,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Annotate idle stacks in nsThreadPool. r=froydnj\n\nMozReview-Commit-ID: GtHBHQiXpf3",
+    "files": [
+      "xpcom/threads/nsThreadPool.cpp"
+    ],
+    "node": "21c3c5fd4fac25854e83b92e584fd7d93e38d341",
+    "parents": [
+      "b2adab83964fa0eb16da1ceb64548be8ee064c6a"
+    ],
+    "tags": []
+  },
+  "23e0775d9c9d6d081bad2e52b300a0bd0d9d722e": {
+    "pushId": "34088",
+    "changesetIndex": 55,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Add the list of categories into the profile JSON and bump the version to 11. r=njn\n\nMozReview-Commit-ID: 1g4WqsWFFbg",
+    "files": [
+      "tools/profiler/core/platform.cpp"
+    ],
+    "node": "23e0775d9c9d6d081bad2e52b300a0bd0d9d722e",
+    "parents": [
+      "21c3c5fd4fac25854e83b92e584fd7d93e38d341"
+    ],
+    "tags": []
+  },
+  "072ca507a4ba355d78ac21c05c1f33dad5f22db4": {
+    "pushId": "34088",
+    "changesetIndex": 56,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1462784 - Update the devtools performance panel for the new category list. r=gregtatum\n\nMozReview-Commit-ID: HwRFEfgA4L",
+    "files": [
+      "devtools/client/locales/en-US/performance.properties",
+      "devtools/client/performance/modules/categories.js",
+      "devtools/client/performance/modules/logic/frame-utils.js",
+      "devtools/client/performance/test/browser_perf-tree-view-02.js",
+      "devtools/client/performance/test/browser_perf-tree-view-08.js",
+      "devtools/client/performance/test/helpers/synth-utils.js",
+      "devtools/client/performance/test/unit/test_profiler-categories.js",
+      "devtools/client/performance/test/unit/test_tree-model-07.js",
+      "devtools/client/performance/test/unit/test_tree-model-08.js",
+      "devtools/client/performance/test/unit/test_tree-model-09.js",
+      "devtools/client/shared/widgets/FlameGraph.js"
+    ],
+    "node": "072ca507a4ba355d78ac21c05c1f33dad5f22db4",
+    "parents": [
+      "23e0775d9c9d6d081bad2e52b300a0bd0d9d722e"
+    ],
+    "tags": []
+  },
+  "1af5c07a378071b37341e59c4d0546374f543423": {
+    "pushId": "34088",
+    "changesetIndex": 57,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1464909 - Add a dynamic profiler label to nsContentSink::StartLayout that includes the document URL. r=bz\n\nMozReview-Commit-ID: 4DpJxV4Wn49",
+    "files": [
+      "dom/base/nsContentSink.cpp"
+    ],
+    "node": "1af5c07a378071b37341e59c4d0546374f543423",
+    "parents": [
+      "072ca507a4ba355d78ac21c05c1f33dad5f22db4"
+    ],
+    "tags": []
+  },
+  "855778d54757e0b8b211a54b46b70e9e6254b37b": {
+    "pushId": "34088",
+    "changesetIndex": 58,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1464909 - Add GRAPHICS category annotations to async-paint-related methods. r=rhunt\n\nMozReview-Commit-ID: HM2Gp85pCJa",
+    "files": [
+      "gfx/layers/PaintThread.cpp",
+      "gfx/layers/client/ClientLayerManager.cpp"
+    ],
+    "node": "855778d54757e0b8b211a54b46b70e9e6254b37b",
+    "parents": [
+      "1af5c07a378071b37341e59c4d0546374f543423"
+    ],
+    "tags": []
+  },
+  "c9cab9f9461e2e9c00b12c95f46a2b87d0081643": {
+    "pushId": "34088",
+    "changesetIndex": 59,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1464909 - Add the \"GC / CC\" category to AsyncFreeSnowWhite::Run. r=smaug\n\nMozReview-Commit-ID: KEZUstzTHhn",
+    "files": [
+      "js/xpconnect/src/XPCJSRuntime.cpp"
+    ],
+    "node": "c9cab9f9461e2e9c00b12c95f46a2b87d0081643",
+    "parents": [
+      "855778d54757e0b8b211a54b46b70e9e6254b37b"
+    ],
+    "tags": []
+  },
+  "882c05a09c56e0b9d0fcfaf526bc4f038efa3382": {
+    "pushId": "34088",
+    "changesetIndex": 60,
+    "authorName": "Markus Stange ",
+    "authorEmail": "mstange@themasta.com",
+    "author": "Markus Stange <mstange@themasta.com>",
+    "branch": "default",
+    "desc": "Bug 1464909 - Add the \"GC / CC\" category to IncrementalFinalizeRunnable::Run. r=smaug\n\nMozReview-Commit-ID: nRSVnJVNTj",
+    "files": [
+      "xpcom/base/CycleCollectedJSRuntime.cpp"
+    ],
+    "node": "882c05a09c56e0b9d0fcfaf526bc4f038efa3382",
+    "parents": [
+      "c9cab9f9461e2e9c00b12c95f46a2b87d0081643"
+    ],
+    "tags": []
+  },
+  "838c0ab9cbdbe85b0f7997ec48289d0a7fc12360": {
+    "pushId": "34088",
+    "changesetIndex": 61,
+    "authorName": "Mike Hommey ",
+    "authorEmail": "mh+mozilla@glandium.org",
+    "author": "Mike Hommey <mh+mozilla@glandium.org>",
+    "branch": "default",
+    "desc": "Bug 1464084 - Don't export libstdc++ symbols with --enable-stdcxx-compat. r=froydnj\n\nThis relies on the fact that providing multiple --version-script\ncombines them all, so we effectively create a new symbol version\nthat has no global symbol, but hides as much std::* stuff as possible.\n\nThe added symbol script could use `extern \"C++\"` syntax and demangled\nsymbols but there is no guarantee the demangled symbols won't change.\nPlus, it's not possible to match demangled symbols that have a return\ntype: they contain a space, and the only way to match that is to use\ndouble quotes, which doesn't allow globs at the same time.\n\nThis version script trick happens to work with BFD ld, gold, and lld.\n\nThe downside is that when providing multiple --version-script's, ld\ndoesn't want any of them to have no version at all. So for the libraries\nthat do already have a version script (through SYMBOLS_FILE), we use a\nversion where there used to be none, using the library name as the\nversion. Practically speaking, this binds the libraries a little closer\nthan they used to be, kind of non-flat namespace on OSX (which is the\ndefault there), meaning the dynamic linker will actively want to use\nsymbols from those libraries instead of a system library that might\nhappen to have the same symbol name.",
+    "files": [
+      "build/unix/stdc++compat/hide_std.ld",
+      "build/unix/stdc++compat/moz.build",
+      "python/mozbuild/mozbuild/action/generate_symbols_file.py",
+      "testing/cppunittest.ini"
+    ],
+    "node": "838c0ab9cbdbe85b0f7997ec48289d0a7fc12360",
+    "parents": [
+      "882c05a09c56e0b9d0fcfaf526bc4f038efa3382"
+    ],
+    "tags": []
+  },
+  "f16a2472bcb54d35e3bb63fe7ea80053e0d9fcc9": {
+    "pushId": "34088",
+    "changesetIndex": 62,
+    "authorName": "David Keeler ",
+    "authorEmail": "dkeeler@mozilla.com",
+    "author": "David Keeler <dkeeler@mozilla.com>",
+    "branch": "default",
+    "desc": "bug 1465933 - remove GetPIPNSSBundleString from nsINSSComponent r=fkiefer\n\nAt this point, all uses of GetPIPNSSBundleString *should* be on the main thread,\nso we can just remove the nsINSSComponent version and rely on the\nnsNSSCertHelper instance.\n\nMozReview-Commit-ID: Lt7AgokGKRH",
+    "files": [
+      "security/manager/ssl/nsCertTree.cpp",
+      "security/manager/ssl/nsCertTree.h",
+      "security/manager/ssl/nsKeygenHandler.cpp",
+      "security/manager/ssl/nsNSSCertificate.cpp",
+      "security/manager/ssl/nsNSSCertificateDB.cpp",
+      "security/manager/ssl/nsNSSComponent.cpp",
+      "security/manager/ssl/nsNSSComponent.h"
+    ],
+    "node": "f16a2472bcb54d35e3bb63fe7ea80053e0d9fcc9",
+    "parents": [
+      "838c0ab9cbdbe85b0f7997ec48289d0a7fc12360"
+    ],
+    "tags": []
+  },
+  "4146b1ddbb34d890b76e47584c93232171180fee": {
+    "pushId": "34088",
+    "changesetIndex": 63,
+    "authorName": "Sofia Carrillo ",
+    "authorEmail": "scarrillo@mozilla.com",
+    "author": "Sofia Carrillo <scarrillo@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463834 - vendored hglib, updated to python-hglib r=davehunt",
+    "files": [
+      "Pipfile",
+      "Pipfile.lock",
+      "build/virtualenv_packages.txt",
+      "third_party/python/hglib/LICENSE",
+      "third_party/python/hglib/hglib/__init__.py",
+      "third_party/python/hglib/hglib/client.py",
+      "third_party/python/hglib/hglib/context.py",
+      "third_party/python/hglib/hglib/error.py",
+      "third_party/python/hglib/hglib/merge.py",
+      "third_party/python/hglib/hglib/templates.py",
+      "third_party/python/hglib/hglib/util.py",
+      "third_party/python/hglib/setup.py",
+      "third_party/python/py/.hgtags",
+      "third_party/python/python-hglib/.hgignore",
+      "third_party/python/python-hglib/LICENSE",
+      "third_party/python/python-hglib/Makefile",
+      "third_party/python/python-hglib/PKG-INFO",
+      "third_party/python/python-hglib/README",
+      "third_party/python/python-hglib/examples/stats.py",
+      "third_party/python/python-hglib/hglib/__init__.py",
+      "third_party/python/python-hglib/hglib/client.py",
+      "third_party/python/python-hglib/hglib/context.py",
+      "third_party/python/python-hglib/hglib/error.py",
+      "third_party/python/python-hglib/hglib/merge.py",
+      "third_party/python/python-hglib/hglib/templates.py",
+      "third_party/python/python-hglib/hglib/util.py",
+      "third_party/python/python-hglib/setup.py",
+      "third_party/python/python-hglib/test.py",
+      "third_party/python/python-hglib/tests/__init__.py",
+      "third_party/python/python-hglib/tests/common.py",
+      "third_party/python/python-hglib/tests/test-annotate.py",
+      "third_party/python/python-hglib/tests/test-bookmarks.py",
+      "third_party/python/python-hglib/tests/test-branch.py",
+      "third_party/python/python-hglib/tests/test-branches.py",
+      "third_party/python/python-hglib/tests/test-bundle.py",
+      "third_party/python/python-hglib/tests/test-commit.py",
+      "third_party/python/python-hglib/tests/test-config.py",
+      "third_party/python/python-hglib/tests/test-copy.py",
+      "third_party/python/python-hglib/tests/test-diff.py",
+      "third_party/python/python-hglib/tests/test-encoding.py",
+      "third_party/python/python-hglib/tests/test-forget.py",
+      "third_party/python/python-hglib/tests/test-grep.py",
+      "third_party/python/python-hglib/tests/test-heads.py",
+      "third_party/python/python-hglib/tests/test-hglib.py",
+      "third_party/python/python-hglib/tests/test-import.py",
+      "third_party/python/python-hglib/tests/test-init.py",
+      "third_party/python/python-hglib/tests/test-log.py",
+      "third_party/python/python-hglib/tests/test-manifest.py",
+      "third_party/python/python-hglib/tests/test-merge.py",
+      "third_party/python/python-hglib/tests/test-move.py",
+      "third_party/python/python-hglib/tests/test-outgoing-incoming.py",
+      "third_party/python/python-hglib/tests/test-parents.py",
+      "third_party/python/python-hglib/tests/test-paths.py",
+      "third_party/python/python-hglib/tests/test-pull.py",
+      "third_party/python/python-hglib/tests/test-push.py",
+      "third_party/python/python-hglib/tests/test-remove.py",
+      "third_party/python/python-hglib/tests/test-resolve.py",
+      "third_party/python/python-hglib/tests/test-status.py",
+      "third_party/python/python-hglib/tests/test-summary.py",
+      "third_party/python/python-hglib/tests/test-tags.py",
+      "third_party/python/python-hglib/tests/test-update.py",
+      "third_party/python/python-hglib/tests/with_hg.py"
+    ],
+    "node": "4146b1ddbb34d890b76e47584c93232171180fee",
+    "parents": [
+      "f16a2472bcb54d35e3bb63fe7ea80053e0d9fcc9"
+    ],
+    "tags": []
+  },
+  "6e7c5695e34172b4975c4ad566f6cba309a1580c": {
+    "pushId": "34088",
+    "changesetIndex": 64,
+    "authorName": "Mike Hommey ",
+    "authorEmail": "mh+mozilla@glandium.org",
+    "author": "Mike Hommey <mh+mozilla@glandium.org>",
+    "branch": "default",
+    "desc": "Bug 1466054 - Enable STL wrapping in gn and gyp processed code. r=froydnj\n\nWe wrap STL headers so as to ensure our inline infallible operator new\ndefinitions are used, but for some reason, STL wrappers were disabled\nin whatever code we used gyp for first, and that ended up spreading as\nmore things used gyp, and now with gn, whose handling cargo culted\nSTL disabling from the gyp code.\n\nWe remove all this disabling, because it turns out it causes no build\nproblem anymore.",
+    "files": [
+      "python/mozbuild/mozbuild/frontend/gyp_reader.py",
+      "python/mozbuild/mozbuild/gn_processor.py"
+    ],
+    "node": "6e7c5695e34172b4975c4ad566f6cba309a1580c",
+    "parents": [
+      "aeea710872fef737c3a4fcef9925fe7c18058f21"
+    ],
+    "tags": []
+  },
+  "9720579262346607195ab6804be73772a7ea4fee": {
+    "pushId": "34088",
+    "changesetIndex": 65,
+    "authorName": "Mike Hommey ",
+    "authorEmail": "mh+mozilla@glandium.org",
+    "author": "Mike Hommey <mh+mozilla@glandium.org>",
+    "branch": "default",
+    "desc": "Bug 1466054 - Run `mach build-backend -b GnMozbuildWriter`. r=froydnj\n\nThis refreshes the gn-generated moz.builds with the change from previous\ncommit. Somehow, this does unrelated changes, there must be something\nfunky in the gn-moz.build-generator.",
+    "files": [
+      "media/webrtc/trunk/moz.build",
+      "media/webrtc/trunk/webrtc/api/audio_mixer_api_gn/moz.build",
+      "media/webrtc/trunk/webrtc/api/call_api_gn/moz.build",
+      "media/webrtc/trunk/webrtc/api/transport_api_gn/moz.build",
+      "media/webrtc/trunk/webrtc/api/video_frame_api_gn/moz.build",
+      "media/webrtc/trunk/webrtc/audio/audio_gn/moz.build",
+      "media/webrtc/trunk/webrtc/audio/utility/audio_frame_operations_gn/moz.build",
+      "media/webrtc/trunk/webrtc/base/gtest_prod_gn/moz.build",
+      "media/webrtc/trunk/webrtc/base/rtc_base_approved_gn/moz.build",
+      "media/webrtc/trunk/webrtc/base/rtc_numerics_gn/moz.build",
+      "media/webrtc/trunk/webrtc/base/rtc_task_queue_gn/moz.build",
+      "media/webrtc/trunk/webrtc/call/call_gn/moz.build",
+      "media/webrtc/trunk/webrtc/call/call_interfaces_gn/moz.build",
+      "media/webrtc/trunk/webrtc/common_audio/common_audio_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/common_audio/common_audio_gn/moz.build",
+      "media/webrtc/trunk/webrtc/common_audio/common_audio_neon_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/common_audio/common_audio_neon_gn/moz.build",
+      "media/webrtc/trunk/webrtc/common_audio/common_audio_sse2_gn/moz.build",
+      "media/webrtc/trunk/webrtc/common_video/common_video_gn/moz.build",
+      "media/webrtc/trunk/webrtc/logging/rtc_event_log_api_gn/moz.build",
+      "media/webrtc/trunk/webrtc/logging/rtc_event_log_impl_gn/moz.build",
+      "media/webrtc/trunk/webrtc/media/mozilla_rtc_media_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/audio_coding_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/audio_decoder_factory_interface_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/audio_decoder_interface_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/audio_encoder_interface_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/audio_format_conversion_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/audio_format_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/audio_network_adaptor_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/builtin_audio_decoder_factory_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/cng_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/g711_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/g711_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/g722_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/g722_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/isac_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/isac_common_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/isac_fix_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/isac_fix_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/isac_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/isac_neon_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/neteq_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/pcm16b_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/pcm16b_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/rent_a_codec_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/webrtc_opus_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_coding/webrtc_opus_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_conference_mixer/audio_conference_mixer_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_device/audio_device_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_mixer/audio_frame_manipulator_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_mixer/audio_mixer_impl_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_processing/audio_processing_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_processing/audio_processing_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_processing/audio_processing_neon_c_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_processing/audio_processing_neon_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/audio_processing/audio_processing_sse2_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/bitrate_controller/bitrate_controller_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/congestion_controller/congestion_controller_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/desktop_capture/desktop_capture_differ_sse2_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/desktop_capture/desktop_capture_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/desktop_capture/primitives_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/media_file/media_file_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/pacing/pacing_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/remote_bitrate_estimator/remote_bitrate_estimator_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/rtp_rtcp/rtp_rtcp_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/utility/utility_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_capture/video_capture_internal_impl_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_capture/video_capture_module_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_coding/video_coding_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_coding/video_coding_utility_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_coding/webrtc_h264_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_coding/webrtc_i420_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_coding/webrtc_vp8_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_coding/webrtc_vp9_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_processing/video_processing_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_processing/video_processing_neon_gn/moz.build",
+      "media/webrtc/trunk/webrtc/modules/video_processing/video_processing_sse2_gn/moz.build",
+      "media/webrtc/trunk/webrtc/system_wrappers/cpu_features_linux_gn/moz.build",
+      "media/webrtc/trunk/webrtc/system_wrappers/field_trial_default_gn/moz.build",
+      "media/webrtc/trunk/webrtc/system_wrappers/metrics_default_gn/moz.build",
+      "media/webrtc/trunk/webrtc/system_wrappers/system_wrappers_gn/moz.build",
+      "media/webrtc/trunk/webrtc/video/video_gn/moz.build",
+      "media/webrtc/trunk/webrtc/video_engine/video_engine_gn/moz.build",
+      "media/webrtc/trunk/webrtc/voice_engine/audio_coder_gn/moz.build",
+      "media/webrtc/trunk/webrtc/voice_engine/file_player_gn/moz.build",
+      "media/webrtc/trunk/webrtc/voice_engine/file_recorder_gn/moz.build",
+      "media/webrtc/trunk/webrtc/voice_engine/level_indicator_gn/moz.build",
+      "media/webrtc/trunk/webrtc/voice_engine/voice_engine_gn/moz.build",
+      "media/webrtc/trunk/webrtc/webrtc_common_gn/moz.build",
+      "media/webrtc/trunk/webrtc/webrtc_gn/moz.build"
+    ],
+    "node": "9720579262346607195ab6804be73772a7ea4fee",
+    "parents": [
+      "6e7c5695e34172b4975c4ad566f6cba309a1580c"
+    ],
+    "tags": []
+  },
+  "42ff6656917e95d2919f9cee84ef69afba595f14": {
+    "pushId": "34088",
+    "changesetIndex": 66,
+    "authorName": "Mike Hommey ",
+    "authorEmail": "mh+mozilla@glandium.org",
+    "author": "Mike Hommey <mh+mozilla@glandium.org>",
+    "branch": "default",
+    "desc": "Bug 1466060 - Upgrade to binutils 2.28.1. r=nalexander\n\nVersion 2.25.1's libiberty can choke on some symbols. That was fixed in\n2.27. As of writing, the last version is 2.30. Conservatively go with\n2.28.1, which is the same major version (2.28) as what is currently in\nDebian stable.",
+    "files": [
+      "build/unix/build-binutils/build-binutils.sh",
+      "taskcluster/scripts/misc/build-gcc-6-linux.sh",
+      "taskcluster/scripts/misc/build-gcc-7-linux.sh",
+      "taskcluster/scripts/misc/build-gcc-sixgill-plugin-linux.sh"
+    ],
+    "node": "42ff6656917e95d2919f9cee84ef69afba595f14",
+    "parents": [
+      "9720579262346607195ab6804be73772a7ea4fee"
+    ],
+    "tags": []
+  },
+  "aa67de9bfa1cfb6947f22cea66385bcbf5b69890": {
+    "pushId": "34088",
+    "changesetIndex": 67,
+    "authorName": "Andrew Swan ",
+    "authorEmail": "aswan@mozilla.com",
+    "author": "Andrew Swan <aswan@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465938 Fix a pair of WE theme issues r=zombie\n\n1. Stop broadcasting an extra theme update event when changing themes\n2. Use enable() to enable themes upon install\n\nMozReview-Commit-ID: CgWjNEihwmE",
+    "files": [
+      "toolkit/mozapps/extensions/AddonManager.jsm",
+      "toolkit/mozapps/extensions/LightweightThemeManager.jsm"
+    ],
+    "node": "aa67de9bfa1cfb6947f22cea66385bcbf5b69890",
+    "parents": [
+      "42ff6656917e95d2919f9cee84ef69afba595f14"
+    ],
+    "tags": []
+  },
+  "9a5f5fa5cfa0a6fe45eb7685fb1798529e8f406a": {
+    "pushId": "34088",
+    "changesetIndex": 68,
+    "authorName": "Michael Kaply ",
+    "authorEmail": "mozilla@kaply.com",
+    "author": "Michael Kaply <mozilla@kaply.com>",
+    "branch": "default",
+    "desc": "Bug 1455261 - Check for null metadata to workaround broken search.json. r=adw\n\nMozReview-Commit-ID: 4D2F30MHaqE",
+    "files": [
+      "toolkit/components/search/nsSearchService.js"
+    ],
+    "node": "9a5f5fa5cfa0a6fe45eb7685fb1798529e8f406a",
+    "parents": [
+      "52503242b45eb78cf5f68ea6bd467070b4ff9bf2"
+    ],
+    "tags": []
+  },
+  "578f9a189eb8a61ee54c670a30e82c12e555e598": {
+    "pushId": "34088",
+    "changesetIndex": 69,
+    "authorName": "Chris Peterson ",
+    "authorEmail": "cpeterson@mozilla.com",
+    "author": "Chris Peterson <cpeterson@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464648 - Bail early when parsing empty form data (to avoid NS_NOTREACHED assertion failure). r=baku\n\nThis NS_NOTREACHED(\"Should never reach here.\") assertion fails on the following test case of the testing/web-platform/tests/fetch/api/response/response-consume-empty.html web platform test:\n\ncheckResponseWithNoBody(\"formData with correct multipart type (error case)\", checkBodyFormDataError, [[\"Content-Type\", 'multipart/form-data; boundary=\"boundary\"']]);\n\nMozReview-Commit-ID: 1rKRBDrqybJ",
+    "files": [
+      "dom/base/BodyUtil.cpp"
+    ],
+    "node": "578f9a189eb8a61ee54c670a30e82c12e555e598",
+    "parents": [
+      "9a5f5fa5cfa0a6fe45eb7685fb1798529e8f406a"
+    ],
+    "tags": []
+  },
+  "7c74241c18ea7be2c5ea758e6dba7a912aee9e9d": {
+    "pushId": "34088",
+    "changesetIndex": 70,
+    "authorName": "Mike Hommey ",
+    "authorEmail": "mh+mozilla@glandium.org",
+    "author": "Mike Hommey <mh+mozilla@glandium.org>",
+    "branch": "default",
+    "desc": "Bug 1464084 - Don't export std::thread::_M_start_thread symbols with --enable-stdcxx-compat. r=froydnj\n\nThis relies on the fact that providing multiple --version-script\ncombines them all, so we effectively create a new symbol version\nthat has no global symbol, but hides the std::thread::_M_start_thread\nsymbols.\n\nThis version script trick happens to work with BFD ld, gold, and lld.\n\nThe downside is that when providing multiple --version-script's, ld\ndoesn't want any of them to have no version at all. So for the libraries\nthat do already have a version script (through SYMBOLS_FILE), we use a\nversion where there used to be none, using the library name as the\nversion. Practically speaking, this binds the libraries a little closer\nthan they used to be, kind of non-flat namespace on OSX (which is the\ndefault there), meaning the dynamic linker will actively want to use\nsymbols from those libraries instead of a system library that might\nhappen to have the same symbol name.",
+    "files": [
+      "build/unix/stdc++compat/hide_std.ld",
+      "build/unix/stdc++compat/moz.build",
+      "python/mozbuild/mozbuild/action/generate_symbols_file.py",
+      "testing/cppunittest.ini"
+    ],
+    "node": "7c74241c18ea7be2c5ea758e6dba7a912aee9e9d",
+    "parents": [
+      "578f9a189eb8a61ee54c670a30e82c12e555e598"
+    ],
+    "tags": []
+  },
+  "46bd77a828860bfb5298c176ef24c0d06a7657c6": {
+    "pushId": "34088",
+    "changesetIndex": 71,
+    "authorName": "Kartikaya Gupta ",
+    "authorEmail": "kgupta@mozilla.com",
+    "author": "Kartikaya Gupta <kgupta@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465864 - Make hit-testing mochitest failure messages nicer. r=botond\n\nInstead of printing out base-10 numbers like \"expected 67\" this will\nprint out a nicer \"expected VISIBLE | DISPATCH_TO_CONTENT | SCROLLBAR\"\nwhich makes it easier to see which flags are missing from the hit info.\n\nMozReview-Commit-ID: gp9ERBIgYj",
+    "files": [
+      "gfx/layers/apz/test/mochitest/apz_test_utils.js",
+      "gfx/layers/apz/test/mochitest/helper_hittest_basic.html",
+      "gfx/layers/apz/test/mochitest/helper_hittest_checkerboard.html"
+    ],
+    "node": "46bd77a828860bfb5298c176ef24c0d06a7657c6",
+    "parents": [
+      "7c74241c18ea7be2c5ea758e6dba7a912aee9e9d"
+    ],
+    "tags": []
+  },
+  "b9580410937cb100759a59b189f2fa7ef66c6238": {
+    "pushId": "34088",
+    "changesetIndex": 72,
+    "authorName": "Kartikaya Gupta ",
+    "authorEmail": "kgupta@mozilla.com",
+    "author": "Kartikaya Gupta <kgupta@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465864 - Update mochitest code for changes in bug 1443424. r=botond\n\nIn bug 1443424, the CompositorHitTestInfo for a thumb frame was modified\nto only contain the thumb flag if it was layerized. The mochitests were\ndisabled at the time and so didn't make a fuss.\n\nMozReview-Commit-ID: Argqj8KbnqU",
+    "files": [
+      "gfx/layers/apz/test/mochitest/apz_test_utils.js"
+    ],
+    "node": "b9580410937cb100759a59b189f2fa7ef66c6238",
+    "parents": [
+      "46bd77a828860bfb5298c176ef24c0d06a7657c6"
+    ],
+    "tags": []
+  },
+  "7305a574730685a9dee4a6cfdf0c2aad6d0de081": {
+    "pushId": "34088",
+    "changesetIndex": 73,
+    "authorName": "Kartikaya Gupta ",
+    "authorEmail": "kgupta@mozilla.com",
+    "author": "Kartikaya Gupta <kgupta@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465864 - Enable test_group_hittest for webrender. r=botond\n\nMozReview-Commit-ID: B3EKTEHv4vi",
+    "files": [
+      "gfx/layers/apz/test/mochitest/mochitest.ini"
+    ],
+    "node": "7305a574730685a9dee4a6cfdf0c2aad6d0de081",
+    "parents": [
+      "b9580410937cb100759a59b189f2fa7ef66c6238"
+    ],
+    "tags": []
+  },
+  "fdac47b8ef20d45c7828f2185c063ee92019c5a0": {
+    "pushId": "34088",
+    "changesetIndex": 74,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Move serialize/deserialize helpers from ext-c-storage.js to ExtensionStorage.jsm. r=kmag\n\nMozReview-Commit-ID: 4iundHpQ8d2",
+    "files": [
+      "toolkit/components/extensions/ExtensionStorage.jsm",
+      "toolkit/components/extensions/child/ext-storage.js"
+    ],
+    "node": "fdac47b8ef20d45c7828f2185c063ee92019c5a0",
+    "parents": [
+      "561dd8c84f8576b2c55286fec1937539c15a31d6"
+    ],
+    "tags": []
+  },
+  "912a2eaf4d26414f9ae2acd38afe8be383391dbc": {
+    "pushId": "34088",
+    "changesetIndex": 75,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Add openForPrincipal static method and changes to IDB cursor wrapping in IndexedDB.jsm. r=aswan\n\nMozReview-Commit-ID: vicgBmHhJp",
+    "files": [
+      "toolkit/modules/IndexedDB.jsm"
+    ],
+    "node": "912a2eaf4d26414f9ae2acd38afe8be383391dbc",
+    "parents": [
+      "fdac47b8ef20d45c7828f2185c063ee92019c5a0"
+    ],
+    "tags": []
+  },
+  "3241c2dfb2962e0c7f32b8d75a471e21a096b301": {
+    "pushId": "34088",
+    "changesetIndex": 76,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Add identity reserved for storage.local extension API to ContextualIdentityService. r=baku\n\nMozReview-Commit-ID: APi7yJnuDe2",
+    "files": [
+      "toolkit/components/contextualidentity/ContextualIdentityService.jsm",
+      "toolkit/components/contextualidentity/tests/unit/test_corruptedFile.js",
+      "toolkit/components/contextualidentity/tests/unit/test_migratedFile.js",
+      "toolkit/components/contextualidentity/tests/unit/xpcshell.ini"
+    ],
+    "node": "3241c2dfb2962e0c7f32b8d75a471e21a096b301",
+    "parents": [
+      "912a2eaf4d26414f9ae2acd38afe8be383391dbc"
+    ],
+    "tags": []
+  },
+  "d34810cab822c9f8717405c27f5ad9367eb430d9": {
+    "pushId": "34088",
+    "changesetIndex": 77,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Add ExtensionStorageIDB JSM module. r=aswan\n\nThis patch defined a new ExtensionStorageIDB module, which provides the\nsame \"internal\" API currently provided by ExtensionStorage and uses\nIndexedDB as its backend (instead of the JSONFile used as the backend\nprovided by ExtensionStorage).\n\nMozReview-Commit-ID: DsvPudExcyr",
+    "files": [
+      "modules/libpref/init/all.js",
+      "toolkit/components/extensions/Extension.jsm",
+      "toolkit/components/extensions/ExtensionStorage.jsm",
+      "toolkit/components/extensions/ExtensionStorageIDB.jsm",
+      "toolkit/components/extensions/child/ext-storage.js",
+      "toolkit/components/extensions/moz.build",
+      "toolkit/components/extensions/parent/ext-storage.js"
+    ],
+    "node": "d34810cab822c9f8717405c27f5ad9367eb430d9",
+    "parents": [
+      "3241c2dfb2962e0c7f32b8d75a471e21a096b301"
+    ],
+    "tags": []
+  },
+  "62e9126ecd0d308ac0449057f2f7bfbc2db0e336": {
+    "pushId": "34088",
+    "changesetIndex": 78,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Test storage.local data migration from JSONFile to IDB backend. r=aswan\n\nMozReview-Commit-ID: 8qzy0z1ei0w",
+    "files": [
+      "toolkit/components/extensions/test/xpcshell/test_ext_storage_idb_data_migration.js",
+      "toolkit/components/extensions/test/xpcshell/xpcshell-common.ini"
+    ],
+    "node": "62e9126ecd0d308ac0449057f2f7bfbc2db0e336",
+    "parents": [
+      "d34810cab822c9f8717405c27f5ad9367eb430d9"
+    ],
+    "tags": []
+  },
+  "db783c96c076d88dc3d9f240d0c51543e79908ca": {
+    "pushId": "34088",
+    "changesetIndex": 79,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Test storage.local JSONFile and IndexedDB backends. r=kmag\n\nMozReview-Commit-ID: CU9CVdIp8l8",
+    "files": [
+      "toolkit/components/extensions/test/xpcshell/head.js",
+      "toolkit/components/extensions/test/xpcshell/test_ext_storage.js"
+    ],
+    "node": "db783c96c076d88dc3d9f240d0c51543e79908ca",
+    "parents": [
+      "62e9126ecd0d308ac0449057f2f7bfbc2db0e336"
+    ],
+    "tags": []
+  },
+  "4f387b4a76a93e80c56eb0db4299717651cf8885": {
+    "pushId": "34088",
+    "changesetIndex": 80,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Test storage.local telemetry on file and indexedDB backends. r=aswan\n\nMozReview-Commit-ID: AHSPICGKdib",
+    "files": [
+      "toolkit/components/extensions/test/xpcshell/test_ext_storage_telemetry.js"
+    ],
+    "node": "4f387b4a76a93e80c56eb0db4299717651cf8885",
+    "parents": [
+      "db783c96c076d88dc3d9f240d0c51543e79908ca"
+    ],
+    "tags": []
+  },
+  "b52c2fb70ae1ebcdf44147022001acfb35d42bea": {
+    "pushId": "34088",
+    "changesetIndex": 81,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Test storage.local cleanup on uninstall on file and indexedDB backends. r=aswan\n\nMozReview-Commit-ID: H8W8ry1dQIt",
+    "files": [
+      "toolkit/components/extensions/test/mochitest/test_ext_storage_cleanup.html"
+    ],
+    "node": "b52c2fb70ae1ebcdf44147022001acfb35d42bea",
+    "parents": [
+      "4f387b4a76a93e80c56eb0db4299717651cf8885"
+    ],
+    "tags": []
+  },
+  "fd61d9faedf0d899f54111a71411213b1ed4ed2b": {
+    "pushId": "34088",
+    "changesetIndex": 82,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Test storage.local from content scripts on file and indexedDB backends. r=aswan\n\nMozReview-Commit-ID: C4ij1o3TXIO",
+    "files": [
+      "toolkit/components/extensions/test/xpcshell/test_ext_storage_content.js"
+    ],
+    "node": "fd61d9faedf0d899f54111a71411213b1ed4ed2b",
+    "parents": [
+      "b52c2fb70ae1ebcdf44147022001acfb35d42bea"
+    ],
+    "tags": []
+  },
+  "06461ddb2699b3b9ee7283bb33307d37b107ec08": {
+    "pushId": "34088",
+    "changesetIndex": 83,
+    "authorName": "Luca Greco ",
+    "authorEmail": "lgreco@mozilla.com",
+    "author": "Luca Greco <lgreco@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1406181 - Test storage.local from extension tab pages on file and indexedDB backends. r=aswan\n\nMozReview-Commit-ID: BYhlnLiitgh",
+    "files": [
+      "toolkit/components/extensions/test/xpcshell/test_ext_storage_tab.js"
+    ],
+    "node": "06461ddb2699b3b9ee7283bb33307d37b107ec08",
+    "parents": [
+      "fd61d9faedf0d899f54111a71411213b1ed4ed2b"
+    ],
+    "tags": []
+  },
+  "5cd398cc6a4b57e3a36ee7187693d5e52006d20b": {
+    "pushId": "34088",
+    "changesetIndex": 84,
+    "authorName": "Andrew Swan ",
+    "authorEmail": "aswan@mozilla.com",
+    "author": "Andrew Swan <aswan@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1369841 Make browser.runtime.onMessage and onConnect persistent r=zombie\n\nMozReview-Commit-ID: 4LdBeEERtsD",
+    "files": [
+      "toolkit/components/extensions/Extension.jsm",
+      "toolkit/components/extensions/ExtensionChild.jsm",
+      "toolkit/components/extensions/ExtensionCommon.jsm",
+      "toolkit/components/extensions/ExtensionParent.jsm",
+      "toolkit/components/extensions/parent/ext-runtime.js",
+      "toolkit/components/extensions/parent/ext-toolkit.js",
+      "toolkit/components/extensions/test/xpcshell/test_ext_messaging_startup.js",
+      "toolkit/components/extensions/test/xpcshell/xpcshell-common.ini",
+      "toolkit/mozapps/extensions/AddonManager.jsm"
+    ],
+    "node": "5cd398cc6a4b57e3a36ee7187693d5e52006d20b",
+    "parents": [
+      "06461ddb2699b3b9ee7283bb33307d37b107ec08"
+    ],
+    "tags": []
+  },
+  "5834b41d97cd22c781f436f5567f698e4ab3e68e": {
+    "pushId": "34088",
+    "changesetIndex": 85,
+    "authorName": "Brian Grinstead ",
+    "authorEmail": "bgrinstead@mozilla.com",
+    "author": "Brian Grinstead <bgrinstead@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1425552 - Move clearOutput and clearPrivateMessages from the jsterm and onto the WebConsoleFrame;r=nchevobbe\n\nMozReview-Commit-ID: 9lJW7qt64DT",
+    "files": [
+      "devtools/client/scratchpad/test/browser_scratchpad_wrong_window_focus.js",
+      "devtools/client/shared/webpack/shims/jsterm-stub.js",
+      "devtools/client/webconsole/components/JSTerm.js",
+      "devtools/client/webconsole/console-commands.js",
+      "devtools/client/webconsole/test/mochitest/browser_console.js",
+      "devtools/client/webconsole/test/mochitest/browser_console_consolejsm_output.js",
+      "devtools/client/webconsole/test/mochitest/browser_console_webconsole_private_browsing.js",
+      "devtools/client/webconsole/test/mochitest/browser_jsterm_completion.js",
+      "devtools/client/webconsole/test/mochitest/browser_jsterm_dollar.js",
+      "devtools/client/webconsole/test/mochitest/browser_jsterm_error_docs.js",
+      "devtools/client/webconsole/test/mochitest/browser_jsterm_helper_help.js",
+      "devtools/client/webconsole/test/mochitest/browser_jsterm_hide_when_devtools_chrome_enabled_false.js",
+      "devtools/client/webconsole/test/mochitest/browser_jsterm_history.js",
+      "devtools/client/webconsole/test/mochitest/browser_jsterm_selfxss.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_cd_iframe.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_console_logging_workers_api.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_context_menu_copy_entire_message.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_context_menu_copy_link_location.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_context_menu_open_url.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_csp_violation.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_cspro.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_execution_scope.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_file_uri.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_highlighter_console_helper.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_hpkp_invalid-headers.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_hsts_invalid-headers.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_input_focus.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_js_input_expansion.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_loglimit.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_network_messages_expand.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_output_order.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_reopen_closed_tab.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_sandbox_update_after_navigation.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_script_errordoc_urls.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_select_all.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_show_subresource_security_errors.js",
+      "devtools/client/webconsole/test/mochitest/browser_webconsole_time_methods.js",
+      "devtools/client/webconsole/test/mochitest/head.js",
+      "devtools/client/webconsole/webconsole-connection-proxy.js",
+      "devtools/client/webconsole/webconsole-frame.js"
+    ],
+    "node": "5834b41d97cd22c781f436f5567f698e4ab3e68e",
+    "parents": [
+      "15b13a9f6e9126bacbb28b626561eb7558c86ec7"
+    ],
+    "tags": []
+  },
+  "2bb74a17a766571113299beea41fd08226ac6608": {
+    "pushId": "34088",
+    "changesetIndex": 86,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465118 - Part 1: Disable broken nsDisplayTransform::IsUniform() logic to avoid unnecessary work r=mattwoodrow\n\nMozReview-Commit-ID: EuoSzUr1A9A",
+    "files": [
+      "layout/painting/nsDisplayList.cpp",
+      "layout/painting/nsDisplayList.h"
+    ],
+    "node": "2bb74a17a766571113299beea41fd08226ac6608",
+    "parents": [
+      "b8765a36c5fc83a9c731a87bbde1e75b2465b856"
+    ],
+    "tags": []
+  },
+  "6a9d2ad04ed23389dc93da95b7c9aa0a3ecab959": {
+    "pushId": "34088",
+    "changesetIndex": 87,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465118 - Part 2: Remove unused nsDisplayTransform contructor r=mattwoodrow\n\nMozReview-Commit-ID: 9kRBP6aQUcD",
+    "files": [
+      "layout/painting/nsDisplayList.cpp",
+      "layout/painting/nsDisplayList.h"
+    ],
+    "node": "6a9d2ad04ed23389dc93da95b7c9aa0a3ecab959",
+    "parents": [
+      "2bb74a17a766571113299beea41fd08226ac6608"
+    ],
+    "tags": []
+  },
+  "e6e9ebdf189fa022ab8fff09cf1ca406adfd57d7": {
+    "pushId": "34088",
+    "changesetIndex": 88,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465118 - Part 3: Use Maybe<T> to cache transformation matrix r=mattwoodrow\n\nMozReview-Commit-ID: 1oBc77ijXcv",
+    "files": [
+      "layout/painting/nsDisplayList.cpp",
+      "layout/painting/nsDisplayList.h"
+    ],
+    "node": "e6e9ebdf189fa022ab8fff09cf1ca406adfd57d7",
+    "parents": [
+      "6a9d2ad04ed23389dc93da95b7c9aa0a3ecab959"
+    ],
+    "tags": []
+  },
+  "74cadc564216df697ff939d2314046d01273d782": {
+    "pushId": "34088",
+    "changesetIndex": 89,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465118 - Part 4: Cache inverted transformation matrix for nsDisplayTransform r=mattwoodrow\n\nMozReview-Commit-ID: H1b2oRCFkjZ",
+    "files": [
+      "layout/painting/nsDisplayList.cpp",
+      "layout/painting/nsDisplayList.h"
+    ],
+    "node": "74cadc564216df697ff939d2314046d01273d782",
+    "parents": [
+      "e6e9ebdf189fa022ab8fff09cf1ca406adfd57d7"
+    ],
+    "tags": []
+  },
+  "10446073eca89bc3099523a5f3795ea7aa45cf2f": {
+    "pushId": "34088",
+    "changesetIndex": 90,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465060 - Part 1: Fix warnings for std::move() use r=froydnj\n\nMozReview-Commit-ID: HpdFXqQdIOO",
+    "files": [
+      "accessible/ipc/other/ProxyAccessible.cpp",
+      "devtools/shared/heapsnapshot/DeserializedNode.cpp",
+      "docshell/base/nsDocShell.cpp",
+      "docshell/base/timeline/AutoRestyleTimelineMarker.cpp",
+      "docshell/base/timeline/TimelineConsumers.cpp",
+      "dom/animation/EffectSet.h",
+      "dom/base/CustomElementRegistry.cpp",
+      "dom/base/nsContentPermissionHelper.cpp",
+      "dom/base/nsDocument.cpp",
+      "dom/base/nsGlobalWindowInner.cpp",
+      "dom/canvas/ImageBitmap.cpp",
+      "dom/canvas/WebGLFormats.cpp",
+      "dom/canvas/WebGLTextureUpload.cpp",
+      "dom/clients/manager/ClientHandle.cpp",
+      "dom/clients/manager/ClientInfo.cpp",
+      "dom/clients/manager/ClientManager.cpp",
+      "dom/clients/manager/ClientManagerService.cpp",
+      "dom/console/Console.cpp",
+      "dom/events/EventListenerManager.cpp",
+      "dom/file/uri/BlobURLProtocolHandler.cpp",
+      "dom/geolocation/nsGeolocation.cpp",
+      "dom/ipc/ContentParent.cpp",
+      "dom/ipc/ContentProcessManager.cpp",
+      "dom/media/MediaStreamGraph.cpp",
+      "dom/media/eme/MediaKeySystemAccess.cpp",
+      "dom/media/gmp/ChromiumCDMParent.cpp",
+      "dom/media/gmp/GMPParent.cpp",
+      "dom/media/gmp/GMPServiceParent.cpp",
+      "dom/media/gmp/GMPStorageChild.cpp",
+      "dom/media/ipc/VideoDecoderManagerParent.cpp",
+      "dom/media/platforms/apple/AppleVTDecoder.cpp",
+      "dom/media/platforms/omx/OmxPlatformLayer.cpp",
+      "dom/serviceworkers/ServiceWorkerDescriptor.cpp",
+      "dom/serviceworkers/ServiceWorkerManager.cpp",
+      "dom/serviceworkers/ServiceWorkerRegistrar.cpp",
+      "dom/serviceworkers/ServiceWorkerRegistrationDescriptor.cpp",
+      "dom/u2f/U2F.cpp",
+      "dom/workers/WorkerPrivate.cpp",
+      "dom/workers/WorkerScope.cpp",
+      "editor/libeditor/HTMLAnonymousNodeEditor.cpp",
+      "editor/libeditor/HTMLEditRules.cpp",
+      "editor/libeditor/HTMLEditorObjectResizer.cpp",
+      "extensions/spellcheck/hunspell/glue/RemoteSpellCheckEngineChild.cpp",
+      "gfx/2d/SFNTData.cpp",
+      "gfx/gl/GLScreenBuffer.cpp",
+      "gfx/gl/MozFramebuffer.cpp",
+      "gfx/gl/SharedSurface.cpp",
+      "gfx/gl/SharedSurfaceEGL.cpp",
+      "gfx/gl/SharedSurfaceGL.cpp",
+      "gfx/gl/SharedSurfaceIO.cpp",
+      "gfx/layers/AnimationHelper.cpp",
+      "gfx/layers/LayerTreeInvalidation.cpp",
+      "gfx/layers/ipc/CompositorVsyncScheduler.cpp",
+      "gfx/layers/ipc/UiCompositorControllerParent.cpp",
+      "gfx/layers/wr/WebRenderCommandBuilder.cpp",
+      "gfx/thebes/gfxFont.cpp",
+      "gfx/thebes/gfxPlatform.cpp",
+      "gfx/thebes/gfxPlatformMac.cpp",
+      "image/decoders/nsICODecoder.cpp",
+      "image/test/gtest/TestADAM7InterpolatingFilter.cpp",
+      "image/test/gtest/TestAnimationFrameBuffer.cpp",
+      "image/test/gtest/TestSourceBuffer.cpp",
+      "image/test/gtest/TestSurfacePipeIntegration.cpp",
+      "js/src/builtin/TestingFunctions.cpp",
+      "js/src/ctypes/CTypes.cpp",
+      "js/src/ds/LifoAlloc.cpp",
+      "js/src/ds/LifoAlloc.h",
+      "js/src/vm/CodeCoverage.cpp",
+      "js/src/vm/UbiNode.cpp",
+      "js/src/vm/UbiNodeShortestPaths.cpp",
+      "js/src/wasm/WasmValidate.cpp",
+      "js/xpconnect/loader/URLPreloader.cpp",
+      "layout/base/PresShell.cpp",
+      "layout/painting/FrameLayerBuilder.cpp",
+      "layout/painting/RetainedDisplayListBuilder.cpp",
+      "layout/painting/nsDisplayList.cpp",
+      "layout/style/StyleSheet.cpp",
+      "layout/style/nsTransitionManager.cpp",
+      "media/webrtc/signaling/gtest/sdp_unittests.cpp",
+      "mfbt/tests/TestUniquePtr.cpp",
+      "security/certverifier/tests/gtest/CTSerializationTest.cpp",
+      "security/manager/ssl/nsPKCS12Blob.cpp",
+      "toolkit/components/extensions/webrequest/WebRequestService.cpp",
+      "toolkit/components/url-classifier/tests/gtest/TestClassifier.cpp",
+      "tools/profiler/core/platform.cpp",
+      "widget/android/nsAppShell.h",
+      "xpcom/tests/gtest/TestPLDHash.cpp",
+      "xpcom/tests/gtest/TestTArray.cpp"
+    ],
+    "node": "10446073eca89bc3099523a5f3795ea7aa45cf2f",
+    "parents": [
+      "3d3c72079cfd9d7c09135a72799342ea84b3d42a"
+    ],
+    "tags": []
+  },
+  "7c8905b6b2264e7c20e6ab3f3def7d818c007f5b": {
+    "pushId": "34088",
+    "changesetIndex": 91,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465060 - Part 2: Don't suppress pessimizing-move and self-move warnings r=froydnj\n\nMozReview-Commit-ID: KtQ31q6uFqZ",
+    "files": [
+      "build/moz.configure/warnings.configure"
+    ],
+    "node": "7c8905b6b2264e7c20e6ab3f3def7d818c007f5b",
+    "parents": [
+      "10446073eca89bc3099523a5f3795ea7aa45cf2f"
+    ],
+    "tags": []
+  },
+  "1c0e5d52345635e26d859f0c10969ba8118fbc72": {
+    "pushId": "34088",
+    "changesetIndex": 92,
+    "authorName": "Daisuke Akatsuka ",
+    "authorEmail": "dakatsuka@mozilla.com",
+    "author": "Daisuke Akatsuka <dakatsuka@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1453246 - Part 1: Disable mouseover/mouseover if the target node already highlighted. r=gl\n\nMozReview-Commit-ID: 6kMvLgnx07V",
+    "files": [
+      "devtools/client/inspector/animation/components/AnimationTarget.js",
+      "devtools/client/inspector/animation/test/browser_animation_animation-target_highlight.js",
+      "devtools/client/inspector/shared/highlighters-overlay.js"
+    ],
+    "node": "1c0e5d52345635e26d859f0c10969ba8118fbc72",
+    "parents": [
+      "790ca8d7f10524574ccfee75ce7e74b501319a5b"
+    ],
+    "tags": []
+  },
+  "2f2884150d18b742cec7c834f9838e1216c0eee6": {
+    "pushId": "34088",
+    "changesetIndex": 93,
+    "authorName": "Daisuke Akatsuka ",
+    "authorEmail": "dakatsuka@mozilla.com",
+    "author": "Daisuke Akatsuka <dakatsuka@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1453246 - Part 2: Add test for avoiding double highlight. r=gl\n\nMozReview-Commit-ID: 1GUuC9Xbrf0",
+    "files": [
+      "devtools/client/inspector/animation/test/browser_animation_animation-target_highlight.js"
+    ],
+    "node": "2f2884150d18b742cec7c834f9838e1216c0eee6",
+    "parents": [
+      "1c0e5d52345635e26d859f0c10969ba8118fbc72"
+    ],
+    "tags": []
+  },
+  "5d7ebac12bb4340581a4260ebb7a36c0ac70252a": {
+    "pushId": "34088",
+    "changesetIndex": 94,
+    "authorName": "Daisuke Akatsuka ",
+    "authorEmail": "dakatsuka@mozilla.com",
+    "author": "Daisuke Akatsuka <dakatsuka@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1452495: Split browser_animation_keyframes-graph_computed-value-path test. r=gl\n\nMozReview-Commit-ID: CNJxH3JxJzE",
+    "files": [
+      "devtools/client/inspector/animation/test/browser.ini",
+      "devtools/client/inspector/animation/test/browser_animation_keyframes-graph_computed-value-path-01.js",
+      "devtools/client/inspector/animation/test/browser_animation_keyframes-graph_computed-value-path-02.js",
+      "devtools/client/inspector/animation/test/browser_animation_keyframes-graph_computed-value-path.js",
+      "devtools/client/inspector/animation/test/head.js"
+    ],
+    "node": "5d7ebac12bb4340581a4260ebb7a36c0ac70252a",
+    "parents": [
+      "2f2884150d18b742cec7c834f9838e1216c0eee6"
+    ],
+    "tags": []
+  },
+  "bcebfd54b4e13688c0dfa82531263f99bf55f7d1": {
+    "pushId": "34088",
+    "changesetIndex": 95,
+    "authorName": "Kartikaya Gupta ",
+    "authorEmail": "kgupta@mozilla.com",
+    "author": "Kartikaya Gupta <kgupta@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1455597 - Flush the transaction to remove the pipeline before shutting down the WebRenderAPI. r=sotaro\n\nMozReview-Commit-ID: GuQJjMzzQUE",
+    "files": [
+      "gfx/layers/ipc/CompositorBridgeParent.cpp",
+      "gfx/layers/wr/WebRenderBridgeParent.cpp"
+    ],
+    "node": "bcebfd54b4e13688c0dfa82531263f99bf55f7d1",
+    "parents": [
+      "5d7ebac12bb4340581a4260ebb7a36c0ac70252a"
+    ],
+    "tags": []
+  },
+  "43d5075ea35524f95a4f4d37801921ab0a48980b": {
+    "pushId": "34088",
+    "changesetIndex": 96,
+    "authorName": "Dale Harvey ",
+    "authorEmail": "dale@arandomurl.com",
+    "author": "Dale Harvey <dale@arandomurl.com>",
+    "branch": "default",
+    "desc": "Bug 1466129 - Add default value to pref. r=johannh\n\nMozReview-Commit-ID: 988Co3PD41V",
+    "files": [
+      "browser/components/preferences/in-content/privacy.js"
+    ],
+    "node": "43d5075ea35524f95a4f4d37801921ab0a48980b",
+    "parents": [
+      "bcebfd54b4e13688c0dfa82531263f99bf55f7d1"
+    ],
+    "tags": []
+  },
+  "de4bc518d2d4db03e725586bbf210cd5d5d795f4": {
+    "pushId": "34088",
+    "changesetIndex": 97,
+    "authorName": "Julian Viereck ",
+    "authorEmail": "julian.viereck@gmail.com",
+    "author": "Julian Viereck <julian.viereck@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1124238 - The autofill placeholder should not override keywords. r=mak\n\nMozReview-Commit-ID: D6gBdkQxMrW",
+    "files": [
+      "toolkit/components/autocomplete/nsAutoCompleteController.cpp",
+      "toolkit/components/places/tests/unifiedcomplete/head_autocomplete.js",
+      "toolkit/components/places/tests/unifiedcomplete/test_keywords.js"
+    ],
+    "node": "de4bc518d2d4db03e725586bbf210cd5d5d795f4",
+    "parents": [
+      "43d5075ea35524f95a4f4d37801921ab0a48980b"
+    ],
+    "tags": []
+  },
+  "70c13cd6103791ac6c5be07990f804442938b796": {
+    "pushId": "34088",
+    "changesetIndex": 98,
+    "authorName": "Venkatesh Pitta ",
+    "authorEmail": "venkateshpitta@gmail.com",
+    "author": "Venkatesh Pitta <venkateshpitta@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1348145 - Remove getWindowPosition/setWindowPosition and getWindowSize/setWindowSize. r=whimboo\n\nMozReview-Commit-ID: AUxPhJwOKB6",
+    "files": [
+      "testing/marionette/client/marionette_driver/marionette.py",
+      "testing/marionette/driver.js",
+      "testing/marionette/harness/marionette_harness/tests/unit/test_window_maximize.py",
+      "testing/marionette/harness/marionette_harness/tests/unit/test_window_minimize.py",
+      "testing/marionette/harness/marionette_harness/tests/unit/test_window_rect.py"
+    ],
+    "node": "70c13cd6103791ac6c5be07990f804442938b796",
+    "parents": [
+      "55d9a9d86fb685e1252ea8afe2588919a8434bf7"
+    ],
+    "tags": []
+  },
+  "41a29773d7a55a37c9d9d5e6a5bc48c5f005602d": {
+    "pushId": "34088",
+    "changesetIndex": 99,
+    "authorName": "Valentin Gosu ",
+    "authorEmail": "valentin.gosu@gmail.com",
+    "author": "Valentin Gosu <valentin.gosu@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1463766 - Change do_send_remote_message/do_await_remote_message to allow passing data r=ted\n\nMozReview-Commit-ID: 4OuzgmQlhn5",
+    "files": [
+      "testing/xpcshell/head.js"
+    ],
+    "node": "41a29773d7a55a37c9d9d5e6a5bc48c5f005602d",
+    "parents": [
+      "70c13cd6103791ac6c5be07990f804442938b796"
+    ],
+    "tags": []
+  },
+  "fb19935b19308a37eccdbd956dc1f6d26ca038dc": {
+    "pushId": "34088",
+    "changesetIndex": 100,
+    "authorName": "Gabriele Svelto ",
+    "authorEmail": "gsvelto@mozilla.com",
+    "author": "Gabriele Svelto <gsvelto@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464773 - Add low-memory event counts to the crash report; r=ted.mielczarek\n\nMozReview-Commit-ID: 9hf31FSigrI",
+    "files": [
+      "mobile/android/base/java/org/mozilla/gecko/telemetry/pingbuilders/TelemetryCrashPingBuilder.java",
+      "toolkit/components/crashes/CrashManager.jsm",
+      "toolkit/components/telemetry/docs/data/crash-ping.rst",
+      "toolkit/crashreporter/client/ping.cpp",
+      "xpcom/base/AvailableMemoryTracker.cpp"
+    ],
+    "node": "fb19935b19308a37eccdbd956dc1f6d26ca038dc",
+    "parents": [
+      "41a29773d7a55a37c9d9d5e6a5bc48c5f005602d"
+    ],
+    "tags": []
+  },
+  "98956646c3aac378734fd0c394570fd786bcb02b": {
+    "pushId": "34088",
+    "changesetIndex": 101,
+    "authorName": "Botond Ballo ",
+    "authorEmail": "botond@mozilla.com",
+    "author": "Botond Ballo <botond@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1460206 - Let the new Android fling physics ride the trains. r=kats\n\nMozReview-Commit-ID: 9DSIDzqKnZX",
+    "files": [
+      "modules/libpref/init/all.js"
+    ],
+    "node": "98956646c3aac378734fd0c394570fd786bcb02b",
+    "parents": [
+      "fb19935b19308a37eccdbd956dc1f6d26ca038dc"
+    ],
+    "tags": []
+  },
+  "2782fc09089401484a3d993e35abf2154af0a97d": {
+    "pushId": "34088",
+    "changesetIndex": 102,
+    "authorName": "Felix Weinrank ",
+    "authorEmail": "weinrank@fh-muenster.de",
+    "author": "Felix Weinrank <weinrank@fh-muenster.de>",
+    "branch": "default",
+    "desc": "Bug 1464917 - Allow maxPacketLifeTime and maxRetransmits to be zero; r=drno\n\nMozReview-Commit-ID: HtYGXPy6pZ",
+    "files": [
+      "dom/media/PeerConnection.js"
+    ],
+    "node": "2782fc09089401484a3d993e35abf2154af0a97d",
+    "parents": [
+      "98956646c3aac378734fd0c394570fd786bcb02b"
+    ],
+    "tags": []
+  },
+  "160f7211a2413945f6eb7a2466a82bbb1392cd5e": {
+    "pushId": "34088",
+    "changesetIndex": 103,
+    "authorName": "Dan Minor ",
+    "authorEmail": "dminor@mozilla.com",
+    "author": "Dan Minor <dminor@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464917 - Add maxPacketLifeTime and maxRetransmits to RTCDatachannel.webidl; r=baku\n\nMozReview-Commit-ID: C7PagcoW7Xi",
+    "files": [
+      "dom/base/nsDOMDataChannel.cpp",
+      "dom/base/nsDOMDataChannel.h",
+      "dom/webidl/RTCDataChannel.webidl"
+    ],
+    "node": "160f7211a2413945f6eb7a2466a82bbb1392cd5e",
+    "parents": [
+      "2782fc09089401484a3d993e35abf2154af0a97d"
+    ],
+    "tags": []
+  },
+  "aadb40090d20357e087fb922490e4cd527b98a86": {
+    "pushId": "34088",
+    "changesetIndex": 104,
+    "authorName": "Dan Minor ",
+    "authorEmail": "dminor@mozilla.com",
+    "author": "Dan Minor <dminor@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464917 - Add GetMaxPacketLifeTime and GetMaxRetransmits to DataChannel; r=drno\n\nMozReview-Commit-ID: BqukQygumpi",
+    "files": [
+      "dom/base/nsDOMDataChannel.cpp",
+      "netwerk/sctp/datachannel/DataChannel.cpp",
+      "netwerk/sctp/datachannel/DataChannel.h"
+    ],
+    "node": "aadb40090d20357e087fb922490e4cd527b98a86",
+    "parents": [
+      "160f7211a2413945f6eb7a2466a82bbb1392cd5e"
+    ],
+    "tags": []
+  },
+  "2481a7bf81ea4c54689283f0d92b0bed557b0a39": {
+    "pushId": "34088",
+    "changesetIndex": 105,
+    "authorName": "Dan Minor ",
+    "authorEmail": "dminor@mozilla.com",
+    "author": "Dan Minor <dminor@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1464917 - Update DataChannel web-platform test expectations; r=drno\n\nMozReview-Commit-ID: 6pltO3ftwww",
+    "files": [
+      "testing/web-platform/meta/webrtc/RTCPeerConnection-createDataChannel.html.ini"
+    ],
+    "node": "2481a7bf81ea4c54689283f0d92b0bed557b0a39",
+    "parents": [
+      "aadb40090d20357e087fb922490e4cd527b98a86"
+    ],
+    "tags": []
+  },
+  "1c86e941ac0b5a1e4de3c17f45192999d76b6075": {
+    "pushId": "34088",
+    "changesetIndex": 106,
+    "authorName": "Dustin J. Mitchell ",
+    "authorEmail": "dustin@mozilla.com",
+    "author": "Dustin J. Mitchell <dustin@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465970 - make backfill action a hook; r=tomprince\n\nMozReview-Commit-ID: 1ibZPb5fMdP",
+    "files": [
+      "taskcluster/taskgraph/actions/backfill.py"
+    ],
+    "node": "1c86e941ac0b5a1e4de3c17f45192999d76b6075",
+    "parents": [
+      "2481a7bf81ea4c54689283f0d92b0bed557b0a39"
+    ],
+    "tags": []
+  },
+  "466387c9cc93e4cc150e927735b581ee01151d4b": {
+    "pushId": "34088",
+    "changesetIndex": 107,
+    "authorName": "Mathieu Leplatre ",
+    "authorEmail": "mathieu@mozilla.com",
+    "author": "Mathieu Leplatre <mathieu@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463750 - Move RemoteSettings to services/settings/ r=mgoodwin\n\nMozReview-Commit-ID: 7IwUysPBHZu",
+    "files": [
+      "browser/installer/package-manifest.in",
+      "mobile/android/installer/package-manifest.in",
+      "services/common/blocklist-clients.js",
+      "services/common/docs/RemoteSettings.rst",
+      "services/common/moz.build",
+      "services/common/remote-settings.js",
+      "services/common/tests/unit/head_global.js",
+      "services/common/tests/unit/test_blocklist_targetapp_filter.js",
+      "services/common/tests/unit/test_remote_settings.js",
+      "services/common/tests/unit/test_remote_settings_jexl_filters.js",
+      "services/common/tests/unit/test_remote_settings_poll.js",
+      "services/common/tests/unit/xpcshell.ini",
+      "services/settings/moz.build",
+      "services/settings/remote-settings.js",
+      "services/settings/servicesSettings.manifest",
+      "services/settings/test/unit/.eslintrc.js",
+      "services/settings/test/unit/test_remote_settings.js",
+      "services/settings/test/unit/test_remote_settings_jexl_filters.js",
+      "services/settings/test/unit/test_remote_settings_poll.js",
+      "services/settings/test/unit/xpcshell.ini",
+      "toolkit/mozapps/extensions/Blocklist.jsm"
+    ],
+    "node": "466387c9cc93e4cc150e927735b581ee01151d4b",
+    "parents": [
+      "1c86e941ac0b5a1e4de3c17f45192999d76b6075"
+    ],
+    "tags": []
+  },
+  "a0d11b55d5957a488b41420c4f6cc178df7cd2e7": {
+    "pushId": "34088",
+    "changesetIndex": 108,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465060 - Part 1: Fix warnings for std::move() use r=froydnj\n\nMozReview-Commit-ID: HpdFXqQdIOO",
+    "files": [
+      "accessible/ipc/other/ProxyAccessible.cpp",
+      "devtools/shared/heapsnapshot/DeserializedNode.cpp",
+      "docshell/base/nsDocShell.cpp",
+      "docshell/base/timeline/AutoRestyleTimelineMarker.cpp",
+      "docshell/base/timeline/TimelineConsumers.cpp",
+      "dom/animation/EffectSet.h",
+      "dom/base/CustomElementRegistry.cpp",
+      "dom/base/nsContentPermissionHelper.cpp",
+      "dom/base/nsDocument.cpp",
+      "dom/base/nsGlobalWindowInner.cpp",
+      "dom/canvas/ImageBitmap.cpp",
+      "dom/canvas/WebGLFormats.cpp",
+      "dom/canvas/WebGLTextureUpload.cpp",
+      "dom/clients/manager/ClientHandle.cpp",
+      "dom/clients/manager/ClientInfo.cpp",
+      "dom/clients/manager/ClientManager.cpp",
+      "dom/clients/manager/ClientManagerService.cpp",
+      "dom/console/Console.cpp",
+      "dom/events/EventListenerManager.cpp",
+      "dom/file/uri/BlobURLProtocolHandler.cpp",
+      "dom/geolocation/nsGeolocation.cpp",
+      "dom/ipc/ContentParent.cpp",
+      "dom/ipc/ContentProcessManager.cpp",
+      "dom/media/MediaStreamGraph.cpp",
+      "dom/media/eme/MediaKeySystemAccess.cpp",
+      "dom/media/gmp/ChromiumCDMParent.cpp",
+      "dom/media/gmp/GMPParent.cpp",
+      "dom/media/gmp/GMPServiceParent.cpp",
+      "dom/media/gmp/GMPStorageChild.cpp",
+      "dom/media/ipc/VideoDecoderManagerParent.cpp",
+      "dom/media/platforms/apple/AppleVTDecoder.cpp",
+      "dom/media/platforms/omx/OmxPlatformLayer.cpp",
+      "dom/serviceworkers/ServiceWorkerDescriptor.cpp",
+      "dom/serviceworkers/ServiceWorkerManager.cpp",
+      "dom/serviceworkers/ServiceWorkerRegistrar.cpp",
+      "dom/serviceworkers/ServiceWorkerRegistrationDescriptor.cpp",
+      "dom/u2f/U2F.cpp",
+      "dom/workers/WorkerPrivate.cpp",
+      "dom/workers/WorkerScope.cpp",
+      "editor/libeditor/HTMLAnonymousNodeEditor.cpp",
+      "editor/libeditor/HTMLEditRules.cpp",
+      "editor/libeditor/HTMLEditorObjectResizer.cpp",
+      "extensions/spellcheck/hunspell/glue/RemoteSpellCheckEngineChild.cpp",
+      "gfx/2d/SFNTData.cpp",
+      "gfx/gl/GLScreenBuffer.cpp",
+      "gfx/gl/MozFramebuffer.cpp",
+      "gfx/gl/SharedSurface.cpp",
+      "gfx/gl/SharedSurfaceEGL.cpp",
+      "gfx/gl/SharedSurfaceGL.cpp",
+      "gfx/gl/SharedSurfaceGLX.cpp",
+      "gfx/gl/SharedSurfaceIO.cpp",
+      "gfx/layers/AnimationHelper.cpp",
+      "gfx/layers/LayerTreeInvalidation.cpp",
+      "gfx/layers/ipc/CompositorVsyncScheduler.cpp",
+      "gfx/layers/ipc/UiCompositorControllerParent.cpp",
+      "gfx/layers/wr/WebRenderCommandBuilder.cpp",
+      "gfx/thebes/gfxFont.cpp",
+      "gfx/thebes/gfxPlatform.cpp",
+      "gfx/thebes/gfxPlatformMac.cpp",
+      "image/decoders/nsICODecoder.cpp",
+      "image/test/gtest/TestADAM7InterpolatingFilter.cpp",
+      "image/test/gtest/TestAnimationFrameBuffer.cpp",
+      "image/test/gtest/TestSourceBuffer.cpp",
+      "image/test/gtest/TestSurfacePipeIntegration.cpp",
+      "js/src/builtin/TestingFunctions.cpp",
+      "js/src/ctypes/CTypes.cpp",
+      "js/src/ds/LifoAlloc.cpp",
+      "js/src/ds/LifoAlloc.h",
+      "js/src/vm/CodeCoverage.cpp",
+      "js/src/vm/UbiNode.cpp",
+      "js/src/vm/UbiNodeShortestPaths.cpp",
+      "js/src/wasm/WasmValidate.cpp",
+      "js/xpconnect/loader/URLPreloader.cpp",
+      "layout/base/PresShell.cpp",
+      "layout/painting/FrameLayerBuilder.cpp",
+      "layout/painting/RetainedDisplayListBuilder.cpp",
+      "layout/painting/nsDisplayList.cpp",
+      "layout/style/StyleSheet.cpp",
+      "layout/style/nsTransitionManager.cpp",
+      "media/webrtc/signaling/gtest/sdp_unittests.cpp",
+      "mfbt/tests/TestUniquePtr.cpp",
+      "security/certverifier/tests/gtest/CTSerializationTest.cpp",
+      "security/manager/ssl/nsPKCS12Blob.cpp",
+      "security/sandbox/linux/broker/SandboxBroker.cpp",
+      "security/sandbox/linux/reporter/SandboxReporter.cpp",
+      "toolkit/components/extensions/webrequest/WebRequestService.cpp",
+      "toolkit/components/url-classifier/tests/gtest/TestClassifier.cpp",
+      "tools/profiler/core/platform.cpp",
+      "widget/android/nsAppShell.h",
+      "xpcom/tests/gtest/TestPLDHash.cpp",
+      "xpcom/tests/gtest/TestTArray.cpp"
+    ],
+    "node": "a0d11b55d5957a488b41420c4f6cc178df7cd2e7",
+    "parents": [
+      "466387c9cc93e4cc150e927735b581ee01151d4b"
+    ],
+    "tags": []
+  },
+  "f02640343be7b12a1a18cc9fd688056b93b4c2fe": {
+    "pushId": "34088",
+    "changesetIndex": 109,
+    "authorName": "Miko Mynttinen ",
+    "authorEmail": "mikokm@gmail.com",
+    "author": "Miko Mynttinen <mikokm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465060 - Part 2: Don't suppress pessimizing-move and self-move warnings r=froydnj\n\nMozReview-Commit-ID: KtQ31q6uFqZ",
+    "files": [
+      "build/moz.configure/warnings.configure"
+    ],
+    "node": "f02640343be7b12a1a18cc9fd688056b93b4c2fe",
+    "parents": [
+      "a0d11b55d5957a488b41420c4f6cc178df7cd2e7"
+    ],
+    "tags": []
+  },
+  "eb122eb10aad7702541251873ccfc74c5c405d2f": {
+    "pushId": "34088",
+    "changesetIndex": 110,
+    "authorName": "Andrew Halberstadt ",
+    "authorEmail": "ahalberstadt@mozilla.com",
+    "author": "Andrew Halberstadt <ahalberstadt@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1437526 - [docs] Upgrade doc dependencies to their latest versions, r=davehunt\n\nThis upgrades sphinx to version 1.7.5, which contained a couple backwards\nincompatible changes that needed fixing.\n\nThis also leaves sphinx-js at version 2.1 as upgrading that to 2.5 seems to\nintroduce an intermittent in the Doc task.\n\nMozReview-Commit-ID: FRUTcXs5yzb",
+    "files": [
+      "python/mozbuild/mozbuild/sphinx.py",
+      "tools/docs/Pipfile",
+      "tools/docs/Pipfile.lock",
+      "tools/docs/moztreedocs/__init__.py"
+    ],
+    "node": "eb122eb10aad7702541251873ccfc74c5c405d2f",
+    "parents": [
+      "f02640343be7b12a1a18cc9fd688056b93b4c2fe"
+    ],
+    "tags": []
+  },
+  "936a5003aa2e818a9a82a642fbe91164d97d5886": {
+    "pushId": "34088",
+    "changesetIndex": 111,
+    "authorName": "Kartikaya Gupta ",
+    "authorEmail": "kgupta@mozilla.com",
+    "author": "Kartikaya Gupta <kgupta@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1463184 - Use the HTTNAutoLock in FindScrollbarThumb. r=botond\n\nMozReview-Commit-ID: Gk1GO44A57v",
+    "files": [
+      "gfx/layers/apz/src/APZCTreeManager.cpp",
+      "gfx/layers/apz/src/APZCTreeManager.h",
+      "gfx/layers/apz/src/AsyncPanZoomController.cpp",
+      "gfx/layers/apz/src/HitTestingTreeNode.cpp",
+      "gfx/layers/apz/src/HitTestingTreeNode.h"
+    ],
+    "node": "936a5003aa2e818a9a82a642fbe91164d97d5886",
+    "parents": [
+      "eb122eb10aad7702541251873ccfc74c5c405d2f"
+    ],
+    "tags": []
+  },
+  "f3de98e58e528164b45592d4d6b61cd549701c2f": {
+    "pushId": "34088",
+    "changesetIndex": 112,
+    "authorName": "Daisuke Akatsuka ",
+    "authorEmail": "dakatsuka@mozilla.com",
+    "author": "Daisuke Akatsuka <dakatsuka@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465077 - Part 1: Introduce doSetCurrentTimes so as to not forget the createdTime. r=pbro\n\nMozReview-Commit-ID: G76mJIYZ4Mm",
+    "files": [
+      "devtools/client/inspector/animation/animation.js"
+    ],
+    "node": "f3de98e58e528164b45592d4d6b61cd549701c2f",
+    "parents": [
+      "936a5003aa2e818a9a82a642fbe91164d97d5886"
+    ],
+    "tags": []
+  },
+  "8533951dca064aaf39b2b06df51a085ae6df4bf5": {
+    "pushId": "34088",
+    "changesetIndex": 113,
+    "authorName": "Daisuke Akatsuka ",
+    "authorEmail": "dakatsuka@mozilla.com",
+    "author": "Daisuke Akatsuka <dakatsuka@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465077 - Part 2: Add a test which checks whether the scrubber never be located at negative position. r=pbro\n\nMozReview-Commit-ID: 1xeOzaJlYwH",
+    "files": [
+      "devtools/client/inspector/animation/test/browser_animation_pause-resume-button_end-time.js"
+    ],
+    "node": "8533951dca064aaf39b2b06df51a085ae6df4bf5",
+    "parents": [
+      "f3de98e58e528164b45592d4d6b61cd549701c2f"
+    ],
+    "tags": []
+  },
+  "d08944831e26fc9ec613e1fa2dc35d00332586ac": {
+    "pushId": "34088",
+    "changesetIndex": 114,
+    "authorName": "Axel Hecht ",
+    "authorEmail": "axel@pike.org",
+    "author": "Axel Hecht <axel@pike.org>",
+    "branch": "default",
+    "desc": "bug 1466400, don't hardcode en-US for devtools/client fluent at build time, r=flod\n\nMozReview-Commit-ID: IWtdr5XlQ80",
+    "files": [
+      "devtools/client/locales/jar.mn"
+    ],
+    "node": "d08944831e26fc9ec613e1fa2dc35d00332586ac",
+    "parents": [
+      "8533951dca064aaf39b2b06df51a085ae6df4bf5"
+    ],
+    "tags": []
+  },
+  "a3f7b4a6d494ff6da9511350ad3754c4b7810319": {
+    "pushId": "34088",
+    "changesetIndex": 115,
+    "authorName": "Kartikaya Gupta ",
+    "authorEmail": "kgupta@mozilla.com",
+    "author": "Kartikaya Gupta <kgupta@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465058 - Update webrender to commit 8e697f8cb1f1aab2e5f6b9b903eb7191340b10c5. r=Gankro\n\nMozReview-Commit-ID: BakJj8upl1A",
+    "files": [
+      "gfx/webrender/examples/alpha_perf.rs",
+      "gfx/webrender/examples/animation.rs",
+      "gfx/webrender/examples/basic.rs",
+      "gfx/webrender/examples/blob.rs",
+      "gfx/webrender/examples/document.rs",
+      "gfx/webrender/examples/frame_output.rs",
+      "gfx/webrender/examples/iframe.rs",
+      "gfx/webrender/examples/image_resize.rs",
+      "gfx/webrender/examples/multiwindow.rs",
+      "gfx/webrender/examples/scrolling.rs",
+      "gfx/webrender/examples/texture_cache_stress.rs",
+      "gfx/webrender/examples/yuv.rs",
+      "gfx/webrender/res/clip_shared.glsl",
+      "gfx/webrender/res/cs_border_segment.glsl",
+      "gfx/webrender/res/prim_shared.glsl",
+      "gfx/webrender/res/shared.glsl",
+      "gfx/webrender/res/shared_border.glsl",
+      "gfx/webrender/res/transform.glsl",
+      "gfx/webrender/src/border.rs",
+      "gfx/webrender/src/display_list_flattener.rs",
+      "gfx/webrender/src/glyph_rasterizer/pathfinder.rs",
+      "gfx/webrender/src/prim_store.rs",
+      "gfx/webrender/src/render_backend.rs",
+      "gfx/webrender/src/render_task.rs",
+      "gfx/webrender/src/renderer.rs",
+      "gfx/webrender/src/resource_cache.rs",
+      "gfx/webrender/src/scene.rs",
+      "gfx/webrender_api/src/display_item.rs",
+      "gfx/webrender_api/src/display_list.rs",
+      "gfx/webrender_bindings/revision.txt",
+      "gfx/wrench/src/rawtest.rs",
+      "gfx/wrench/src/yaml_frame_reader.rs",
+      "gfx/wrench/src/yaml_frame_writer.rs"
+    ],
+    "node": "a3f7b4a6d494ff6da9511350ad3754c4b7810319",
+    "parents": [
+      "d08944831e26fc9ec613e1fa2dc35d00332586ac"
+    ],
+    "tags": []
+  },
+  "ccda83410bf45dedd0e9fc917eb3bb1e819776f6": {
+    "pushId": "34088",
+    "changesetIndex": 116,
+    "authorName": "Kartikaya Gupta ",
+    "authorEmail": "kgupta@mozilla.com",
+    "author": "Kartikaya Gupta <kgupta@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1465058 - Update reftest annotations for WR PR 2784. r=Gankro\n\nMozReview-Commit-ID: F3YX2m6Z2UP",
+    "files": [
+      "layout/reftests/border-radius/reftest.list",
+      "layout/reftests/table-bordercollapse/reftest.list"
+    ],
+    "node": "ccda83410bf45dedd0e9fc917eb3bb1e819776f6",
+    "parents": [
+      "a3f7b4a6d494ff6da9511350ad3754c4b7810319"
+    ],
+    "tags": []
+  },
+  "5b15326286d466b5cf4889160cc09b59bdde08fd": {
+    "pushId": "34088",
+    "changesetIndex": 117,
+    "authorName": "Martin Robinson ",
+    "authorEmail": "mrobinson@igalia.com",
+    "author": "Martin Robinson <mrobinson@igalia.com>",
+    "branch": "default",
+    "desc": "Bug 1465058 - Update for API change in WR PR 2756. r=kats\n\nMozReview-Commit-ID: 6Vg0bTpBYVh",
+    "files": [
+      "gfx/layers/wr/AsyncImagePipelineManager.cpp",
+      "gfx/layers/wr/StackingContextHelper.cpp",
+      "gfx/webrender_bindings/WebRenderAPI.cpp",
+      "gfx/webrender_bindings/WebRenderAPI.h",
+      "gfx/webrender_bindings/src/bindings.rs",
+      "gfx/webrender_bindings/webrender_ffi_generated.h"
+    ],
+    "node": "5b15326286d466b5cf4889160cc09b59bdde08fd",
+    "parents": [
+      "ccda83410bf45dedd0e9fc917eb3bb1e819776f6"
+    ],
+    "tags": []
+  },
+  "a71f125a6d73fa6aace10cfe16d8e4b888303f9a": {
+    "pushId": "34089",
+    "changesetIndex": 0,
+    "authorName": "Xidorn Quan ",
+    "authorEmail": "me@upsuper.org",
+    "author": "Xidorn Quan <me@upsuper.org>",
+    "branch": "default",
+    "desc": "Bug 1464744 followup - Enable wpt of css-scrollbars on all platforms. r=jgraham",
+    "files": [
+      "testing/mozharness/scripts/web_platform_tests.py"
+    ],
+    "node": "a71f125a6d73fa6aace10cfe16d8e4b888303f9a",
+    "parents": [
+      "fa5724780fe76d6ccbbd08d978342a1db6a43d49"
+    ],
+    "tags": []
+  },
+  "66c81ea6f1bb3a1b15b119ee1b4e7ea9b5ffc557": {
+    "pushId": "34089",
+    "changesetIndex": 1,
+    "authorName": "sotaro ",
+    "authorEmail": "sotaro.ikeda.g@gmail.com",
+    "author": "sotaro <sotaro.ikeda.g@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466059 - Use DeviceManagerDx::GetImageDevice() in WMFVideoMFTManager::InitInternal() r=nical",
+    "files": [
+      "dom/media/platforms/wmf/WMFVideoMFTManager.cpp"
+    ],
+    "node": "66c81ea6f1bb3a1b15b119ee1b4e7ea9b5ffc557",
+    "parents": [
+      "a27aa17ea96c1b4c9122139f8aa09a8c33bc1dc8"
+    ],
+    "tags": []
+  },
+  "db10936e9f8dc579e104cc6ca8e718e7e8dd4499": {
+    "pushId": "34089",
+    "changesetIndex": 2,
+    "authorName": "sotaro ",
+    "authorEmail": "sotaro.ikeda.g@gmail.com",
+    "author": "sotaro <sotaro.ikeda.g@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1451183 - Make EGLLibrary destroyable r=jgilbert",
+    "files": [
+      "gfx/gl/EGLUtils.cpp",
+      "gfx/gl/EGLUtils.h",
+      "gfx/gl/GLBlitHelperD3D.cpp",
+      "gfx/gl/GLContextEGL.h",
+      "gfx/gl/GLContextProviderEGL.cpp",
+      "gfx/gl/GLLibraryEGL.cpp",
+      "gfx/gl/GLLibraryEGL.h",
+      "gfx/gl/SharedSurfaceANGLE.cpp",
+      "gfx/gl/SharedSurfaceEGL.cpp",
+      "gfx/gl/TextureImageEGL.cpp",
+      "gfx/layers/opengl/EGLImageHelpers.cpp",
+      "gfx/layers/opengl/TextureHostOGL.cpp",
+      "gfx/vr/gfxVRGVR.cpp",
+      "gfx/webrender_bindings/RenderCompositorANGLE.cpp",
+      "gfx/webrender_bindings/RenderD3D11TextureHostOGL.cpp"
+    ],
+    "node": "db10936e9f8dc579e104cc6ca8e718e7e8dd4499",
+    "parents": [
+      "66c81ea6f1bb3a1b15b119ee1b4e7ea9b5ffc557"
+    ],
+    "tags": []
+  },
+  "886f2a6dc76dc0f1613fc30f2a3c566fbadcbf87": {
+    "pushId": "34089",
+    "changesetIndex": 3,
+    "authorName": "sotaro ",
+    "authorEmail": "sotaro.ikeda.g@gmail.com",
+    "author": "sotaro <sotaro.ikeda.g@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1451183 - Add GLLibraryEGL::Shutdown() r=jgilbert",
+    "files": [
+      "gfx/gl/GLContextEGL.h",
+      "gfx/gl/GLContextProviderEGL.cpp",
+      "gfx/gl/GLLibraryEGL.cpp",
+      "gfx/gl/GLLibraryEGL.h",
+      "gfx/ipc/GPUParent.cpp"
+    ],
+    "node": "886f2a6dc76dc0f1613fc30f2a3c566fbadcbf87",
+    "parents": [
+      "db10936e9f8dc579e104cc6ca8e718e7e8dd4499"
+    ],
+    "tags": []
+  },
+  "841c624e3dafeb64654b869f59797d462eb7aa80": {
+    "pushId": "34089",
+    "changesetIndex": 4,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Use arrow functions in dom/animation/test/css-animations/; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-cancel.html",
+      "dom/animation/test/css-animations/test_animation-computed-timing.html",
+      "dom/animation/test/css-animations/test_animation-currenttime.html",
+      "dom/animation/test/css-animations/test_animation-finish.html",
+      "dom/animation/test/css-animations/test_animation-finished.html",
+      "dom/animation/test/css-animations/test_animation-id.html",
+      "dom/animation/test/css-animations/test_animation-pausing.html",
+      "dom/animation/test/css-animations/test_animation-playstate.html",
+      "dom/animation/test/css-animations/test_animation-ready.html",
+      "dom/animation/test/css-animations/test_animation-reverse.html",
+      "dom/animation/test/css-animations/test_animation-starttime.html",
+      "dom/animation/test/css-animations/test_animations-dynamic-changes.html",
+      "dom/animation/test/css-animations/test_cssanimation-animationname.html",
+      "dom/animation/test/css-animations/test_document-get-animations.html",
+      "dom/animation/test/css-animations/test_effect-target.html",
+      "dom/animation/test/css-animations/test_element-get-animations.html",
+      "dom/animation/test/css-animations/test_event-dispatch.html",
+      "dom/animation/test/css-animations/test_event-order.html",
+      "dom/animation/test/css-animations/test_keyframeeffect-getkeyframes.html",
+      "dom/animation/test/css-animations/test_pseudoElement-get-animations.html",
+      "dom/animation/test/css-animations/test_setting-effect.html"
+    ],
+    "node": "841c624e3dafeb64654b869f59797d462eb7aa80",
+    "parents": [
+      "886f2a6dc76dc0f1613fc30f2a3c566fbadcbf87"
+    ],
+    "tags": []
+  },
+  "34668c9b0d60615e8eab458dfe2a277ec48c03e5": {
+    "pushId": "34089",
+    "changesetIndex": 5,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Replace var with const/let in dom/animation/test/css-animations/; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-cancel.html",
+      "dom/animation/test/css-animations/test_animation-computed-timing.html",
+      "dom/animation/test/css-animations/test_animation-currenttime.html",
+      "dom/animation/test/css-animations/test_animation-finish.html",
+      "dom/animation/test/css-animations/test_animation-finished.html",
+      "dom/animation/test/css-animations/test_animation-id.html",
+      "dom/animation/test/css-animations/test_animation-pausing.html",
+      "dom/animation/test/css-animations/test_animation-playstate.html",
+      "dom/animation/test/css-animations/test_animation-ready.html",
+      "dom/animation/test/css-animations/test_animation-reverse.html",
+      "dom/animation/test/css-animations/test_animation-starttime.html",
+      "dom/animation/test/css-animations/test_animations-dynamic-changes.html",
+      "dom/animation/test/css-animations/test_cssanimation-animationname.html",
+      "dom/animation/test/css-animations/test_document-get-animations.html",
+      "dom/animation/test/css-animations/test_effect-target.html",
+      "dom/animation/test/css-animations/test_element-get-animations.html",
+      "dom/animation/test/css-animations/test_event-dispatch.html",
+      "dom/animation/test/css-animations/test_keyframeeffect-getkeyframes.html",
+      "dom/animation/test/css-animations/test_pseudoElement-get-animations.html",
+      "dom/animation/test/css-animations/test_setting-effect.html"
+    ],
+    "node": "34668c9b0d60615e8eab458dfe2a277ec48c03e5",
+    "parents": [
+      "841c624e3dafeb64654b869f59797d462eb7aa80"
+    ],
+    "tags": []
+  },
+  "814a885cf046a3bfb3ac253684b5df1b11b4dc05": {
+    "pushId": "34089",
+    "changesetIndex": 6,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Use async/await in dom/animation/test/css-animations/; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-cancel.html",
+      "dom/animation/test/css-animations/test_animation-computed-timing.html",
+      "dom/animation/test/css-animations/test_animation-currenttime.html",
+      "dom/animation/test/css-animations/test_animation-finish.html",
+      "dom/animation/test/css-animations/test_animation-finished.html",
+      "dom/animation/test/css-animations/test_animation-pausing.html",
+      "dom/animation/test/css-animations/test_animation-ready.html",
+      "dom/animation/test/css-animations/test_animation-starttime.html",
+      "dom/animation/test/css-animations/test_animations-dynamic-changes.html",
+      "dom/animation/test/css-animations/test_element-get-animations.html",
+      "dom/animation/test/css-animations/test_event-dispatch.html",
+      "dom/animation/test/css-animations/test_event-order.html",
+      "dom/animation/test/css-animations/test_setting-effect.html"
+    ],
+    "node": "814a885cf046a3bfb3ac253684b5df1b11b4dc05",
+    "parents": [
+      "34668c9b0d60615e8eab458dfe2a277ec48c03e5"
+    ],
+    "tags": []
+  },
+  "2337de0fc6d6aed827feb6495bfa4dbc33140dae": {
+    "pushId": "34089",
+    "changesetIndex": 7,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Use for ... of instead of forEach in a few places in dom/animation/test/css-animations/; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-computed-timing.html",
+      "dom/animation/test/css-animations/test_document-get-animations.html",
+      "dom/animation/test/css-animations/test_event-order.html",
+      "dom/animation/test/css-animations/test_keyframeeffect-getkeyframes.html"
+    ],
+    "node": "2337de0fc6d6aed827feb6495bfa4dbc33140dae",
+    "parents": [
+      "814a885cf046a3bfb3ac253684b5df1b11b4dc05"
+    ],
+    "tags": []
+  },
+  "e4926e77c345206dfc64b2101ca30df7ba76353e": {
+    "pushId": "34089",
+    "changesetIndex": 8,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Fix the spelling of canceled/canceling in dom/animation/test/css-animations/; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-cancel.html",
+      "dom/animation/test/css-animations/test_animation-currenttime.html",
+      "dom/animation/test/css-animations/test_animation-finished.html",
+      "dom/animation/test/css-animations/test_animation-playstate.html",
+      "dom/animation/test/css-animations/test_animation-ready.html",
+      "dom/animation/test/css-animations/test_animation-starttime.html",
+      "dom/animation/test/css-animations/test_document-get-animations.html",
+      "dom/animation/test/css-animations/test_element-get-animations.html",
+      "dom/animation/test/css-animations/test_event-dispatch.html"
+    ],
+    "node": "e4926e77c345206dfc64b2101ca30df7ba76353e",
+    "parents": [
+      "2337de0fc6d6aed827feb6495bfa4dbc33140dae"
+    ],
+    "tags": []
+  },
+  "3bba2706455865c58ec1a575539daf1caae147fe": {
+    "pushId": "34089",
+    "changesetIndex": 9,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Update the titles of each test file; r=hiro\n\nSome of these names will make more sense after the renaming of files towards the\nend of this patch series.\n\nAlso a couple of files do not have titles added since they will be subsequently\nremoved.",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-cancel.html",
+      "dom/animation/test/css-animations/test_animation-computed-timing.html",
+      "dom/animation/test/css-animations/test_animation-currenttime.html",
+      "dom/animation/test/css-animations/test_animation-finished.html",
+      "dom/animation/test/css-animations/test_animation-id.html",
+      "dom/animation/test/css-animations/test_animation-pausing.html",
+      "dom/animation/test/css-animations/test_animation-playstate.html",
+      "dom/animation/test/css-animations/test_animation-ready.html",
+      "dom/animation/test/css-animations/test_animation-starttime.html",
+      "dom/animation/test/css-animations/test_animations-dynamic-changes.html",
+      "dom/animation/test/css-animations/test_cssanimation-animationname.html",
+      "dom/animation/test/css-animations/test_document-get-animations.html",
+      "dom/animation/test/css-animations/test_effect-target.html",
+      "dom/animation/test/css-animations/test_element-get-animations.html",
+      "dom/animation/test/css-animations/test_keyframeeffect-getkeyframes.html",
+      "dom/animation/test/css-animations/test_pseudoElement-get-animations.html",
+      "dom/animation/test/css-animations/test_setting-effect.html"
+    ],
+    "node": "3bba2706455865c58ec1a575539daf1caae147fe",
+    "parents": [
+      "e4926e77c345206dfc64b2101ca30df7ba76353e"
+    ],
+    "tags": []
+  },
+  "89a749ca3580571856d0b339eb486069f8bb27d9": {
+    "pushId": "34089",
+    "changesetIndex": 10,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Apply various whitespace tweaks to test_animation-computed-timing.html; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-computed-timing.html"
+    ],
+    "node": "89a749ca3580571856d0b339eb486069f8bb27d9",
+    "parents": [
+      "3bba2706455865c58ec1a575539daf1caae147fe"
+    ],
+    "tags": []
+  },
+  "bdf0455bd3ecfc5c79b305cd36db71bff86f099d": {
+    "pushId": "34089",
+    "changesetIndex": 11,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Re-arrange tests in test_animations-currenttime.html; r=hiro\n\nA number of these tests are redundant with other tests or are otherwise\nunnecessary. Other tests should be moved to a more appropriate file.\n\nSome notable examples:\n\n* A number of the tests relate to dispatching events in various phases and have\n  been moved to test_event-dispatch.html.\n* The \"Seeking finished -> paused dispatches animationstart\" test is covered\n  by the \"After -> Active\" test in test_event-dispatch.html (which also\n  operates on a paused animation).\n* The \"Animation.currentTime clamping\" is really just testing finishing\n  behavior and is covered by the updating-the-finished-state.html tests in the\n  Web Animations web-platform-tests (specifically the \"Updating the finished\n  state when playing past end\" test).\n* Likewise for the \"Animation.currentTime clamping for reversed animation\"\n  test.",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-currenttime.html",
+      "dom/animation/test/css-animations/test_event-dispatch.html",
+      "testing/web-platform/meta/MANIFEST.json",
+      "testing/web-platform/tests/web-animations/timing-model/animations/canceling-an-animation.html",
+      "testing/web-platform/tests/web-animations/timing-model/animations/pausing-an-animation.html",
+      "testing/web-platform/tests/web-animations/timing-model/animations/playing-an-animation.html"
+    ],
+    "node": "bdf0455bd3ecfc5c79b305cd36db71bff86f099d",
+    "parents": [
+      "89a749ca3580571856d0b339eb486069f8bb27d9"
+    ],
+    "tags": []
+  },
+  "c8dd07176c5c38e69d363c6266febc9b864f5634": {
+    "pushId": "34089",
+    "changesetIndex": 12,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Drop test_animation-finish.html; r=hiro\n\nThese tests are all covered elsewhere:\n\n* The \"Test exceptions when finishing infinite animation\" test is covered by\n  the \"Finishing an infinite animation throws\" test in\n  finishing-an-animation.html in the Web Animations web-platform-tests.\n* The \"Test finish() while paused\" test is covered by the \"Finishing a paused\n  animation resolves the start time\" test in finishing-an-animation.html in\n  the Web Animations web-platform-tests.\n* The \"Test finish() while pause-pending with positive playbackRate\" test is\n  covered by the \"Finishing a pause-pending animation resolves the pending\n  task immediately and update the start time\" test in\n  finishing-an-animation.html in the Web Animations web-platform-tests.\n* The 'Test finish() while pause-pending with negative playbackRate\" test is\n  covered by the \"Finishing a pause-pending animation with negative playback\n  rate resolves the pending task immediately\" test in\n  finishing-an-animation.html in the Web Animations web-platform-tests.\n\nIn fact, it very much looks like these tests were copied to Web Animations'\nweb-platform-tests at some point without deleting the original.",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-finish.html",
+      "dom/animation/test/mochitest.ini"
+    ],
+    "node": "c8dd07176c5c38e69d363c6266febc9b864f5634",
+    "parents": [
+      "bdf0455bd3ecfc5c79b305cd36db71bff86f099d"
+    ],
+    "tags": []
+  },
+  "865062de80fb7f7beb5c74fef93b0412147d090c": {
+    "pushId": "34089",
+    "changesetIndex": 13,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Tidy up test_animation-finished.html; r=hiro\n\nThis mostly just involves using promise_rejects to simplify some test code.\n\nThe change to the test description of the last test might seem like it is giving\nit the opposite meaning but the original test name was \"Test finished promise\nchanges when animationPlayState set to running\"[1], and it is about testing\nthat there are NO changes but that got lost when the \"Test\" part of the\ndescription was dropped.\n\n\n[1] https://searchfox.org/mozilla-central/rev/cb846d13d3f9ec5d38ace93a74f749a18e9c67f5/dom/animation/test/css-animations/test_animation-player-finished.html#287",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-finished.html"
+    ],
+    "node": "865062de80fb7f7beb5c74fef93b0412147d090c",
+    "parents": [
+      "c8dd07176c5c38e69d363c6266febc9b864f5634"
+    ],
+    "tags": []
+  },
+  "43b6a75465244fe6c9e9cddf7aad2c6d6d833181": {
+    "pushId": "34089",
+    "changesetIndex": 14,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Tweak whitespace in test_animation-id.html; r=hiro\n\nThis just makes the grouping a little more clear I think.",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-id.html"
+    ],
+    "node": "43b6a75465244fe6c9e9cddf7aad2c6d6d833181",
+    "parents": [
+      "865062de80fb7f7beb5c74fef93b0412147d090c"
+    ],
+    "tags": []
+  },
+  "4f526a64e149c4c650f7ad54858714689070e6cf": {
+    "pushId": "34089",
+    "changesetIndex": 15,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Tidy up test_animations-playstate.html; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-playstate.html"
+    ],
+    "node": "4f526a64e149c4c650f7ad54858714689070e6cf",
+    "parents": [
+      "43b6a75465244fe6c9e9cddf7aad2c6d6d833181"
+    ],
+    "tags": []
+  },
+  "225a32bacfbc737e9934ba301fc447ce58e500c8": {
+    "pushId": "34089",
+    "changesetIndex": 16,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Tidy up test_animation-ready.html; r=hiro\n\nAlthough many of these tests are similar to tests in the Web Animations\nweb-platform-tests test suite they focus on the interaction with\nanimation-play-state and so are probably worth keeping.\n\nThere are two exceptions that I felt were worth changing:\n\n* The test for the handling of a ready promise on an aborted pause. I could not\n  find a similar test in the Web Animations wpt and the test is not really\n  particular to CSS animations so this patch moves it to Web Animations wpt.\n\n* The test for the resolution value of the ready promise for a paused animation\n  is covered by the \"A pending ready promise should be resolved and not replaced\n  when the animation is paused\" in pausing-an-animation.html in the Web\n  Animations wpt (although peripherally) and that seems like the better place\n  for this test anyway (it is not specific to CSS animations) so I have simply\n  deleted it from this file.",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-ready.html",
+      "testing/web-platform/meta/MANIFEST.json",
+      "testing/web-platform/tests/web-animations/timing-model/animations/playing-an-animation.html"
+    ],
+    "node": "225a32bacfbc737e9934ba301fc447ce58e500c8",
+    "parents": [
+      "4f526a64e149c4c650f7ad54858714689070e6cf"
+    ],
+    "tags": []
+  },
+  "357a5f2a456bd31c83ae54933dec03ae6af0a12d": {
+    "pushId": "34089",
+    "changesetIndex": 17,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Move the reversing test to Web Animations web-platform-tests; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-reverse.html",
+      "dom/animation/test/mochitest.ini",
+      "testing/web-platform/meta/MANIFEST.json",
+      "testing/web-platform/tests/web-animations/timing-model/animations/reversing-an-animation.html"
+    ],
+    "node": "357a5f2a456bd31c83ae54933dec03ae6af0a12d",
+    "parents": [
+      "225a32bacfbc737e9934ba301fc447ce58e500c8"
+    ],
+    "tags": []
+  },
+  "93a6b929c042e12a351f788f4cff7a7a1fc969d5": {
+    "pushId": "34089",
+    "changesetIndex": 18,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Update test_animations-dynamic-changes.html; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animations-dynamic-changes.html"
+    ],
+    "node": "93a6b929c042e12a351f788f4cff7a7a1fc969d5",
+    "parents": [
+      "bfe96f889a3bf706cba047baadbbd67fdd6a6414"
+    ],
+    "tags": []
+  },
+  "2181d4e46ec87b1700cd4c56620fbe3f9f298b11": {
+    "pushId": "34089",
+    "changesetIndex": 19,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Update test_element-get-animations.html; r=hiro\n\nAs well as addressing a few FIXMEs this patch drops the checking of start times\nsince that seems out of scope for this file and is covered elsewhere (I believe\nwe only added it at first to bootstrap this work).",
+    "files": [
+      "dom/animation/test/css-animations/test_element-get-animations.html"
+    ],
+    "node": "2181d4e46ec87b1700cd4c56620fbe3f9f298b11",
+    "parents": [
+      "93a6b929c042e12a351f788f4cff7a7a1fc969d5"
+    ],
+    "tags": []
+  },
+  "31b0c91a0237f593c5911325936eff589d43d204": {
+    "pushId": "34089",
+    "changesetIndex": 20,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Update test description in test_pseudoElement-get-animations.html; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_pseudoElement-get-animations.html"
+    ],
+    "node": "31b0c91a0237f593c5911325936eff589d43d204",
+    "parents": [
+      "2181d4e46ec87b1700cd4c56620fbe3f9f298b11"
+    ],
+    "tags": []
+  },
+  "e7fb7955c589cb038713614b3357ecfeb50c70aa": {
+    "pushId": "34089",
+    "changesetIndex": 21,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Update test_setting-effect.html; r=hiro\n\nApart from whitespace / test description tests this patch also drops an\nassertion about the animation playState since it seems unrelated to the purpose\nof that particular test.",
+    "files": [
+      "dom/animation/test/css-animations/test_setting-effect.html"
+    ],
+    "node": "e7fb7955c589cb038713614b3357ecfeb50c70aa",
+    "parents": [
+      "31b0c91a0237f593c5911325936eff589d43d204"
+    ],
+    "tags": []
+  },
+  "4a4aafa588f86050dadc4ea7644639e4ac547461": {
+    "pushId": "34089",
+    "changesetIndex": 22,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Move CSS animations / Web animation integration tests to web-platform-tests; r=hiro",
+    "files": [
+      "dom/animation/test/css-animations/test_animation-cancel.html",
+      "dom/animation/test/css-animations/test_animation-computed-timing.html",
+      "dom/animation/test/css-animations/test_animation-currenttime.html",
+      "dom/animation/test/css-animations/test_animation-finished.html",
+      "dom/animation/test/css-animations/test_animation-id.html",
+      "dom/animation/test/css-animations/test_animation-pausing.html",
+      "dom/animation/test/css-animations/test_animation-playstate.html",
+      "dom/animation/test/css-animations/test_animation-ready.html",
+      "dom/animation/test/css-animations/test_animation-starttime.html",
+      "dom/animation/test/css-animations/test_animations-dynamic-changes.html",
+      "dom/animation/test/css-animations/test_cssanimation-animationname.html",
+      "dom/animation/test/css-animations/test_document-get-animations.html",
+      "dom/animation/test/css-animations/test_effect-target.html",
+      "dom/animation/test/css-animations/test_element-get-animations.html",
+      "dom/animation/test/css-animations/test_event-dispatch.html",
+      "dom/animation/test/css-animations/test_event-order.html",
+      "dom/animation/test/css-animations/test_keyframeeffect-getkeyframes.html",
+      "dom/animation/test/css-animations/test_pseudoElement-get-animations.html",
+      "dom/animation/test/css-animations/test_setting-effect.html",
+      "dom/animation/test/mochitest.ini",
+      "testing/web-platform/meta/MANIFEST.json",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-animationName.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-canceling.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-effect.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-finished.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-getComputedTiming.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-getCurrentTime.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-id.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-pausing.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-playState.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-ready.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-startTime.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSPseudoElement-getAnimations.tentative.html",
+      "testing/web-platform/tests/css/css-animations/Document-getAnimations.tentative.html",
+      "testing/web-platform/tests/css/css-animations/Element-getAnimations-dynamic-changes.tentative.html",
+      "testing/web-platform/tests/css/css-animations/Element-getAnimations.tentative.html",
+      "testing/web-platform/tests/css/css-animations/KeyframeEffect-getKeyframes.tentative.html",
+      "testing/web-platform/tests/css/css-animations/KeyframeEffect-target.tentative.html",
+      "testing/web-platform/tests/css/css-animations/event-dispatch.tentative.html",
+      "testing/web-platform/tests/css/css-animations/event-order.tentative.html",
+      "testing/web-platform/tests/css/css-animations/support/testcommon.js"
+    ],
+    "node": "4a4aafa588f86050dadc4ea7644639e4ac547461",
+    "parents": [
+      "e7fb7955c589cb038713614b3357ecfeb50c70aa"
+    ],
+    "tags": []
+  },
+  "1156ef220859015269bff058a3db9f6183bf347f": {
+    "pushId": "34089",
+    "changesetIndex": 23,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Add spec links to test files; r=hiro",
+    "files": [
+      "testing/web-platform/meta/MANIFEST.json",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-animationName.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-canceling.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-effect.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-finished.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-getComputedTiming.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-getCurrentTime.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-id.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-pausing.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-playState.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-ready.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSAnimation-startTime.tentative.html",
+      "testing/web-platform/tests/css/css-animations/CSSPseudoElement-getAnimations.tentative.html",
+      "testing/web-platform/tests/css/css-animations/Document-getAnimations.tentative.html",
+      "testing/web-platform/tests/css/css-animations/Element-getAnimations-dynamic-changes.tentative.html",
+      "testing/web-platform/tests/css/css-animations/Element-getAnimations.tentative.html",
+      "testing/web-platform/tests/css/css-animations/KeyframeEffect-getKeyframes.tentative.html",
+      "testing/web-platform/tests/css/css-animations/KeyframeEffect-target.tentative.html"
+    ],
+    "node": "1156ef220859015269bff058a3db9f6183bf347f",
+    "parents": [
+      "4a4aafa588f86050dadc4ea7644639e4ac547461"
+    ],
+    "tags": []
+  },
+  "d87bf0bd52e2398d47501e88abdf7b290b4f424c": {
+    "pushId": "34089",
+    "changesetIndex": 24,
+    "authorName": "Brian Birtles ",
+    "authorEmail": "birtles@gmail.com",
+    "author": "Brian Birtles <birtles@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466031 - Update event-dispatch test now that we can use the updated EventWatcher; r=hiro",
+    "files": [
+      "testing/web-platform/meta/MANIFEST.json",
+      "testing/web-platform/tests/css/css-animations/event-dispatch.tentative.html"
+    ],
+    "node": "d87bf0bd52e2398d47501e88abdf7b290b4f424c",
+    "parents": [
+      "1156ef220859015269bff058a3db9f6183bf347f"
+    ],
+    "tags": []
+  },
+  "794b0773629492b6267973937a6a1d4f79d26538": {
+    "pushId": "34089",
+    "changesetIndex": 25,
+    "authorName": "Jonathan Kew ",
+    "authorEmail": "jkew@mozilla.com",
+    "author": "Jonathan Kew <jkew@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1466332 - Add a reftest version of the @font-face descriptor matching tests from WPT's at-font-face-font-matching.html, as the WPT version does not currently run reliably. r=jwatt",
+    "files": [
+      "layout/reftests/font-matching/descriptor-ranges-ref.html",
+      "layout/reftests/font-matching/descriptor-ranges.html",
+      "layout/reftests/font-matching/descriptor-ranges.js",
+      "layout/reftests/font-matching/reftest.list"
+    ],
+    "node": "794b0773629492b6267973937a6a1d4f79d26538",
+    "parents": [
+      "d87bf0bd52e2398d47501e88abdf7b290b4f424c"
+    ],
+    "tags": []
+  },
+  "df11dced021e6e4ef9f38ae84c56842b12cce173": {
+    "pushId": "34089",
+    "changesetIndex": 26,
+    "authorName": "Lars T Hansen ",
+    "authorEmail": "lhansen@mozilla.com",
+    "author": "Lars T Hansen <lhansen@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1429818 - Make wasm sign extension feature unconditional. r=luke\n\nRemove the feature define and all the ifdefs that use it.\n\nRemove the TestingFunctions predicate that reveals the value of the\ndefine.\n\nUpdate the test cases that used the predicate.",
+    "files": [
+      "js/src/builtin/TestingFunctions.cpp",
+      "js/src/jit-test/tests/wasm/conversion.js",
+      "js/src/jit-test/tests/wasm/spec/extend32.wast.js",
+      "js/src/jit-test/tests/wasm/spec/extend64.wast.js",
+      "js/src/moz.build",
+      "js/src/wasm/WasmBaselineCompile.cpp",
+      "js/src/wasm/WasmBinaryConstants.h",
+      "js/src/wasm/WasmBinaryToAST.cpp",
+      "js/src/wasm/WasmBinaryToText.cpp",
+      "js/src/wasm/WasmIonCompile.cpp",
+      "js/src/wasm/WasmOpIter.cpp",
+      "js/src/wasm/WasmTextToBinary.cpp",
+      "js/src/wasm/WasmValidate.cpp"
+    ],
+    "node": "df11dced021e6e4ef9f38ae84c56842b12cce173",
+    "parents": [
+      "794b0773629492b6267973937a6a1d4f79d26538"
+    ],
+    "tags": []
+  },
+  "6e430a8ad9cc8e2568a9f5f87bcb324a6db68916": {
+    "pushId": "34089",
+    "changesetIndex": 27,
+    "authorName": "Jon Coppeard ",
+    "authorEmail": "jcoppeard@mozilla.com",
+    "author": "Jon Coppeard <jcoppeard@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1462693 - Update JSScript and LazyScript in separate phases in compacting GC r=sfink",
+    "files": [
+      "js/src/gc/GC.cpp"
+    ],
+    "node": "6e430a8ad9cc8e2568a9f5f87bcb324a6db68916",
+    "parents": [
+      "df11dced021e6e4ef9f38ae84c56842b12cce173"
+    ],
+    "tags": []
+  },
+  "aefbe3ce94760bb582b259e4b45c98be4dfeab10": {
+    "pushId": "34089",
+    "changesetIndex": 28,
+    "authorName": "Jon Coppeard ",
+    "authorEmail": "jcoppeard@mozilla.com",
+    "author": "Jon Coppeard <jcoppeard@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1461619 - Rename some atom marking methods to make their purpose cleare r=sfink",
+    "files": [
+      "js/src/gc/AtomMarking.cpp",
+      "js/src/gc/AtomMarking.h",
+      "js/src/gc/GC.cpp"
+    ],
+    "node": "aefbe3ce94760bb582b259e4b45c98be4dfeab10",
+    "parents": [
+      "6e430a8ad9cc8e2568a9f5f87bcb324a6db68916"
+    ],
+    "tags": []
+  },
+  "c71b1bbac9050b6ab00895f0b28725cbffc9f5bf": {
+    "pushId": "34089",
+    "changesetIndex": 29,
+    "authorName": "Jon Coppeard ",
+    "authorEmail": "jcoppeard@mozilla.com",
+    "author": "Jon Coppeard <jcoppeard@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1461619 - Don't update atoms marking bitmaps in parallel due to potential races r=sfink",
+    "files": [
+      "js/src/gc/GC.cpp"
+    ],
+    "node": "c71b1bbac9050b6ab00895f0b28725cbffc9f5bf",
+    "parents": [
+      "aefbe3ce94760bb582b259e4b45c98be4dfeab10"
+    ],
+    "tags": []
+  },
+  "9a7562fe4671cfaf5a95d7f3e0d4b9894d9561c9": {
+    "pushId": "34089",
+    "changesetIndex": 30,
+    "authorName": "Ryan VanderMeulen ",
+    "authorEmail": "ryanvm@gmail.com",
+    "author": "Ryan VanderMeulen <ryanvm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1465017 - Revert commit b5415b0216c7 (bug 1452604) for broken \"See Details\" button on the blocked site page.",
+    "files": [
+      "browser/base/content/blockedSite.js",
+      "browser/base/content/blockedSite.xhtml",
+      "browser/base/jar.mn",
+      "modules/libpref/init/all.js"
+    ],
+    "node": "9a7562fe4671cfaf5a95d7f3e0d4b9894d9561c9",
+    "parents": [
+      "c71b1bbac9050b6ab00895f0b28725cbffc9f5bf"
+    ],
+    "tags": []
+  },
+  "1133ee75e096e25d47e759ff2957baea547c0d18": {
+    "pushId": "34089",
+    "changesetIndex": 31,
+    "authorName": "Emilio Cobos Álvarez ",
+    "authorEmail": "emilio@crisal.io",
+    "author": "Emilio Cobos Álvarez <emilio@crisal.io>",
+    "branch": "default",
+    "desc": "Bug 1449243: Remove invalid assertion. r=me\n\nWe can look at stale styles while trying to figure out if we need any\ninvalidation, and that's ok.\n\nMozReview-Commit-ID: 4mBIFNm9qJv\n",
+    "files": [
+      "layout/style/crashtests/1449243.html",
+      "layout/style/crashtests/crashtests.list",
+      "servo/components/style/gecko/wrapper.rs"
+    ],
+    "node": "1133ee75e096e25d47e759ff2957baea547c0d18",
+    "parents": [
+      "9a7562fe4671cfaf5a95d7f3e0d4b9894d9561c9"
+    ],
+    "tags": []
+  },
+  "b48809c10b802ad9b47ef8edb6bbac90f777b193": {
+    "pushId": "34089",
+    "changesetIndex": 32,
+    "authorName": "Ryan VanderMeulen ",
+    "authorEmail": "ryanvm@gmail.com",
+    "author": "Ryan VanderMeulen <ryanvm@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1466519 - Update pdf.js to version 2.0.536. r=bdahl",
+    "files": [
+      "browser/extensions/pdfjs/README.mozilla",
+      "browser/extensions/pdfjs/content/build/pdf.js",
+      "browser/extensions/pdfjs/content/build/pdf.worker.js",
+      "browser/extensions/pdfjs/content/web/viewer.js"
+    ],
+    "node": "b48809c10b802ad9b47ef8edb6bbac90f777b193",
+    "parents": [
+      "1133ee75e096e25d47e759ff2957baea547c0d18"
+    ],
+    "tags": []
+  },
+  "0c71a38c8c5c49d3041a3a8d06116b07ba1279b3": {
+    "pushId": "34089",
+    "changesetIndex": 33,
+    "authorName": "Christoph Kerschbaumer ",
+    "authorEmail": "ckerschb@christophkerschbaumer.com",
+    "author": "Christoph Kerschbaumer <ckerschb@christophkerschbaumer.com>",
+    "branch": "default",
+    "desc": "Bug 1466508 - Fix race condition within wpt test policy-inherited-correctly-by-plznavigate.html. r=jgraham",
+    "files": [
+      "testing/web-platform/tests/content-security-policy/generic/policy-inherited-correctly-by-plznavigate.html"
+    ],
+    "node": "0c71a38c8c5c49d3041a3a8d06116b07ba1279b3",
+    "parents": [
+      "b48809c10b802ad9b47ef8edb6bbac90f777b193"
+    ],
+    "tags": []
+  },
+  "2426ac9d78fe52b238345e286b000424cbab4989": {
+    "pushId": "34089",
+    "changesetIndex": 34,
+    "authorName": "André Bargull ",
+    "authorEmail": "andre.bargull@gmail.com",
+    "author": "André Bargull <andre.bargull@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1464845 - Remove js_strdup and JS_strdup. r=Waldo",
+    "files": [
+      "js/public/Utility.h",
+      "js/src/builtin/TestingFunctions.cpp",
+      "js/src/jsapi.cpp",
+      "js/src/jsapi.h",
+      "js/src/shell/js.cpp",
+      "js/src/util/Text.cpp",
+      "js/src/vm/BytecodeUtil.cpp",
+      "js/src/vm/BytecodeUtil.h",
+      "js/src/vm/CodeCoverage.cpp",
+      "js/src/vm/CodeCoverage.h",
+      "js/src/vm/Debugger.cpp",
+      "js/src/vm/Debugger.h",
+      "js/src/vm/JSScript.cpp",
+      "js/src/vm/Runtime.cpp",
+      "js/src/vm/SelfHosting.cpp",
+      "js/src/vm/SharedImmutableStringsCache.h",
+      "js/src/vm/TraceLogging.cpp",
+      "js/src/vm/TraceLogging.h",
+      "js/src/vm/UbiNodeCensus.cpp"
+    ],
+    "node": "2426ac9d78fe52b238345e286b000424cbab4989",
+    "parents": [
+      "0c71a38c8c5c49d3041a3a8d06116b07ba1279b3"
+    ],
+    "tags": []
+  },
+  "9ea974e9f568ec4ef151702c35333d850c38ab5d": {
+    "pushId": "34089",
+    "changesetIndex": 35,
+    "authorName": "Samuel Thibault ",
+    "authorEmail": "samuel.thibault@ens-lyon.org",
+    "author": "Samuel Thibault <samuel.thibault@ens-lyon.org>",
+    "branch": "default",
+    "desc": "Bug 1319273 - Accessible: Make TextBounds return rect of whole frame if content is empty. r=surkov",
+    "files": [
+      "accessible/generic/HyperTextAccessible.cpp",
+      "accessible/tests/browser/bounds/browser_test_zoom_text.js"
+    ],
+    "node": "9ea974e9f568ec4ef151702c35333d850c38ab5d",
+    "parents": [
+      "2426ac9d78fe52b238345e286b000424cbab4989"
+    ],
+    "tags": []
+  },
+  "5c47f8a1bad20a61a1ec699cc6508e21f39a7a98": {
+    "pushId": "34089",
+    "changesetIndex": 36,
+    "authorName": "Valentin Gosu ",
+    "authorEmail": "valentin.gosu@gmail.com",
+    "author": "Valentin Gosu <valentin.gosu@gmail.com>",
+    "branch": "default",
+    "desc": "Bug 1392739 - Use CheckedInt in nsStandardURL::Deserialize(). r=mayhemer",
+    "files": [
+      "netwerk/base/nsStandardURL.cpp"
+    ],
+    "node": "5c47f8a1bad20a61a1ec699cc6508e21f39a7a98",
+    "parents": [
+      "9ea974e9f568ec4ef151702c35333d850c38ab5d"
+    ],
+    "tags": []
+  },
+  "f72ceb91e620b9b95806132fe9ca3687fab49b68": {
+    "pushId": "34089",
+    "changesetIndex": 37,
+    "authorName": "Alex Gaynor ",
+    "authorEmail": "agaynor@mozilla.com",
+    "author": "Alex Gaynor <agaynor@mozilla.com>",
+    "branch": "default",
+    "desc": "Bug 1392739 - Add test for faulty nsStandardURL deserialization. r=mayhemer",
+    "files": [
+      "netwerk/test/gtest/TestStandardURL.cpp"
+    ],
+    "node": "f72ceb91e620b9b95806132fe9ca3687fab49b68",
+    "parents": [
+      "5c47f8a1bad20a61a1ec699cc6508e21f39a7a98"
+    ],
+    "tags": []
+  }
+}

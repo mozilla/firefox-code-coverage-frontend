@@ -1,21 +1,24 @@
 /* global describe it */
-import { arrayToMap, mapToArray, filterUnsupportedExtensions } from '../../src/utils/data';
+import {
+  mapToArray,
+  filterUnsupportedExtensions,
+  sortChangesetsByCoverage,
+  sortChangesetsNewestFirst,
+} from '../../src/utils/data';
 import * as dummyData from '../dummy.test';
+
+const changesetMocks = require('../mocks/changesetsMocks.json');
+const changesetsCoverageMock = require('../mocks/changesetsCoverageMock.json');
+const sortedChangesetsByRecency = require('../expected/sortedChangesetsByRecency');
+const sortedChangesetsByLowCoverage = require('../expected/sortedChangesetsByLowCoverage');
+const sortedChangesetsByHighCoverage = require('../expected/sortedChangesetsByHighCoverage');
 
 const assert = require('assert');
 
-describe('Data structure converters', () => {
-  describe('arrayToMap', () => {
-    it('should return a map of node:changeset pairs', () => {
-      const csetMap = arrayToMap(dummyData.changesetsArray);
-      assert.deepEqual(csetMap, dummyData.changesetsMap);
-    });
-  });
-  describe('mapToArray', () => {
-    it('should return an array of changesets', () => {
-      const csetArray = mapToArray(dummyData.changesetsMap);
-      assert.deepEqual(csetArray, dummyData.changesetsArray);
-    });
+describe('Data structure converter', () => {
+  it('should return an array of changesets', () => {
+    const csetArray = mapToArray(dummyData.changesetsMap);
+    assert.deepEqual(csetArray, dummyData.changesetsArray);
   });
 });
 
@@ -39,5 +42,20 @@ describe('Supported file extensions', () => {
     const parsedDiff =
       filterUnsupportedExtensions(dummyData.parsedDiff, undefined);
     assert.deepEqual(dummyData.parsedDiff, parsedDiff);
+  });
+});
+
+describe('Sorting of changesets and coverage', () => {
+  it('should sort by recency of changesets', () => {
+    const actual = sortChangesetsNewestFirst(changesetMocks, changesetsCoverageMock);
+    assert.deepEqual(actual, sortedChangesetsByRecency);
+  });
+  it('should sort by lowest coverage', () => {
+    const actual = sortChangesetsByCoverage(changesetMocks, changesetsCoverageMock);
+    assert.deepEqual(actual, sortedChangesetsByLowCoverage);
+  });
+  it('should sort by highest coverage', () => {
+    const actual = sortChangesetsByCoverage(changesetMocks, changesetsCoverageMock, true);
+    assert.deepEqual(actual, sortedChangesetsByHighCoverage);
   });
 });
