@@ -18,8 +18,20 @@ export default class FileViewerContainer extends Component {
   }
 
   componentDidMount() {
-    const { revision, path } = this.state;
-    this.fetchData(revision, path);
+    this.fetchData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.search === prevProps.location.search) {
+      return;
+    }
+    // Reset the state and fetch new data
+    const newState = this.parseQueryParams();
+    newState.coverage = undefined;
+    newState.parsedFile = undefined;
+    // eslint-disable-next-line react/no-did-update-set-state
+    this.setState(newState);
+    this.fetchData();
   }
 
   setSelectedLine(selectedLineNumber) {
@@ -31,7 +43,8 @@ export default class FileViewerContainer extends Component {
     }
   }
 
-  fetchData(revision, path, repoPath = 'mozilla-central') {
+  fetchData(repoPath = 'mozilla-central') {
+    const { revision, path } = this.state;
     // Get source code from hg
     const fileSource = async () => {
       this.setState({ parsedFile: (await rawFile(revision, path, repoPath)) });
