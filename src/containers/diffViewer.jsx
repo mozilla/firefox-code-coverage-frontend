@@ -64,10 +64,10 @@ export default class DiffViewerContainer extends Component {
       }
       this.setState({ appError, coverage });
     } catch (error) {
-      console.error(error);
       this.setState({
         appError: 'There was an error fetching the code coverage data.',
       });
+      throw error;
     }
   }
 
