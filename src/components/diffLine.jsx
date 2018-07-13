@@ -19,8 +19,8 @@ const DiffLine = ({ change, fileDiffs, id }) => {
           rowClass = 'nolinechange';
         }
       } catch (e) {
-        console.log(e);
         rowClass = 'miss';
+        throw e;
       }
     }
     newLineNumber = c.ln;

@@ -76,7 +76,7 @@ export const fileRevisionCoverageSummary = (coverage) => {
   s.numUncovLines = s.uncoveredLines.length;
   s.numTotalLines = s.numCovLines + s.numUncovLines;
   s.percentage = (s.numCovLines !== 0 ||
-     s.numUncovLines !== 0) ? ((s.numCovLines / s.numTotalLines) * 100) : undefined;
+    s.numUncovLines !== 0) ? ((s.numCovLines / s.numTotalLines) * 100) : undefined;
   return s;
 };
 
@@ -245,11 +245,10 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
       format: 'list',
     });
     if (res.status !== 200) {
-      throw new Error();
+      throw new Error(`HTTP response ${res.status}`);
     }
     return res.json();
   } catch (e) {
-    console.error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
-    throw e;
+    throw new Error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
   }
 };

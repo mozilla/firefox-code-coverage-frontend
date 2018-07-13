@@ -61,13 +61,13 @@ export default class SummaryContainer extends Component {
         pollingEnabled: summary.pending > 0,
       });
     } catch (error) {
-      console.error(error);
       this.setState({
         changesets: {},
         changesetsCoverage: {},
         pollingEnabled: false,
         errorMessage: 'We have failed to fetch coverage data.',
       });
+      throw error;
     }
   }
 
@@ -78,6 +78,7 @@ export default class SummaryContainer extends Component {
       this.setState({ changesetsCoverage, pollingEnabled });
     } catch (e) {
       this.setState({ pollingEnabled: false });
+      throw e;
     }
   }
 

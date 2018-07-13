@@ -53,12 +53,11 @@ export const rawFile = async (node, filePath, repoName = REPO_NAME) => {
   try {
     const res = await getRawFile(node, filePath, repoName);
     if (res.status !== 200) {
-      throw new Error();
+      throw new Error(`HTTP response ${res.status}`);
     }
     return (await res.text()).split('\n');
   } catch (e) {
-    console.error(`Failed to fetch source for revision: ${node}, filePath: ${filePath}\n${e}`);
-    throw new Error('Failed to get source code from hg');
+    throw new Error(`Failed to fetch source for revision: ${node}, filePath: ${filePath}\n${e}`);
   }
 };
 
