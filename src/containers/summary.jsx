@@ -96,6 +96,7 @@ export default class SummaryContainer extends Component {
     if (errorMessage) {
       return (<div className="error-message">{errorMessage}</div>);
     }
+    descriptionFilterValue.length();
 
     const someDataToShow = queryIfAnyDataToDisplay(changesets, changesetsCoverage);
     const filteredChangesets = filterChangesets(changesets, descriptionFilterValue);
