@@ -158,10 +158,10 @@ tr.changeset td{
 	vertical-align: middle;
 }
 
-form:not(:focus-within) {
+form.empty:not(:focus-within) {
 	opacity: 0;
 }
-form:focus-within + button {
+form:not(.empty) + button, form:focus-within + button {
 	display: none;
 }
 
