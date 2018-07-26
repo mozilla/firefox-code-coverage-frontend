@@ -33,7 +33,7 @@
     "mdi-react": "^4.0.0",
     "parse-diff": "^0.4.2",
     "prop-types": "^15.6.0",
-    "query-string": "^5.0.1",
+    "query-string": "^6.0.0",
     "raven-js": "^3.23.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
