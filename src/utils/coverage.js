@@ -237,8 +237,8 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
       where: {
         and: [
           { eq: { 'source.file.name': path } },
-          { prefix: { 'repo.changeset.id': revision } },
           { eq: { 'repo.branch.name': repoPath } },
+          { prefix: { 'repo.changeset.id': revision } },
         ],
       },
       limit: 1000,
