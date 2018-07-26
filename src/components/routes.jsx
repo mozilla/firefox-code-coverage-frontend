@@ -1,3 +1,4 @@
+import { parse } from 'query-string';
 import { Route } from 'react-router-dom';
 
 import AppDisclaimer from './disclaimer';
@@ -28,7 +29,18 @@ const Routes = () => (
     />
     <Route
       path="/file"
-      component={FileViewerContainer}
+      render={({ location }) => {
+        const { path = '', revision } = parse(location.search);
+        // Remove beginning '/' in the path parameter to fetch from source,
+        // makes both path=/path AND path=path acceptable in the URL query
+        // Ex. "path=/accessible/atk/Platform.cpp" AND "path=accessible/atk/Platform.cpp"
+        return (
+          <FileViewerContainer
+            revision={revision}
+            path={path.startsWith('/') ? path.slice(1) : path}
+          />
+        );
+      }}
     />
     <Route
       path="/clear-cache"
