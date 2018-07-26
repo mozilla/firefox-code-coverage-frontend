@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as queryString from 'query-string';
 
 import { fileRevisionCoverageSummary, fileRevisionWithActiveData } from '../utils/coverage';
 import { rawFile } from '../utils/hg';
@@ -13,7 +12,7 @@ import hash from '../utils/hash';
 export default class FileViewerContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = this.parseQueryParams();
+    this.state = {};
     this.setSelectedLine = this.setSelectedLine.bind(this);
   }
 
@@ -22,13 +21,16 @@ export default class FileViewerContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.location.search === prevProps.location.search) {
+    const { revision, path } = this.props;
+    if (revision === prevProps.revision && path === prevProps.path) {
       return;
     }
     // Reset the state and fetch new data
-    const newState = this.parseQueryParams();
-    newState.coverage = undefined;
-    newState.parsedFile = undefined;
+    const newState = {
+      appErr: undefined,
+      coverage: undefined,
+      parsedFile: undefined,
+    };
     // eslint-disable-next-line react/no-did-update-set-state
     this.setState(newState);
     this.fetchData();
@@ -44,7 +46,11 @@ export default class FileViewerContainer extends Component {
   }
 
   fetchData(repoPath = 'mozilla-central') {
-    const { revision, path } = this.state;
+    const { revision, path } = this.props;
+    if (!revision || !path) {
+      this.setState({ appErr: "Undefined URL query ('revision', 'path' fields are required)" });
+      return;
+    }
     // Get source code from hg
     const fileSource = async () => {
       this.setState({ parsedFile: (await rawFile(revision, path, repoPath)) });
@@ -71,25 +77,6 @@ export default class FileViewerContainer extends Component {
     }
   }
 
-  parseQueryParams() {
-    const parsedQuery = queryString.parse(this.props.location.search);
-    const out = {
-      appError: undefined,
-      revision: undefined,
-      path: undefined,
-    };
-    if (!parsedQuery.revision || !parsedQuery.path) {
-      out.appErr = "Undefined URL query ('revision', 'path' fields are required)";
-    } else {
-      // Remove beginning '/' in the path parameter to fetch from source,
-      // makes both path=/path AND path=path acceptable in the URL query
-      // Ex. "path=/accessible/atk/Platform.cpp" AND "path=accessible/atk/Platform.cpp"
-      out.revision = parsedQuery.revision;
-      out.path = parsedQuery.path.startsWith('/') ? parsedQuery.path.slice(1) : parsedQuery.path;
-    }
-    return out;
-  }
-
   render() {
     const {
       parsedFile, coverage, selectedLine, appErr,
@@ -98,7 +85,7 @@ export default class FileViewerContainer extends Component {
     return (
       <div>
         <div className="file-view">
-          <FileViewerMeta {...this.state} />
+          <FileViewerMeta {...this.props} {...this.state} />
           { !appErr && (parsedFile) &&
             <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
         </div>
