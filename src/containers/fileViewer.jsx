@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 
-import { fileRevisionCoverageSummary, fileRevisionWithActiveData } from '../utils/coverage';
+import FileOutlineIcon from 'mdi-react/FileOutlineIcon';
+import FolderOutlineIcon from 'mdi-react/FolderOutlineIcon';
+import settings from '../settings';
+import { sourceCoverageSummary, sourceCoverageFromActiveData, pathCoverageFromBackend } from '../utils/coverage';
 import { rawFile } from '../utils/hg';
 import { TestsSideViewer, CoveragePercentageViewer } from '../components/fileViewer';
 import { HORIZONTAL_ELLIPSIS, HEAVY_CHECKMARK } from '../utils/symbol';
 import hash from '../utils/hash';
+
+const { low, medium, high } = settings.COVERAGE_THRESHOLDS;
 
 // FileViewer loads a raw file for a given revision from Mozilla's hg web.
 // It uses test coverage information from Active Data to show coverage
@@ -28,7 +33,8 @@ export default class FileViewerContainer extends Component {
     // Reset the state and fetch new data
     const newState = {
       appErr: undefined,
-      coverage: undefined,
+      pathCoverage: undefined,
+      sourceCoverage: undefined,
       parsedFile: undefined,
     };
     // eslint-disable-next-line react/no-did-update-set-state
@@ -45,52 +51,89 @@ export default class FileViewerContainer extends Component {
     }
   }
 
-  fetchData(repoPath = 'mozilla-central') {
+  async fetchData(repoPath = 'mozilla-central') {
     const { revision, path } = this.props;
-    if (!revision || !path) {
-      this.setState({ appErr: "Undefined URL query ('revision', 'path' fields are required)" });
+    if (!revision) {
+      this.setState({ appErr: "Undefined URL query (field 'revision' is required)" });
       return;
     }
-    // Get source code from hg
-    const fileSource = async () => {
-      this.setState({ parsedFile: (await rawFile(revision, path, repoPath)) });
+    // Get overall path coverage from backend
+    const pathCoverage = async () => {
+      const data = await pathCoverageFromBackend(revision, path, repoPath);
+      this.setState({ pathCoverage: data });
     };
-    // Get coverage from ActiveData
-    const coverageData = async () => {
-      const { data } = await fileRevisionWithActiveData(revision, path, repoPath);
-      this.setState({ coverage: fileRevisionCoverageSummary(data) });
+    // Get detailed source coverage from ActiveData
+    const fileCoverage = async () => {
+      const { data } = await sourceCoverageFromActiveData(revision, path, repoPath);
+      this.setState({ sourceCoverage: sourceCoverageSummary(data) });
+    };
+    // Get raw source code from hg
+    const fileSource = async () => {
+      const parsedFile = await rawFile(revision, path, repoPath);
+      this.setState({ parsedFile });
     };
     // Fetch source code and coverage in parallel
     try {
-      Promise.all([fileSource(), coverageData()])
-        .catch((e) => {
-          if ((e instanceof RangeError) && (e.message === 'Revision number too short')) {
-            this.setState({ appErr: 'Revision number is too short. Unable to fetch tests.' });
-          } else {
-            this.setState({ appErr: `${e.name}: ${e.message}` });
-          }
-          throw e;
-        });
+      await Promise.all([pathCoverage(), fileCoverage(), fileSource()]);
     } catch (error) {
-      this.setState({ appErr: `${error.name}: ${error.message}` });
+      console.error(error);
+      if ((error instanceof RangeError) && (error.message === 'Revision number too short')) {
+        this.setState({ appErr: 'Revision number is too short. Unable to fetch data.' });
+      } else {
+        this.setState({ appErr: `${error.name}: ${error.message}` });
+      }
       throw error;
     }
   }
 
   render() {
+    const { revision, path } = this.props;
     const {
-      parsedFile, coverage, selectedLine, appErr,
+      pathCoverage, sourceCoverage, parsedFile, selectedLine, appErr,
     } = this.state;
 
     return (
       <div>
         <div className="file-view">
           <FileViewerMeta {...this.props} {...this.state} />
-          { !appErr && (parsedFile) &&
+          { pathCoverage && pathCoverage.type === 'directory' &&
+          <table className="changeset-viewer">
+            <tbody>
+              <tr>
+                <th>File</th>
+                <th>Coverage summary</th>
+              </tr>
+              {pathCoverage.children.map((file) => {
+						      const fileName = file.path.replace(new RegExp(`^${path}`, 'g'), '');
+						      const coveragePercent = Math.round(100 * file.coverage);
+						      let summaryClassName = high.className;
+						      if (coveragePercent < medium.threshold) {
+						        summaryClassName =
+                      (coveragePercent < low.threshold ? low.className : medium.className);
+						      }
+						      const href =
+                    `/#/file?revision=${revision}&path=${path}${fileName}`;
+						      return (
+  <tr className="changeset" key={fileName}>
+                    <td className="changeset-author">
+      <a href={href}>
+                        {file.type === 'directory' ? <FolderOutlineIcon /> : <FileOutlineIcon />}
+                        <span className="changeset-eIcon-align">{fileName}</span>
+                      </a>
+    </td>
+                    <td className={`changeset-summary ${summaryClassName}`}>{coveragePercent}%</td>
+                  </tr>
+						      );
+						    })}
+            </tbody>
+          </table> }
+          { pathCoverage && pathCoverage.type === 'file' &&
+            <div style={{ textAlign: 'center' }}>Coverage: {Math.round(pathCoverage.coverage * 100)}%</div> }
+          { parsedFile &&
             <FileViewer {...this.state} onLineClick={this.setSelectedLine} /> }
         </div>
         <TestsSideViewer
-          coverage={coverage}
+          coverage={sourceCoverage}
           lineNumber={selectedLine}
         />
       </div>
@@ -100,7 +143,7 @@ export default class FileViewerContainer extends Component {
 
 // This component renders each line of the file with its line number
 const FileViewer = ({
-  parsedFile, coverage, selectedLine, onLineClick,
+  parsedFile, sourceCoverage, selectedLine, onLineClick,
 }) => (
   <table className="file-view-table">
     <tbody>
@@ -111,7 +154,7 @@ const FileViewer = ({
             key={uniqueId}
             lineNumber={lineNumber + 1}
             text={text}
-            coverage={coverage}
+            coverage={sourceCoverage}
             selectedLine={selectedLine}
             onLineClick={onLineClick}
           />
@@ -156,7 +199,7 @@ const Line = ({
 
 // This component contains metadata of the file
 const FileViewerMeta = ({
-  revision, path, appErr, parsedFile, coverage,
+  revision, path, appErr, parsedFile, sourceCoverage,
 }) => {
   const showStatus = (label, data) => (
     <li className="file-meta-li">
@@ -168,11 +211,11 @@ const FileViewerMeta = ({
     <div>
       <div className="file-meta-center">
         <div className="file-meta-title">File Coverage</div>
-        { (coverage) && <CoveragePercentageViewer coverage={coverage} /> }
+        { (sourceCoverage) && <CoveragePercentageViewer coverage={sourceCoverage} /> }
         <div className="file-meta-status">
           <ul className="file-meta-ul">
             { showStatus('Source code', parsedFile) }
-            { showStatus('Coverage', coverage) }
+            { showStatus('Coverage', sourceCoverage) }
           </ul>
         </div>
       </div>

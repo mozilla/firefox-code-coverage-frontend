@@ -8,6 +8,7 @@ const settings = {
     ENABLED: process.env.ENABLE_CACHE === 'true' || process.env.NODE_ENV === 'production',
   },
   CCOV_BACKEND: 'https://coverage.moz.tools',
+  CCOV_STAGING_BACKEND: 'https://coverage.staging.moz.tools',
   CODECOV_GECKO_DEV: 'https://codecov.io/gh/mozilla/gecko-dev',
   COVERAGE_THRESHOLDS: {
     low: {
