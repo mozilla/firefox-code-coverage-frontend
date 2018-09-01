@@ -47,7 +47,7 @@
     "@neutrinojs/react": "8.3.0",
     "babel-cli": "6.26.0",
     "babel-preset-flow": "6.23.0",
-    "eslint": "5.4.0",
+    "eslint": "5.5.0",
     "eslint-config-airbnb": "15.1.0",
     "eslint-plugin-import": "2.13.0",
     "eslint-plugin-jsx-a11y": "5.1.1",
