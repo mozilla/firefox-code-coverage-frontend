@@ -53,7 +53,7 @@
     "eslint-plugin-jsx-a11y": "5.1.1",
     "eslint-plugin-react": "7.4.0",
     "flow-bin": "0.79.1",
-    "husky": "0.14.3",
+    "husky": "1.0.0",
     "lint-staged": "7.3.0",
     "neutrino": "8.3.0"
   }
