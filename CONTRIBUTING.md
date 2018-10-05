@@ -5,7 +5,7 @@ we would like to lay down some principles and steps that will make contributing 
 # Principles
 
 * In React, there's a unidirectional data flow principle that we follow
-  * You can [read this](https://open.bekk.no/easier-reasoning-with-unidirectional-dataflow-and-immutable-data) to learn more
+  * You can [read this](https://blogg.bekk.no/easier-ui-reasoning-with-unidirectional-dataflow-and-immutable-data-d5087bd1adb) to learn more
   * Do all data manipulations at the very top parent component and set the state there; pass down the data to the children component
   * Children components should not do data manipulations or fetching
   * They are to receive props and just render the UI
