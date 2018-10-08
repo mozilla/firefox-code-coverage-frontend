@@ -25,7 +25,7 @@ we track files without any coverage.
 
 # Disclaimers
 
-- Linux64 & Windows
+- Linux 64-bit and Windows 64-bit only.
   - partial debug build type: [some flags](http://searchfox.org/mozilla-central/source/browser/config/mozconfigs/linux64/code-coverage) are disabled
   - debug only tests are run
 - A few tests are disabled on coverage builds due to high failures
