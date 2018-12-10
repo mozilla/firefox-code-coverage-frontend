@@ -2107,9 +2107,9 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
-chroma-js@^1.3.4:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-1.3.4.tgz#93a7c19f287960285cc3fdebb205b8ea1a0f04f9"
+chroma-js@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/chroma-js/-/chroma-js-2.0.0.tgz#d76aa409da31ca017d05e4122ae026b4311a0004"
 
 ci-info@^1.0.0:
   version "1.1.2"
