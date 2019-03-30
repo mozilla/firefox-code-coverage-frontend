@@ -4,7 +4,7 @@ import { jsonFetch, jsonPost, plainFetch } from './fetch';
 import { queryCacheWithFallback, saveInCache } from './localCache';
 
 const {
-  ACTIVE_DATA, CCOV_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
+  ACTIVE_DATA, CCOV_BACKEND, CCOV_STAGING_BACKEND, CODECOV_GECKO_DEV, GH_GECKO_DEV,
 } = settings;
 
 const { INTERNAL_ERROR, PENDING } = settings.STRINGS;
@@ -15,6 +15,9 @@ export const ccovBackendUrl = node => (`${CCOV_BACKEND}/coverage/changeset/${nod
 
 const queryChangesetCoverage = node =>
   plainFetch(`${CCOV_BACKEND}/coverage/changeset/${node}`);
+
+export const queryPathCoverage = (path, revision) =>
+  jsonFetch(`${CCOV_STAGING_BACKEND}/v2/path?path=${path}${revision ? `&changeset=${revision}` : ''}`);
 
 const queryActiveData = body =>
   jsonPost(`${ACTIVE_DATA}/query`, body);
@@ -44,7 +47,7 @@ const coverageStatistics = (coverage) => {
 };
 
 // get the coverage summary for a particular revision and file
-export const fileRevisionCoverageSummary = (coverage) => {
+export const sourceCoverageSummary = (coverage) => {
   const s = {
     coveredLines: [],
     uncoveredLines: [],
@@ -227,7 +230,7 @@ export const getPendingCoverage = async (changesetsCoverage) => {
   };
 };
 
-export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
+export const sourceCoverageFromActiveData = async (revision, path, repoPath) => {
   try {
     if (revision.length < settings.MIN_REVISION_LENGTH) {
       throw new RangeError('Revision number too short');
@@ -250,5 +253,21 @@ export const fileRevisionWithActiveData = async (revision, path, repoPath) => {
     return res.json();
   } catch (e) {
     throw new Error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${e}`);
+  }
+};
+
+export const pathCoverageFromBackend = async (revision, path, repoPath) => {
+  try {
+    if (revision.length < settings.MIN_REVISION_LENGTH) {
+      throw new RangeError('Revision number too short');
+    }
+    const data = await queryPathCoverage(path /* , revision */);
+    if (data.status && data.staus !== 200) {
+      throw new Error(`HTTP response ${data.status}`);
+    }
+    return data;
+  } catch (error) {
+    // FIXME: If you start using this method, please replace the `console.error()` with a `throw`.
+    console.error(new Error(`Failed to fetch data for revision: ${revision}, path: ${path}\n${error}`));
   }
 };
