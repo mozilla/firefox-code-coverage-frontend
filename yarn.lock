@@ -6569,10 +6569,10 @@ md5.js@^1.3.4:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-mdi-react@^4.0.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/mdi-react/-/mdi-react-4.4.0.tgz#5901a3eda1f0dc5eacec1b13f2e2ee40e883b791"
-  integrity sha512-IxWW/10EHSYSDz5Hce1JzgvBiNtUHWERVDRWY6S+Bc07zUjWcRvQFDQND8GIgXG2Mnr/7uQFk25MBtSgLHQ0Gw==
+mdi-react@^5.0.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/mdi-react/-/mdi-react-5.3.0.tgz#e27c876e113ee5706322cb084f898fbaed3c1367"
+  integrity sha512-Yf/aZplXLcl+aYlilfcBnCPRBueJMNOl7NxM+layFMRmCOWzxdER8ZsP2GZL7Vjc8U05Anh/mxoVaL0BS6/yCg==
 
 mdn-data@~1.1.0:
   version "1.1.4"
